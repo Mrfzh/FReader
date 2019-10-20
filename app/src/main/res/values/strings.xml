@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">FReader</string>
+
+    <string name="main_bottom_bar_bookshelf">书架</string>
+    <string name="main_bottom_bar_discovery">发现</string>
+    <string name="main_bottom_bar_more">更多</string>
+</resources>

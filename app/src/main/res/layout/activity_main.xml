@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/darker_gray"
+    tools:context=".view.activity.MainActivity">
+
+    <!-- guide line -->
+
+    <android.support.constraint.Guideline
+        android:id="@+id/gl_main_v_one_third"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.33"
+        android:visibility="invisible"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/gl_main_v_two_thirds"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.67" />
+
+    <!-- bottom bar bg -->
+
+    <View
+        android:id="@+id/v_main_bottom_bar_bookshelf_bg"
+        android:layout_width="0dp"
+        android:layout_height="65dp"
+        android:background="@color/color_main_bottom_bar_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/v_main_bottom_bar_discovery_bg"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:id="@+id/v_main_bottom_bar_discovery_bg"
+        android:layout_width="0dp"
+        android:layout_height="65dp"
+        android:background="@color/color_main_bottom_bar_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/v_main_bottom_bar_more_bg"
+        app:layout_constraintStart_toEndOf="@id/v_main_bottom_bar_bookshelf_bg" />
+
+    <View
+        android:id="@+id/v_main_bottom_bar_more_bg"
+        android:layout_width="0dp"
+        android:layout_height="65dp"
+        android:background="@color/color_main_bottom_bar_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/v_main_bottom_bar_discovery_bg" />
+
+    <!-- bottom bar text -->
+
+    <TextView
+        android:id="@+id/tv_main_bottom_bar_bookshelf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:text="@string/main_bottom_bar_bookshelf"
+        android:textSize="12sp"
+        android:textColor="@color/color_main_bottom_bar_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/gl_main_v_one_third"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_main_bottom_bar_discovery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:text="@string/main_bottom_bar_discovery"
+        android:textSize="12sp"
+        android:textColor="@color/color_main_bottom_bar_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/gl_main_v_two_thirds"
+        app:layout_constraintStart_toEndOf="@id/gl_main_v_one_third" />
+
+    <TextView
+        android:id="@+id/tv_main_bottom_bar_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:text="@string/main_bottom_bar_more"
+        android:textSize="12sp"
+        android:textColor="@color/color_main_bottom_bar_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/gl_main_v_two_thirds" />
+
+    <!-- bottom bar image_before -->
+
+    <ImageView
+        android:id="@+id/iv_main_bottom_bar_bookshelf_before"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/bookshelf_before"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/gl_main_v_one_third"
+        app:layout_constraintBottom_toTopOf="@id/tv_main_bottom_bar_bookshelf"
+        android:layout_marginBottom="5dp"
+        android:visibility="invisible"/>
+
+    <ImageView
+        android:id="@+id/iv_main_bottom_bar_discovery_before"
+        android:layout_width="27dp"
+        android:layout_height="27dp"
+        android:src="@drawable/discovery_before"
+        app:layout_constraintStart_toEndOf="@id/gl_main_v_one_third"
+        app:layout_constraintEnd_toStartOf="@id/gl_main_v_two_thirds"
+        app:layout_constraintBottom_toTopOf="@id/tv_main_bottom_bar_discovery"
+        android:layout_marginBottom="5dp"/>
+
+    <ImageView
+        android:id="@+id/iv_main_bottom_bar_more_before"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/more_before"
+        app:layout_constraintStart_toEndOf="@id/gl_main_v_two_thirds"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tv_main_bottom_bar_more"
+        android:layout_marginBottom="5dp"/>
+
+    <!-- bottom bar image_after -->
+
+    <ImageView
+        android:id="@+id/iv_main_bottom_bar_bookshelf_after"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/bookshelf_after"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/gl_main_v_one_third"
+        app:layout_constraintBottom_toTopOf="@id/tv_main_bottom_bar_bookshelf"
+        android:layout_marginBottom="5dp" />
+
+    <ImageView
+        android:id="@+id/iv_main_bottom_bar_discovery_after"
+        android:layout_width="27dp"
+        android:layout_height="27dp"
+        android:src="@drawable/discovery_after"
+        app:layout_constraintStart_toEndOf="@id/gl_main_v_one_third"
+        app:layout_constraintEnd_toStartOf="@id/gl_main_v_two_thirds"
+        app:layout_constraintBottom_toTopOf="@id/tv_main_bottom_bar_discovery"
+        android:layout_marginBottom="5dp"
+        android:visibility="invisible"/>
+
+    <ImageView
+        android:id="@+id/iv_main_bottom_bar_more_after"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/more_after"
+        app:layout_constraintStart_toEndOf="@id/gl_main_v_two_thirds"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tv_main_bottom_bar_more"
+        android:layout_marginBottom="5dp"
+        android:visibility="invisible"/>
+
+</android.support.constraint.ConstraintLayout>
