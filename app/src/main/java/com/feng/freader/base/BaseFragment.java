@@ -2,25 +2,27 @@ package com.feng.freader.base;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.feng.freader.util.EventBusUtil;
 import com.feng.freader.util.ToastUtil;
 
 /**
  * @author Feng Zhaohao
- * Created on 2019/10/19
+ * Created on 2019/10/20
  */
-public abstract class BaseActivity<T extends BasePresenter> extends AppCompatActivity {
+public abstract class BaseFragment<V extends BasePresenter> extends Fragment {
 
-    protected T mPresenter;
+    protected V mPresenter;   //该Fragment对应的Presenter
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        doBeforeSetContentView();
-        setContentView(getLayoutId());
 
         mPresenter = getPresenter();
         if (mPresenter != null) {
@@ -30,16 +32,24 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         if (isRegisterEventBus()) {
             EventBusUtil.register(this);
         }
-
-        initData();
-        initView();
-        doAfterInit();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        initView();
+        doInOnCreate();
+    }
 
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(getLayoutId(), container, false);  //第三个参数一定要设为false
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         if (mPresenter != null) {
             mPresenter.detachView();
         }
@@ -50,31 +60,16 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     }
 
     /**
-     * 在setContentView方法前的操作
+     * 在onCreate方法中执行的操作
      */
-    protected void doBeforeSetContentView() {
-
-    }
+    protected abstract void doInOnCreate();
 
     /**
-     *  获取当前活动的布局
+     * 获取fragment布局
      *
      * @return 布局id
      */
     protected abstract int getLayoutId();
-
-    /**
-     * 获取当前活动的Presenter
-     *
-     * @return 相应的Presenter实例，没有则返回 null
-     */
-    protected abstract T getPresenter();
-
-
-    /**
-     * 初始化数据
-     */
-    protected abstract void initData();
 
     /**
      * 初始化视图
@@ -82,9 +77,11 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     protected abstract void initView();
 
     /**
-     * 初始化数据和视图后在 OnCreate 方法中的操作
+     * 获取Presenter实例
+     *
+     * @return 相应的Presenter实例，没有则返回 null
      */
-    protected abstract void doAfterInit();
+    protected abstract V getPresenter();
 
 
     /**
@@ -95,22 +92,21 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     protected abstract boolean isRegisterEventBus();
 
     /**
-     * 弹出Toast
+     * 显示 Toast
      *
-     * @param content 弹出的内容
+     * @param content
      */
     protected void showShortToast(String content) {
-        ToastUtil.showToast(this, content);
+        ToastUtil.showToast(getContext(), content);
     }
 
     /**
-     * 跳转到另一活动
+     * 跳转到活动
      *
      * @param activity 新活动.class
      */
-    protected void jumpToNewActivity(Class activity) {
-        Intent intent = new Intent(this, activity);
-        startActivity(intent);
+    protected void jump2Activity(Class activity) {
+        startActivity(new Intent(getContext(), activity));
     }
 
     /**
@@ -120,7 +116,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
      * @param bundle
      */
     protected void jump2ActivityWithBundle(Class activity, Bundle bundle) {
-        Intent intent = new Intent(this, activity);
+        Intent intent = new Intent(getContext(), activity);
         startActivity(intent, bundle);
     }
 

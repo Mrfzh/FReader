@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/darker_gray"
+    android:background="@color/color_main_bg"
     tools:context=".view.activity.MainActivity">
 
     <!-- guide line -->
@@ -24,12 +24,19 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.67" />
 
+    <android.support.constraint.Guideline
+        android:id="@+id/gl_main_h_bottom_bar_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="@dimen/bottom_bar_height" />
+
     <!-- bottom bar bg -->
 
     <View
         android:id="@+id/v_main_bottom_bar_bookshelf_bg"
         android:layout_width="0dp"
-        android:layout_height="65dp"
+        android:layout_height="@dimen/bottom_bar_height"
         android:background="@color/color_main_bottom_bar_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/v_main_bottom_bar_discovery_bg"
@@ -38,7 +45,7 @@
     <View
         android:id="@+id/v_main_bottom_bar_discovery_bg"
         android:layout_width="0dp"
-        android:layout_height="65dp"
+        android:layout_height="@dimen/bottom_bar_height"
         android:background="@color/color_main_bottom_bar_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/v_main_bottom_bar_more_bg"
@@ -47,7 +54,7 @@
     <View
         android:id="@+id/v_main_bottom_bar_more_bg"
         android:layout_width="0dp"
-        android:layout_height="65dp"
+        android:layout_height="@dimen/bottom_bar_height"
         android:background="@color/color_main_bottom_bar_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -101,7 +108,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/gl_main_v_one_third"
         app:layout_constraintBottom_toTopOf="@id/tv_main_bottom_bar_bookshelf"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="@dimen/bottom_bar_icon_text_margin"
         android:visibility="invisible"/>
 
     <ImageView
@@ -112,7 +119,7 @@
         app:layout_constraintStart_toEndOf="@id/gl_main_v_one_third"
         app:layout_constraintEnd_toStartOf="@id/gl_main_v_two_thirds"
         app:layout_constraintBottom_toTopOf="@id/tv_main_bottom_bar_discovery"
-        android:layout_marginBottom="5dp"/>
+        android:layout_marginBottom="@dimen/bottom_bar_icon_text_margin"/>
 
     <ImageView
         android:id="@+id/iv_main_bottom_bar_more_before"
@@ -122,7 +129,7 @@
         app:layout_constraintStart_toEndOf="@id/gl_main_v_two_thirds"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/tv_main_bottom_bar_more"
-        android:layout_marginBottom="5dp"/>
+        android:layout_marginBottom="@dimen/bottom_bar_icon_text_margin"/>
 
     <!-- bottom bar image_after -->
 
@@ -134,7 +141,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/gl_main_v_one_third"
         app:layout_constraintBottom_toTopOf="@id/tv_main_bottom_bar_bookshelf"
-        android:layout_marginBottom="5dp" />
+        android:layout_marginBottom="@dimen/bottom_bar_icon_text_margin" />
 
     <ImageView
         android:id="@+id/iv_main_bottom_bar_discovery_after"
@@ -144,7 +151,7 @@
         app:layout_constraintStart_toEndOf="@id/gl_main_v_one_third"
         app:layout_constraintEnd_toStartOf="@id/gl_main_v_two_thirds"
         app:layout_constraintBottom_toTopOf="@id/tv_main_bottom_bar_discovery"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="@dimen/bottom_bar_icon_text_margin"
         android:visibility="invisible"/>
 
     <ImageView
@@ -155,7 +162,17 @@
         app:layout_constraintStart_toEndOf="@id/gl_main_v_two_thirds"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/tv_main_bottom_bar_more"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="@dimen/bottom_bar_icon_text_margin"
         android:visibility="invisible"/>
+
+    <!-- container of fragments -->
+    <FrameLayout
+        android:id="@+id/fv_main_fragment_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/gl_main_h_bottom_bar_top"/>
 
 </android.support.constraint.ConstraintLayout>

@@ -9,4 +9,6 @@
     <color name="color_main_bottom_bar_text_before">#444444</color>
     <color name="color_main_bottom_bar_text_after">@android:color/holo_orange_light</color>
 
+    <color name="color_main_bg">#f1f1f1</color>
+
 </resources>

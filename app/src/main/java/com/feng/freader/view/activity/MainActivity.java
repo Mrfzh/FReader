@@ -3,21 +3,31 @@ package com.feng.freader.view.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.feng.freader.R;
 import com.feng.freader.base.BaseActivity;
 import com.feng.freader.base.BasePresenter;
+import com.feng.freader.view.fragment.BookshelfFragment;
+import com.feng.freader.view.fragment.DiscoveryFragment;
+import com.feng.freader.view.fragment.MoreFragment;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener{
 
     private static final String TAG = "fzh";
     private static final int DUR_BOTTOM_BAR_ICON_ANIM = 500;
+    private static final int FG_BOOKSHELF = 0;
+    private static final int FG_DISCOVERY = 1;
+    private static final int FG_MORE = 2;
 
     private View mBookshelfBg;
     private View mDiscoveryBg;
@@ -28,11 +38,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     private ImageView mBookshelfAfterIv;
     private ImageView mDiscoveryAfterIv;
     private ImageView mMoreAfterIv;
-    
+
     private Animator mBookshelfAnim;
     private Animator mDiscoveryAnim;
     private Animator mMoreAnim;
     private TimeInterpolator mTimeInterpolator = new AccelerateDecelerateInterpolator();
+
+    private FragmentManager mFragmentManager = getSupportFragmentManager();
+    private Fragment mBookshelfFragment;
+    private Fragment mDiscoveryFragment;
+    private Fragment mMoreFragment;
+    private Fragment mCurrFragment; // 当前正在显示的 Fragment
 
     @Override
     protected int getLayoutId() {
@@ -68,7 +84,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
     @Override
     protected void doAfterInit() {
+        changeFragment(FG_BOOKSHELF);
+    }
 
+    @Override
+    protected boolean isRegisterEventBus() {
+        return false;
     }
 
     @Override
@@ -88,6 +109,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 initBookshelfShowAnim();
                 mBookshelfAfterIv.setVisibility(View.VISIBLE);
                 mBookshelfAnim.start();
+                // 切换 Fragment
+                changeFragment(FG_BOOKSHELF);
                 break;
             case R.id.v_main_bottom_bar_discovery_bg:
                 // 如果已经点击了该菜单项，无视该操作
@@ -103,6 +126,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 initDiscoveryShowAnim();
                 mDiscoveryAfterIv.setVisibility(View.VISIBLE);
                 mDiscoveryAnim.start();
+                // 切换 Fragment
+                changeFragment(FG_DISCOVERY);
                 break;
             case R.id.v_main_bottom_bar_more_bg:
                 // 如果已经点击了该菜单项，无视该操作
@@ -118,6 +143,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 initMoreShowAnim();
                 mMoreAfterIv.setVisibility(View.VISIBLE);
                 mMoreAnim.start();
+                // 切换 Fragment
+                changeFragment(FG_MORE);
                 break;
             default:
                 break;
@@ -194,5 +221,55 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 }
             }
         });
+    }
+
+    /**
+     * 切换 Fragment
+     *
+     * @param i 切换后新的 Fragment
+     *
+     * 可选值：
+     * @see #FG_BOOKSHELF 书架页面（BookshelfFragment）
+     * @see #FG_DISCOVERY 发现页面（DiscoveryFragment）
+     * @see #FG_MORE 更多页面（MoreFragment）
+     */
+    private void changeFragment(int i) {
+        FragmentTransaction ft = mFragmentManager.beginTransaction();
+        Fragment showFragment = null;
+        switch (i) {
+            case FG_BOOKSHELF:
+                if (mBookshelfFragment == null) {
+                    mBookshelfFragment = new BookshelfFragment();
+                    ft.add(R.id.fv_main_fragment_container, mBookshelfFragment);
+                }
+                showFragment = mBookshelfFragment;
+                break;
+            case FG_DISCOVERY:
+                if (mDiscoveryFragment == null) {
+                    mDiscoveryFragment = new DiscoveryFragment();
+                    ft.add(R.id.fv_main_fragment_container, mDiscoveryFragment);
+                }
+                showFragment = mDiscoveryFragment;
+                break;
+            case FG_MORE:
+                if (mMoreFragment == null) {
+                    mMoreFragment = new MoreFragment();
+                    ft.add(R.id.fv_main_fragment_container, mMoreFragment);
+                }
+                showFragment = mMoreFragment;
+                break;
+            default:
+                break;
+        }
+        // 隐藏当前的 Fragment，显示新的 Fragment
+        if (mCurrFragment != null) {
+            ft.hide(mCurrFragment);
+        }
+        if (showFragment != null) {
+            ft.show(showFragment);
+        }
+        mCurrFragment = showFragment;
+
+        ft.commit();
     }
 }
