@@ -3,6 +3,7 @@ package com.feng.freader.view.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -24,10 +25,16 @@ import com.feng.freader.view.fragment.MoreFragment;
 public class MainActivity extends BaseActivity implements View.OnClickListener{
 
     private static final String TAG = "fzh";
+
     private static final int DUR_BOTTOM_BAR_ICON_ANIM = 500;
+
     private static final int FG_BOOKSHELF = 0;
     private static final int FG_DISCOVERY = 1;
     private static final int FG_MORE = 2;
+
+    private static final String KEY_BOOKSHELF_FG = "bookshelf_fg";
+    private static final String KEY_DISCOVERY_FG = "discovery_fg";
+    private static final String KEY_MORE_FG = "more_fg";
 
     private View mBookshelfBg;
     private View mDiscoveryBg;
@@ -84,7 +91,39 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
     @Override
     protected void doAfterInit() {
-        changeFragment(FG_BOOKSHELF);
+        if (getSavedInstanceState() != null) {
+            // 取出保存的 Fragment，并用 mCurrFragment 记录当前显示的 Fragment
+            mBookshelfFragment = mFragmentManager.getFragment(getSavedInstanceState(), KEY_BOOKSHELF_FG);
+            if (mBookshelfFragment != null && !mBookshelfFragment.isHidden()) {
+                mCurrFragment = mBookshelfFragment;
+            }
+            mDiscoveryFragment = mFragmentManager.getFragment(getSavedInstanceState(), KEY_DISCOVERY_FG);
+            if (mDiscoveryFragment != null && !mDiscoveryFragment.isHidden()) {
+                mCurrFragment = mDiscoveryFragment;
+            }
+            mMoreFragment = mFragmentManager.getFragment(getSavedInstanceState(), KEY_MORE_FG);
+            if (mMoreFragment != null && !mMoreFragment.isHidden()) {
+                mCurrFragment = mMoreFragment;
+            }
+        } else {
+            // 第一次 onCreate 时默认加载该页面
+            changeFragment(FG_BOOKSHELF);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // 保存已创建的 Fragment
+        if (mBookshelfFragment != null) {
+            mFragmentManager.putFragment(outState, KEY_BOOKSHELF_FG, mBookshelfFragment);
+        }
+        if (mDiscoveryFragment != null) {
+            mFragmentManager.putFragment(outState, KEY_DISCOVERY_FG, mDiscoveryFragment);
+        }
+        if (mMoreFragment != null) {
+            mFragmentManager.putFragment(outState, KEY_MORE_FG, mMoreFragment);
+        }
     }
 
     @Override
@@ -272,4 +311,5 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
         ft.commit();
     }
+
 }

@@ -15,6 +15,7 @@ import com.feng.freader.util.ToastUtil;
 public abstract class BaseActivity<T extends BasePresenter> extends AppCompatActivity {
 
     protected T mPresenter;
+    private Bundle mSavedInstanceState;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,6 +32,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
             EventBusUtil.register(this);
         }
 
+        mSavedInstanceState = savedInstanceState;
         initData();
         initView();
         doAfterInit();
@@ -122,6 +124,15 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     protected void jump2ActivityWithBundle(Class activity, Bundle bundle) {
         Intent intent = new Intent(this, activity);
         startActivity(intent, bundle);
+    }
+
+    /**
+     * 获取 onCreate 方法中的 Bundle 参数 savedInstanceState
+     *
+     * @return
+     */
+    protected Bundle getSavedInstanceState() {
+        return mSavedInstanceState;
     }
 
 }
