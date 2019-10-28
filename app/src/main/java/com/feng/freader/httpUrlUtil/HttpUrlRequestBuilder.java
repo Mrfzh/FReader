@@ -15,6 +15,12 @@ public class HttpUrlRequestBuilder {
     private Response mResponse;      // 返回用户的响应
     private Executor mThreadPool = DEFAULT_EXECUTOR;    // 用户指定的线程池
 
+    private HttpUrlRequestBuilder() {}
+
+    public static HttpUrlRequestBuilder getInstance() {
+        return new HttpUrlRequestBuilder();
+    }
+
     public HttpUrlRequestBuilder setRequest(Request request) {
         mRequest = request;
         return this;
