@@ -44,7 +44,8 @@ public abstract class BaseFragment<V extends BasePresenter> extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(getLayoutId(), container, false);  //第三个参数一定要设为false
+        View view = inflater.inflate(getLayoutId(), container, false);  //第三个参数一定要设为false;
+        return view;
     }
 
     @Override
@@ -90,6 +91,7 @@ public abstract class BaseFragment<V extends BasePresenter> extends Fragment {
      * @return 若需要注册 EventBus，则返回 true；否则返回 false
      */
     protected abstract boolean isRegisterEventBus();
+
 
     /**
      * 显示 Toast

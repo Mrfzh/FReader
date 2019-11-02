@@ -2,13 +2,14 @@ package com.feng.freader.view.fragment;
 
 import com.feng.freader.R;
 import com.feng.freader.base.BaseFragment;
+import com.feng.freader.base.BaseMainFragment;
 import com.feng.freader.base.BasePresenter;
 
 /**
  * @author Feng Zhaohao
  * Created on 2019/10/20
  */
-public class MoreFragment extends BaseFragment {
+public class MoreFragment extends BaseMainFragment {
     @Override
     protected void doInOnCreate() {
 
@@ -32,5 +33,10 @@ public class MoreFragment extends BaseFragment {
     @Override
     protected boolean isRegisterEventBus() {
         return false;
+    }
+
+    @Override
+    protected int getPosition() {
+        return 2;
     }
 }

@@ -58,6 +58,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     private Fragment mCurrFragment; // 当前正在显示的 Fragment
 
     @Override
+    protected void doBeforeSetContentView() {
+
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.activity_main;
     }

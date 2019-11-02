@@ -54,9 +54,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     /**
      * 在setContentView方法前的操作
      */
-    protected void doBeforeSetContentView() {
-
-    }
+    protected abstract void doBeforeSetContentView();
 
     /**
      *  获取当前活动的布局
