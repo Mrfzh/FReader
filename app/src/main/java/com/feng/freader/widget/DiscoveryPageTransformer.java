@@ -21,7 +21,7 @@ public class DiscoveryPageTransformer implements ViewPager.PageTransformer {
     private TabLayout mTabLayout;
 
     @SuppressLint("UseSparseArrays")
-    private HashMap<Integer, Float> mLastMap = new HashMap<>(); // 存储各页面的上一
+    private HashMap<Integer, Float> mLastMap = new HashMap<>(); // 存储各页面的上一 position
 
     public DiscoveryPageTransformer(TabLayout mTabLayout) {
         this.mTabLayout = mTabLayout;
