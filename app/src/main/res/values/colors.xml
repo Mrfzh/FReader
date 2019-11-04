@@ -4,11 +4,23 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
-    <color name="color_main_bottom_bar_bg">#ffffff</color>
+    <!-- main -->
+    <color name="color_main_bottom_bar_bg">#fafafa</color>
     <color name="color_main_bottom_bar_text">#444444</color>
     <color name="color_main_bottom_bar_text_before">#444444</color>
     <color name="color_main_bottom_bar_text_after">@android:color/holo_orange_light</color>
+    <color name="color_main_bottom_bar_separator">#bbbbbb</color>
 
     <color name="color_main_bg">#f1f1f1</color>
+
+    <!-- discovery -->
+    <color name="discovery_bg">#fdfdfd</color>
+
+    <color name="discovery_all_book_bg">#f1f1f1</color>
+    <color name="discovery_all_book_text_normal">#909090</color>
+    <color name="discovery_all_book_text_after_pressed">#c1c1c1</color>
+
+    <color name="discovery_search_bg">#f1f1f1</color>
+    <color name="discovery_search_text_indicator">#c1c1c1</color>
 
 </resources>

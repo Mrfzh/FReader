@@ -6,14 +6,13 @@ import android.widget.TextView;
 
 import com.feng.freader.R;
 import com.feng.freader.base.BaseFragment;
-import com.feng.freader.base.BaseMainFragment;
 import com.feng.freader.base.BasePresenter;
 
 /**
  * @author Feng Zhaohao
  * Created on 2019/10/20
  */
-public class BookshelfFragment extends BaseMainFragment {
+public class BookshelfFragment extends BaseFragment {
 
     private static final String TAG = "BookshelfFragment";
 
@@ -31,6 +30,11 @@ public class BookshelfFragment extends BaseMainFragment {
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_bookshelf;
+    }
+
+    @Override
+    protected void initData() {
+
     }
 
     @Override
@@ -64,10 +68,5 @@ public class BookshelfFragment extends BaseMainFragment {
     public void onDestroyView() {
         super.onDestroyView();
         Log.d(TAG, "onDestroyView: run");
-    }
-
-    @Override
-    protected int getPosition() {
-        return 0;
     }
 }

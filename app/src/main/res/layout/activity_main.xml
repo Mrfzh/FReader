@@ -60,6 +60,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/v_main_bottom_bar_discovery_bg" />
 
+    <!-- bottom bar separator -->
+
+    <View
+        android:id="@+id/v_main_bottom_bar_separator"
+        android:layout_width="0dp"
+        android:layout_height="0.1dp"
+        android:background="@color/color_main_bottom_bar_separator"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/gl_main_h_bottom_bar_top"/>
+
     <!-- bottom bar text -->
 
     <TextView
@@ -173,6 +184,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/gl_main_h_bottom_bar_top"/>
+        app:layout_constraintBottom_toTopOf="@id/v_main_bottom_bar_separator"/>
 
 </android.support.constraint.ConstraintLayout>

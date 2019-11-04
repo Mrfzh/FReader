@@ -3,15 +3,106 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/discovery_bg">
 
-    <TextView
+    <!-- guide line -->
+
+    <android.support.constraint.Guideline
+        android:id="@+id/gl_discovery_search_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Discovery Fragment"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="@dimen/discovery_search_bar_margin_top"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/gl_discovery_search_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/discovery_search_bar_margin_start"/>
+
+
+    <!-- search -->
+
+    <View
+        android:id="@+id/v_discovery_search_bg"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/discovery_search_bar_height"
+        android:background="@drawable/shape_discovery_search_bg"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_discovery_all_book"
+        android:layout_marginTop="@dimen/discovery_search_bar_margin_top"
+        android:layout_marginBottom="@dimen/discovery_search_bar_margin_bottom"
+        android:layout_marginStart="@dimen/discovery_search_bar_margin_start"
+        android:layout_marginEnd="@dimen/discovery_search_bar_margin_end"/>
+
+    <ImageView
+        android:id="@+id/iv_discovery_search_icon"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        app:layout_constraintStart_toStartOf="@id/gl_discovery_search_start"
+        app:layout_constraintTop_toTopOf="@id/gl_discovery_search_top"
+        android:layout_marginTop="9dp"
+        android:layout_marginStart="12dp"
+        android:src="@drawable/discovery_search_icon"/>
+
+    <TextView
+        android:id="@+id/tv_discovery_search_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/discovery_search_bar_height"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_discovery_search_icon"
+        android:layout_marginTop="@dimen/discovery_search_bar_margin_top"
+        android:layout_marginStart="10dp"
+        android:text="@string/discovery_search_text_indicator"
+        android:textColor="@color/discovery_search_text_indicator"
+        android:textSize="15sp"
+        android:gravity="center"/>
+
+    <!-- all book -->
+
+    <TextView
+        android:id="@+id/tv_discovery_all_book"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/discovery_search_bar_height"
+        android:background="@drawable/shape_discovery_all_book_bg"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/v_discovery_search_bg"
+        android:layout_marginTop="@dimen/discovery_search_bar_margin_top"
+        android:layout_marginBottom="@dimen/discovery_search_bar_margin_bottom"
+        android:layout_marginEnd="@dimen/discovery_search_bar_margin_start"
+        android:text="@string/discovery_all_book"
+        android:textSize="15sp"
+        android:textColor="@color/selector_discovery_all_book_text"
+        android:gravity="center"
+        android:padding="10dp"
+        android:clickable="true"
+        android:focusable="true"/>
+
+    <!-- tab layout and view pager -->
+
+    <com.feng.freader.rewrite.TabLayout
+        android:id="@+id/tv_discovery_tab_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/discovery_bg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/v_discovery_search_bg"
+        app:tabIndicatorHeight="2dp"
+        app:tabIndicatorColor="@android:color/holo_blue_light"
+        android:layout_marginStart="@dimen/discovery_search_bar_margin_start"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_discovery_view_pager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_discovery_tab_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:overScrollMode="never"/>
 
 </android.support.constraint.ConstraintLayout>

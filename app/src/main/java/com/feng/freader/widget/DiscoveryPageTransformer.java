@@ -2,9 +2,11 @@ package com.feng.freader.widget;
 
 import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.LinearLayout;
+
+import com.feng.freader.rewrite.TabLayout;
 
 import java.util.HashMap;
 
@@ -14,14 +16,11 @@ import java.util.HashMap;
  */
 public class DiscoveryPageTransformer implements ViewPager.PageTransformer {
 
-    private static final String TAG = "DiscoveryPageTransformer";
-    // 非当前页文字相比当前页文字的倍数
-    public static final float MIN_SCALE = 0.75f;
+    public static final float MAX_SCALE = 1.2f;
 
     private TabLayout mTabLayout;
-
     @SuppressLint("UseSparseArrays")
-    private HashMap<Integer, Float> mLastMap = new HashMap<>(); // 存储各页面的上一 position
+    private HashMap<Integer, Float> mLastMap = new HashMap<>();
 
     public DiscoveryPageTransformer(TabLayout mTabLayout) {
         this.mTabLayout = mTabLayout;
@@ -37,22 +36,23 @@ public class DiscoveryPageTransformer implements ViewPager.PageTransformer {
                 return;
             }
             float lastV = mLastMap.get(currPosition);
-            // 获取当前 Tab 的 View
-            View tabView = mTabLayout.getTabAt(currPosition).getCustomView();
+            // 获取当前 TabView 的 TextView
+            LinearLayout ll = (LinearLayout) mTabLayout.getChildAt(0);
+            TabLayout.TabView tb = (TabLayout.TabView) ll.getChildAt(currPosition);
+            View textView = tb.getTextView();
 
             // 先判断是要变大还是变小
             // 如果 currV > lastV，则为变小；如果 currV < lastV，则为变大
             if (currV > lastV) {
-                // 变小
                 float leavePercent = currV; // 计算离开屏幕的百分比
-                tabView.setScaleX(1.0f + (MIN_SCALE - 1.0f) * leavePercent);
-                tabView.setScaleY(1.0f + (MIN_SCALE - 1.0f) * leavePercent);
-
+                // 变小
+                textView.setScaleX(MAX_SCALE - (MAX_SCALE - 1.0f) * leavePercent);
+                textView.setScaleY(MAX_SCALE - (MAX_SCALE - 1.0f) * leavePercent);
             } else if (currV < lastV) {
-                // 变大
                 float enterPercent = 1 - currV; // 进入屏幕的百分比
-                tabView.setScaleX(MIN_SCALE + (1.0f - MIN_SCALE) * enterPercent);
-                tabView.setScaleY(MIN_SCALE + (1.0f - MIN_SCALE) * enterPercent);
+                // 变大
+                textView.setScaleX(1.0f + (MAX_SCALE - 1.0f) * enterPercent);
+                textView.setScaleY(1.0f + (MAX_SCALE - 1.0f) * enterPercent);
             }
             mLastMap.put(currPosition, currV);
         }

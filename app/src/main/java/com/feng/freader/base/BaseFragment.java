@@ -37,6 +37,7 @@ public abstract class BaseFragment<V extends BasePresenter> extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        initData();
         initView();
         doInOnCreate();
     }
@@ -61,11 +62,6 @@ public abstract class BaseFragment<V extends BasePresenter> extends Fragment {
     }
 
     /**
-     * 在onCreate方法中执行的操作
-     */
-    protected abstract void doInOnCreate();
-
-    /**
      * 获取fragment布局
      *
      * @return 布局id
@@ -73,9 +69,19 @@ public abstract class BaseFragment<V extends BasePresenter> extends Fragment {
     protected abstract int getLayoutId();
 
     /**
+     * 在进行初始化布局前初始化相关数据
+     */
+    protected abstract void initData();
+
+    /**
      * 初始化视图
      */
     protected abstract void initView();
+
+    /**
+     * 在onCreate方法中执行的操作
+     */
+    protected abstract void doInOnCreate();
 
     /**
      * 获取Presenter实例

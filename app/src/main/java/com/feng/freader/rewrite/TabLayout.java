@@ -64,6 +64,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.feng.freader.R;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
@@ -1712,7 +1714,7 @@ public class TabLayout extends HorizontalScrollView {
 //                    TextView textView = (TextView) LayoutInflater.from(getContext())
 //                            .inflate(R.layout.design_layout_tab_text, this, false);
                     TextView textView = (TextView) LayoutInflater.from(getContext())
-                            .inflate(com.feng.tabdemo.R.layout.tab_text, this, false);
+                            .inflate(R.layout.tab_text, this, false);
                     Log.d(TAG, "update: addView(textView)");
                     addView(textView);
                     mTextView = textView;

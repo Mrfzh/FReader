@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- main -->
     <dimen name="bottom_bar_height">60dp</dimen>
     <dimen name="bottom_bar_icon_text_margin">1dp</dimen>
+
+    <!-- discovery -->
+    <dimen name="discovery_search_bar_height">40dp</dimen>
+    <dimen name="discovery_search_bar_margin_top">8dp</dimen>
+    <dimen name="discovery_search_bar_margin_bottom">8dp</dimen>
+    <dimen name="discovery_search_bar_margin_start">20dp</dimen>
+    <dimen name="discovery_search_bar_margin_end">10dp</dimen>
+    <dimen name="discovery_search_bar_bg_radius">25dp</dimen>
+
+    <dimen name="discovery_all_book_bg_radius">25dp</dimen>
 </resources>

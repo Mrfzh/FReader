@@ -11,7 +11,7 @@ import android.view.ViewGroup;
  * @author Feng Zhaohao
  * Created on 2019/11/2
  */
-public abstract class BaseMainFragment extends BaseFragment{
+public abstract class BaseTabFragment extends BaseFragment{
 
     @Nullable
     @Override

@@ -3,20 +3,18 @@ package com.feng.freader.view.fragment;
 import com.feng.freader.R;
 import com.feng.freader.base.BaseFragment;
 import com.feng.freader.base.BasePresenter;
+import com.feng.freader.base.BaseTabFragment;
 
 /**
+ * 发现页面的女生页
+ *
  * @author Feng Zhaohao
- * Created on 2019/10/20
+ * Created on 2019/11/4
  */
-public class MoreFragment extends BaseFragment {
-    @Override
-    protected void doInOnCreate() {
-
-    }
-
+public class FemaleFragment extends BaseTabFragment {
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_more;
+        return R.layout.fragment_female;
     }
 
     @Override
@@ -30,6 +28,11 @@ public class MoreFragment extends BaseFragment {
     }
 
     @Override
+    protected void doInOnCreate() {
+
+    }
+
+    @Override
     protected BasePresenter getPresenter() {
         return null;
     }
@@ -37,5 +40,10 @@ public class MoreFragment extends BaseFragment {
     @Override
     protected boolean isRegisterEventBus() {
         return false;
+    }
+
+    @Override
+    protected int getPosition() {
+        return 1;
     }
 }
