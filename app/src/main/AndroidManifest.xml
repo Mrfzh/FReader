@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.feng.freader">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:name=".app.App"
         android:allowBackup="true"
@@ -11,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="GoogleAppIndexingWarning"
+        android:usesCleartextTraffic="true">
         <activity android:name=".test.TestActivity">
 
         </activity>

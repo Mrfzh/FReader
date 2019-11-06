@@ -115,7 +115,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             }
         } else {
             // 第一次 onCreate 时默认加载该页面
-            changeFragment(FG_BOOKSHELF);
+            changeFragment(FG_DISCOVERY);
         }
     }
 

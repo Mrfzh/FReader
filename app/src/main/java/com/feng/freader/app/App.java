@@ -1,7 +1,9 @@
 package com.feng.freader.app;
 
 import android.app.Application;
+import android.os.StrictMode;
 
+import com.feng.freader.BuildConfig;
 import com.feng.freader.util.CrashHandler;
 
 /**
@@ -16,4 +18,6 @@ public class App extends Application {
         CrashHandler crashHandler = CrashHandler.getInstance();
         crashHandler.init();
     }
+
+
 }

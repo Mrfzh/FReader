@@ -25,10 +25,12 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    //EventBus
+    // EventBus
     implementation 'org.greenrobot:eventbus:3.0.0'
     // RecyclerView
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     // design
     implementation 'com.android.support:design:28.0.0'
+    // Gson
+    implementation 'com.google.code.gson:gson:2.8.5'
 }
