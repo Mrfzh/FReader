@@ -19,7 +19,7 @@ import com.feng.freader.presenter.MalePresenter;
 public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMaleContract.View {
     private static final String TAG = "fzh";
 
-//    private TextView mContentTv;
+    private TextView mContentTv;
 
     @Override
     protected int getLayoutId() {
@@ -33,7 +33,7 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
 
     @Override
     protected void initView() {
-//        mContentTv = getActivity().findViewById(R.id.tv_content);
+        mContentTv = getActivity().findViewById(R.id.tv_content);
     }
 
     @Override
@@ -58,7 +58,8 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
 
     @Override
     public void getHotRankDataSuccess(HotRankData hotRankData) {
-//        mContentTv.setText(hotRankData.toString());
+        Log.d(TAG, "getHotRankDataSuccess: run");
+        mContentTv.setText(hotRankData.toString());
     }
 
     @Override

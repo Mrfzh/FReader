@@ -47,6 +47,7 @@ public class HttpUrlRequest {
         mThreadPool.execute(new Runnable() {
             @Override
             public void run() {
+//                Log.d(TAG, "run: start");
                 HttpURLConnection connection = null;
                 try {
                     URL url = new URL(mRequest.url);
@@ -67,6 +68,7 @@ public class HttpUrlRequest {
                     InputStream is = connection.getInputStream();
                     // 在主线程回调响应信息
                     showResponse(mResponse, Utils.readInputStream(is));
+//                    Log.d(TAG, "run: end");
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                     Log.d(TAG, "run 1, message = " + e.getMessage());

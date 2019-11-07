@@ -89,7 +89,7 @@ public class HotRankData {
 //                    ", shortInfoList=" + shortInfoList +
 //                    ", coverList=" + coverList +
 //                    '}';
-            return "NovelInfo{nameList=" + nameList +
+            return "NovelInfo{ nameList= " + nameList +
                     '}';
         }
     }
