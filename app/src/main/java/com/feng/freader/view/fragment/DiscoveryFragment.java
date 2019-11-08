@@ -12,6 +12,7 @@ import com.feng.freader.adapter.NormalViewPagerAdapter;
 import com.feng.freader.base.BaseFragment;
 import com.feng.freader.base.BasePresenter;
 import com.feng.freader.rewrite.TabLayout;
+import com.feng.freader.view.activity.SearchActivity;
 import com.feng.freader.widget.DiscoveryPageTransformer;
 
 import java.util.ArrayList;
@@ -93,7 +94,7 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.v_discovery_search_bg:
-                showShortToast("click search");
+                jump2Activity(SearchActivity.class);
                 break;
             case R.id.tv_discovery_all_book:
                 showShortToast("click all book");

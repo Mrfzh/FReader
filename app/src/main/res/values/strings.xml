@@ -1,17 +1,25 @@
 <resources>
     <string name="app_name">FReader</string>
 
+    <!-- main -->
     <string name="main_bottom_bar_bookshelf">书架</string>
     <string name="main_bottom_bar_discovery">发现</string>
     <string name="main_bottom_bar_more">更多</string>
 
+    <!-- discovery -->
     <string name="discovery_all_book">全部书籍</string>
     <string name="discovery_search_text_indicator">输入小说名称</string>
     <string name="discovery_male">男生</string>
     <string name="discovery_female">女生</string>
     <string name="discovery_press">出版</string>
 
+    <!-- male -->
     <string name="male_hot_rank_title">热门榜单</string>
 
+    <!-- item_hot_rank -->
     <string name="item_hot_rank_novel_name"> </string>
+
+    <!-- search -->
+    <string name="search_search_text">搜索</string>
+    <string name="search_edit_text_hint">请输入小说名</string>
 </resources>

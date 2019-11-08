@@ -18,6 +18,9 @@
         <activity android:name=".test.TestActivity">
 
         </activity>
+        <activity android:name=".view.activity.SearchActivity">
+
+        </activity>
         <activity android:name=".view.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

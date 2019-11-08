@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/search_bg">
+    
+    <!-- search bar -->
+
+    <ImageView
+        android:id="@+id/iv_search_back"
+        android:layout_width="@dimen/search_back_and_search_text_height"
+        android:layout_height="@dimen/search_back_and_search_text_height"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="@dimen/search_back_and_search_text_margin_top"
+        android:padding="12dp"
+        android:src="@drawable/search_back"
+        android:background="@drawable/shape_search_back_bg"/>
+
+    <TextView
+        android:id="@+id/tv_search_search_text"
+        android:layout_width="@dimen/search_back_and_search_text_height"
+        android:layout_height="@dimen/search_back_and_search_text_height"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="@dimen/search_back_and_search_text_margin_top"
+        android:text="@string/search_search_text"
+        android:textColor="@color/search_search_text"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:background="@drawable/shape_search_back_bg"
+        android:clickable="true"
+        android:focusable="true"/>
+
+    <EditText
+        android:id="@+id/et_search_search_bar"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/search_search_bar_height"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_search_back"
+        app:layout_constraintEnd_toStartOf="@id/tv_search_search_text"
+        android:layout_marginTop="@dimen/search_search_bar_margin_top"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/shape_search_search_bar_bg"
+        android:paddingStart="20dp"
+        android:paddingEnd="10dp"
+        android:hint="@string/search_edit_text_hint"
+        android:textSize="15sp"
+        android:textCursorDrawable="@drawable/search_cursor"
+        android:maxLines="1"
+        android:maxLength="10"/>
+
+
+</android.support.constraint.ConstraintLayout>

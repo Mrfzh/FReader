@@ -23,4 +23,11 @@
     <dimen name="item_hot_rank_bg_top_radius">15dp</dimen>
     <dimen name="item_hot_rank_bg_bottom_radius">10dp</dimen>
 
+    <!-- search -->
+    <dimen name="search_back_and_search_text_margin_top">12dp</dimen>
+    <dimen name="search_back_and_search_text_height">46dp</dimen>
+    <dimen name="search_search_bar_margin_top">15dp</dimen>
+    <dimen name="search_search_bar_height">40dp</dimen>
+    <dimen name="search_search_bar_radius">30dp</dimen>
+
 </resources>

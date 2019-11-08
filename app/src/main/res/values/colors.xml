@@ -36,4 +36,13 @@
     <color name="item_hot_rank_novel_name_bg_2">#ededed</color>
     <color name="item_hot_rank_novel_name_bg_2_pressed">#e1e1e1</color>
 
+    <!-- search -->
+    <color name="search_bg">#fdfdfd</color>
+
+    <color name="search_back_bg_pressed">#e1e1e1</color>
+    <color name="search_search_text_bg_pressed">#e1e1e1</color>
+    <color name="search_search_text">#333333</color>
+    <color name="search_search_bar_bg">#ececec</color>
+    <color name="search_search_cursor">@android:color/holo_blue_light</color>
+
 </resources>
