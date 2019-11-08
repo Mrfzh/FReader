@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="200dp"
+    android:layout_height="210dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:minWidth="200dp"
+    android:minHeight="210dp"
+    android:paddingEnd="7dp"
+    android:paddingStart="7dp">
+
+    <!-- rank name -->
+
+    <TextView
+        android:id="@+id/tv_item_hot_rank_rank_name"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/shape_item_hot_rank_rank_name_bg"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:gravity="center"/>
+
+    <!-- novel name -->
+
+    <TextView
+        android:id="@+id/tv_item_hot_rank_first_novel_name"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_item_hot_rank_rank_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/item_hot_rank_novel_name"
+        android:textColor="@color/item_hot_rank_novel_name_text"
+        android:textSize="@dimen/item_hot_rank_novel_name_text_size"
+        android:gravity="center|start"
+        android:paddingStart="@dimen/item_hot_rank_novel_name_text_padding"
+        android:paddingEnd="@dimen/item_hot_rank_novel_name_text_padding"
+        android:background="@color/item_hot_rank_novel_name_bg"
+        android:maxLines="1"
+        android:ellipsize="end"/>
+
+    <TextView
+        android:id="@+id/tv_item_hot_rank_second_novel_name"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_item_hot_rank_first_novel_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/item_hot_rank_novel_name"
+        android:textColor="@color/item_hot_rank_novel_name_text"
+        android:textSize="@dimen/item_hot_rank_novel_name_text_size"
+        android:gravity="center|start"
+        android:paddingStart="@dimen/item_hot_rank_novel_name_text_padding"
+        android:paddingEnd="@dimen/item_hot_rank_novel_name_text_padding"
+        android:background="@color/item_hot_rank_novel_name_bg_2"
+        android:maxLines="1"
+        android:ellipsize="end"/>
+
+    <TextView
+        android:id="@+id/tv_item_hot_rank_third_novel_name"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_item_hot_rank_second_novel_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/item_hot_rank_novel_name"
+        android:textColor="@color/item_hot_rank_novel_name_text"
+        android:textSize="@dimen/item_hot_rank_novel_name_text_size"
+        android:gravity="center|start"
+        android:paddingStart="@dimen/item_hot_rank_novel_name_text_padding"
+        android:paddingEnd="@dimen/item_hot_rank_novel_name_text_padding"
+        android:background="@drawable/shape_item_hot_rank_third_name_bg"
+        android:maxLines="1"
+        android:ellipsize="end"/>
+
+</android.support.constraint.ConstraintLayout>

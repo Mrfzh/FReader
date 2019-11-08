@@ -13,4 +13,14 @@
     <dimen name="discovery_search_bar_bg_radius">25dp</dimen>
 
     <dimen name="discovery_all_book_bg_radius">25dp</dimen>
+
+    <!-- male -->
+    <dimen name="male_hot_rank_margin_start">20dp</dimen>
+
+    <!-- item_hot_rank -->
+    <dimen name="item_hot_rank_novel_name_text_padding">15dp</dimen>
+    <dimen name="item_hot_rank_novel_name_text_size">16sp</dimen>
+    <dimen name="item_hot_rank_bg_top_radius">15dp</dimen>
+    <dimen name="item_hot_rank_bg_bottom_radius">10dp</dimen>
+
 </resources>

@@ -1,13 +1,18 @@
 package com.feng.freader.view.fragment;
 
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.TextView;
 
 import com.feng.freader.R;
+import com.feng.freader.adapter.HotRankAdapter;
 import com.feng.freader.base.BaseTabFragment;
 import com.feng.freader.constract.IMaleContract;
 import com.feng.freader.entity.data.HotRankData;
 import com.feng.freader.presenter.MalePresenter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -19,7 +24,7 @@ import com.feng.freader.presenter.MalePresenter;
 public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMaleContract.View {
     private static final String TAG = "fzh";
 
-    private TextView mContentTv;
+    private RecyclerView mHotRankRv;
 
     @Override
     protected int getLayoutId() {
@@ -33,7 +38,10 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
 
     @Override
     protected void initView() {
-        mContentTv = getActivity().findViewById(R.id.tv_content);
+        mHotRankRv = getActivity().findViewById(R.id.rv_male_hot_rank_recycler_view);
+        LinearLayoutManager manager = new LinearLayoutManager(getActivity());
+        manager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mHotRankRv.setLayoutManager(manager);
     }
 
     @Override
@@ -59,7 +67,14 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
     @Override
     public void getHotRankDataSuccess(HotRankData hotRankData) {
         Log.d(TAG, "getHotRankDataSuccess: run");
-        mContentTv.setText(hotRankData.toString());
+        List<HotRankData.NovelInfo> novelInfoList = hotRankData.getNovelInfoList();
+        List<List<String>> hotRankNovelList = new ArrayList<>();
+        for (HotRankData.NovelInfo novelInfo : novelInfoList) {
+            hotRankNovelList.add(novelInfo.getNameList());
+        }
+        HotRankAdapter adapter = new HotRankAdapter(getActivity(),
+                hotRankData.getRankNameList(), hotRankNovelList);
+        mHotRankRv.setAdapter(adapter);
     }
 
     @Override

@@ -10,4 +10,8 @@
     <string name="discovery_male">男生</string>
     <string name="discovery_female">女生</string>
     <string name="discovery_press">出版</string>
+
+    <string name="male_hot_rank_title">热门榜单</string>
+
+    <string name="item_hot_rank_novel_name"> </string>
 </resources>

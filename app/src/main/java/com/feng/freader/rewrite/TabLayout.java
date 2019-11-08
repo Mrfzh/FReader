@@ -103,7 +103,7 @@ import static android.support.v4.view.ViewPager.SCROLL_STATE_SETTLING;
  *         android:layout_width=&quot;match_parent&quot;&gt;
  *
  *     &lt;android.support.design.widget.TabItem
- *             android:text=&quot;@string/tab_text&quot;/&gt;
+ *             android:text=&quot;@string/discovery_tab_text&quot;/&gt;
  *
  *     &lt;android.support.design.widget.TabItem
  *             android:icon=&quot;@drawable/ic_android&quot;/&gt;
@@ -1714,7 +1714,7 @@ public class TabLayout extends HorizontalScrollView {
 //                    TextView textView = (TextView) LayoutInflater.from(getContext())
 //                            .inflate(R.layout.design_layout_tab_text, this, false);
                     TextView textView = (TextView) LayoutInflater.from(getContext())
-                            .inflate(R.layout.tab_text, this, false);
+                            .inflate(R.layout.discovery_tab_text, this, false);
                     Log.d(TAG, "update: addView(textView)");
                     addView(textView);
                     mTextView = textView;

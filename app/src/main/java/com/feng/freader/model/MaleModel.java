@@ -116,13 +116,13 @@ public class MaleModel implements IMaleContract.Model {
                         novelInfo.setShortInfoList(shortInfoList);
                         novelInfo.setCoverList(coverList);
 
-                        Log.d(TAG, "success: run 1");
+//                        Log.d(TAG, "success: run 1");
                         mCountDownLatch.countDown();
                     }
 
                     @Override
                     public void error(String errorMsg) {
-                        Log.d(TAG, "error: run 1");
+//                        Log.d(TAG, "error: run 1");
                         mReturnMsg = errorMsg;
                         mCountDownLatch.countDown();
                     }
