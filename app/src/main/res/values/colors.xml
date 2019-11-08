@@ -28,9 +28,12 @@
 
     <!-- item_hot_rank -->
     <color name="item_hot_rank_rank_bg">#fdfdfd</color>
-    <color name="item_hot_rank_rank_name_bg">@android:color/holo_blue_light</color>
+    <color name="item_hot_rank_rank_name_bg">#43b5e5</color>
+    <color name="item_hot_rank_rank_name_bg_pressed">#0091ff</color>
     <color name="item_hot_rank_novel_name_text">#444444</color>
     <color name="item_hot_rank_novel_name_bg">#f7f7f7</color>
+    <color name="item_hot_rank_novel_name_bg_pressed">#e1e1e1</color>
     <color name="item_hot_rank_novel_name_bg_2">#ededed</color>
+    <color name="item_hot_rank_novel_name_bg_2_pressed">#e1e1e1</color>
 
 </resources>

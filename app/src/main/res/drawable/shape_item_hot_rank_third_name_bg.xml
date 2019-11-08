@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="@color/item_hot_rank_novel_name_bg"/>
+    <solid android:color="@color/selector_item_hot_rank_novel_name_bg"/>
     <corners android:bottomLeftRadius="@dimen/item_hot_rank_bg_bottom_radius"
         android:bottomRightRadius="@dimen/item_hot_rank_bg_bottom_radius" />
 </shape>

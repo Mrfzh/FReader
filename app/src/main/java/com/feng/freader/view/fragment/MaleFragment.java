@@ -26,6 +26,8 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
 
     private RecyclerView mHotRankRv;
 
+    private HotRankData mHotRankData;
+
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_male;
@@ -67,18 +69,28 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
     @Override
     public void getHotRankDataSuccess(HotRankData hotRankData) {
         Log.d(TAG, "getHotRankDataSuccess: run");
-        List<HotRankData.NovelInfo> novelInfoList = hotRankData.getNovelInfoList();
-        List<List<String>> hotRankNovelList = new ArrayList<>();
-        for (HotRankData.NovelInfo novelInfo : novelInfoList) {
-            hotRankNovelList.add(novelInfo.getNameList());
-        }
-        HotRankAdapter adapter = new HotRankAdapter(getActivity(),
-                hotRankData.getRankNameList(), hotRankNovelList);
-        mHotRankRv.setAdapter(adapter);
+        mHotRankData = hotRankData;
+        initHotRankAdapter();
     }
 
     @Override
     public void getHotRankDataError(String errorMsg) {
         Log.d(TAG, "getHotRankDataError: " + errorMsg);
+        showShortToast(errorMsg);
+    }
+
+    private void initHotRankAdapter() {
+        if (mHotRankData == null) {
+            return;
+        }
+
+        List<HotRankData.NovelInfo> novelInfoList = mHotRankData.getNovelInfoList();
+        List<List<String>> hotRankNovelList = new ArrayList<>();
+        for (HotRankData.NovelInfo novelInfo : novelInfoList) {
+            hotRankNovelList.add(novelInfo.getNameList());
+        }
+        HotRankAdapter adapter = new HotRankAdapter(getActivity(),
+               mHotRankData.getRankNameList(), hotRankNovelList);
+        mHotRankRv.setAdapter(adapter);
     }
 }
