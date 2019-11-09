@@ -33,4 +33,7 @@ public class Constant {
     // 男生热门榜单的榜单名字
     public static final List<String> FEMALE_HOT_RANK_NAME = Arrays.asList(
             "17K订阅榜", "掌阅热销榜", "书旗热搜榜");
+
+    // 小说源 api 没有找到相关小说
+    public static final String NOT_FOUND_NOVELS = "没有找到相关小说";
 }

@@ -39,7 +39,7 @@ public class TestActivity extends BaseActivity implements View.OnClickListener{
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_test;
+        return R.layout.item_novel_source;
     }
 
     @Override
@@ -56,12 +56,12 @@ public class TestActivity extends BaseActivity implements View.OnClickListener{
 
     @Override
     protected void initView() {
-        mBlueBtn = findViewById(R.id.btn_test_blue);
-        mBlueBtn.setOnClickListener(this);
-        mBlackBtn = findViewById(R.id.btn_test_black);
-        mBlackBtn.setOnClickListener(this);
-        mWhiteBtn = findViewById(R.id.btn_test_white);
-        mWhiteBtn.setOnClickListener(this);
+//        mBlueBtn = findViewById(R.id.btn_test_blue);
+//        mBlueBtn.setOnClickListener(this);
+//        mBlackBtn = findViewById(R.id.btn_test_black);
+//        mBlackBtn.setOnClickListener(this);
+//        mWhiteBtn = findViewById(R.id.btn_test_white);
+//        mWhiteBtn.setOnClickListener(this);
     }
 
     @Override
@@ -105,22 +105,22 @@ public class TestActivity extends BaseActivity implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_test_blue:
-                StatusBarUtil.setDarkColorStatusBar(this);
-                getWindow().setStatusBarColor(Color.BLUE);
-                break;
-            case R.id.btn_test_black:
-                StatusBarUtil.setDarkColorStatusBar(this);
-                getWindow().setStatusBarColor(Color.BLACK);
-                break;
-            case R.id.btn_test_white:
-                // 设置成白色的时候需要将状态栏的图标和文字设置成黑色，不然会一片空白
-                StatusBarUtil.setLightColorStatusBar(this);
-                getWindow().setStatusBarColor(Color.WHITE);
-                break;
-            default:
-                break;
-        }
+//        switch (v.getId()) {
+//            case R.id.btn_test_blue:
+//                StatusBarUtil.setDarkColorStatusBar(this);
+//                getWindow().setStatusBarColor(Color.BLUE);
+//                break;
+//            case R.id.btn_test_black:
+//                StatusBarUtil.setDarkColorStatusBar(this);
+//                getWindow().setStatusBarColor(Color.BLACK);
+//                break;
+//            case R.id.btn_test_white:
+//                // 设置成白色的时候需要将状态栏的图标和文字设置成黑色，不然会一片空白
+//                StatusBarUtil.setLightColorStatusBar(this);
+//                getWindow().setStatusBarColor(Color.WHITE);
+//                break;
+//            default:
+//                break;
+//        }
     }
 }

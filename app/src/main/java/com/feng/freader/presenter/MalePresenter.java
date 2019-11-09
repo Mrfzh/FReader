@@ -5,6 +5,8 @@ import com.feng.freader.constract.IMaleContract;
 import com.feng.freader.entity.data.HotRankData;
 import com.feng.freader.model.MaleModel;
 
+import java.util.List;
+
 /**
  * @author Feng Zhaohao
  * Created on 2019/11/6
@@ -26,9 +28,9 @@ public class MalePresenter extends BasePresenter<IMaleContract.View>
     }
 
     @Override
-    public void getHotRankDataError(String errorMsg) {
+    public void getHotRankDataError(List<String> errorMsgList) {
         if (isAttachView()) {
-            getMvpView().getHotRankDataError(errorMsg);
+            getMvpView().getHotRankDataError(errorMsgList);
         }
     }
 

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="160dp"
+    android:maxHeight="160dp"
+    android:minHeight="160dp"
+    android:padding="10dp">
+
+    <!-- cover -->
+    <ImageView
+        android:id="@+id/iv_item_novel_source_cover"
+        android:layout_width="120dp"
+        android:layout_height="140dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/default_cover"
+        android:layout_alignParentStart="true" />
+
+    <!-- name -->
+    <TextView
+        android:id="@+id/tv_item_novel_source_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/item_novel_source_text_margin_start"
+        android:layout_marginEnd="@dimen/item_novel_source_text_margin_end"
+        android:text="@string/item_novel_source_name"
+        android:textColor="@color/item_novel_source_name"
+        android:textSize="18sp"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@id/iv_item_novel_source_cover"
+        android:singleLine="true"
+        android:ellipsize="end"/>
+
+    <!-- author -->
+    <TextView
+        android:id="@+id/tv_item_novel_source_author"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/item_novel_source_text_margin_start"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="@dimen/item_novel_source_text_margin_end"
+        android:text="@string/item_novel_source_author"
+        android:textColor="@color/item_novel_source_author"
+        android:textSize="14sp"
+        android:layout_below="@id/tv_item_novel_source_name"
+        android:layout_toEndOf="@id/iv_item_novel_source_cover"
+        android:singleLine="true"
+        android:ellipsize="end"/>
+
+    <!-- introduce -->
+    <TextView
+        android:id="@+id/tv_item_novel_source_introduce"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/item_novel_source_text_margin_start"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="@dimen/item_novel_source_text_margin_end"
+        android:text="@string/item_novel_source_introduce"
+        android:textColor="@color/item_novel_source_introduce"
+        android:textSize="14sp"
+        android:layout_below="@id/tv_item_novel_source_author"
+        android:layout_toEndOf="@id/iv_item_novel_source_cover"
+        android:maxLines="3"
+        android:ellipsize="end"/>
+
+    <!-- web site -->
+    <TextView
+        android:id="@+id/tv_item_novel_source_web_site"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/item_novel_source_text_margin_start"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="@dimen/item_novel_source_text_margin_end"
+        android:text="@string/item_novel_source_web_site"
+        android:textColor="@color/item_novel_source_web_size"
+        android:textSize="12sp"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@id/iv_item_novel_source_cover"
+        android:singleLine="true"
+        android:ellipsize="end"/>
+
+</RelativeLayout>

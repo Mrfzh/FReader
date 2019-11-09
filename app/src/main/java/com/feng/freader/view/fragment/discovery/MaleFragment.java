@@ -1,4 +1,4 @@
-package com.feng.freader.view.fragment;
+package com.feng.freader.view.fragment.discovery;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -74,9 +74,8 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
     }
 
     @Override
-    public void getHotRankDataError(String errorMsg) {
-        Log.d(TAG, "getHotRankDataError: " + errorMsg);
-        showShortToast(errorMsg);
+    public void getHotRankDataError(List<String> errorMsgList) {
+
     }
 
     private void initHotRankAdapter() {

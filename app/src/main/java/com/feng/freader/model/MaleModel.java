@@ -29,7 +29,7 @@ public class MaleModel implements IMaleContract.Model {
     private Gson mGson = new Gson();
 
     private CountDownLatch mCountDownLatch;     // 用于实现主线程在所有子线程执行完毕后再执行
-    private String mReturnMsg = "";             // 记录网络请求的状态信息
+    private List<String> mErrorMsgList = new ArrayList<>();  // 记录网络请求的错误信息
 
     private List<String> mRankNameList = Constant.MALE_HOT_RANK_NAME;            // 排行榜名称
     private List<HotRankData.NovelInfo> mNovelInfoList = new ArrayList<>();  // 小说信息
@@ -45,7 +45,7 @@ public class MaleModel implements IMaleContract.Model {
         }
         // 开启多个线程进行请求
         mCountDownLatch = new CountDownLatch(Constant.MALE_HOT_RANK_NUM);
-        mReturnMsg = "";
+        mErrorMsgList.clear();
         for (int i = 0; i < Constant.MALE_HOT_RANK_NUM; i++) {
             request(mNovelInfoList.get(i), UrlObtainer.getRankNovels(Constant.MALE_HOT_RANK_ID.get(i)));
         }
@@ -72,10 +72,10 @@ public class MaleModel implements IMaleContract.Model {
 
     private void doAfterRequest() {
         // 判断请求是否成功
-        if (mReturnMsg.equals("")) {
+        if (mErrorMsgList.isEmpty()) {
             mPresenter.getHotRankDataSuccess(new HotRankData(mRankNameList, mNovelInfoList));
         } else {
-            mPresenter.getHotRankDataError(mReturnMsg);
+            mPresenter.getHotRankDataError(mErrorMsgList);
         }
     }
 
@@ -116,14 +116,12 @@ public class MaleModel implements IMaleContract.Model {
                         novelInfo.setShortInfoList(shortInfoList);
                         novelInfo.setCoverList(coverList);
 
-//                        Log.d(TAG, "success: run 1");
                         mCountDownLatch.countDown();
                     }
 
                     @Override
                     public void error(String errorMsg) {
-//                        Log.d(TAG, "error: run 1");
-                        mReturnMsg = errorMsg;
+                        mErrorMsgList.add(errorMsg);
                         mCountDownLatch.countDown();
                     }
                 })

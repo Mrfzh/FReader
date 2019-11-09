@@ -54,5 +54,27 @@
         android:maxLines="1"
         android:maxLength="10"/>
 
+    <ImageView
+        android:id="@+id/iv_search_delete_search_text"
+        android:layout_width="@dimen/search_search_bar_height"
+        android:layout_height="@dimen/search_search_bar_height"
+        android:layout_marginTop="@dimen/search_search_bar_margin_top"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_search_search_text"
+        android:layout_marginEnd="15dp"
+        android:src="@drawable/search_delete_search_text"
+        android:padding="11dp"
+        android:visibility="gone"/>
+
+    <!-- fragment container -->
+
+    <FrameLayout
+        android:id="@+id/fv_search_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_search_back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

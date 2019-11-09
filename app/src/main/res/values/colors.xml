@@ -4,6 +4,9 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
+    <!-- app -->
+    <color name="progress_bar">@android:color/holo_blue_light</color>
+
     <!-- main -->
     <color name="color_main_bottom_bar_bg">#fafafa</color>
     <color name="color_main_bottom_bar_text">#444444</color>
@@ -44,5 +47,11 @@
     <color name="search_search_text">#333333</color>
     <color name="search_search_bar_bg">#ececec</color>
     <color name="search_search_cursor">@android:color/holo_blue_light</color>
+
+    <!-- item_novel_source -->
+    <color name="item_novel_source_name">#222222</color>
+    <color name="item_novel_source_author">#666666</color>
+    <color name="item_novel_source_introduce">#666666</color>
+    <color name="item_novel_source_web_size">#999999</color>
 
 </resources>

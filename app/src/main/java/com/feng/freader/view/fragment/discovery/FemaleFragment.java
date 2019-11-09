@@ -1,4 +1,4 @@
-package com.feng.freader.view.fragment;
+package com.feng.freader.view.fragment.discovery;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;

@@ -1,4 +1,4 @@
-package com.feng.freader.view.fragment;
+package com.feng.freader.view.fragment.main;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -13,6 +13,9 @@ import com.feng.freader.base.BaseFragment;
 import com.feng.freader.base.BasePresenter;
 import com.feng.freader.rewrite.TabLayout;
 import com.feng.freader.view.activity.SearchActivity;
+import com.feng.freader.view.fragment.discovery.FemaleFragment;
+import com.feng.freader.view.fragment.discovery.MaleFragment;
+import com.feng.freader.view.fragment.discovery.PressFragment;
 import com.feng.freader.widget.DiscoveryPageTransformer;
 
 import java.util.ArrayList;

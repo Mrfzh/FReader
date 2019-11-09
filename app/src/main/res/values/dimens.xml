@@ -30,4 +30,8 @@
     <dimen name="search_search_bar_height">40dp</dimen>
     <dimen name="search_search_bar_radius">30dp</dimen>
 
+    <!-- item_novel_source -->
+    <dimen name="item_novel_source_text_margin_start">15dp</dimen>
+    <dimen name="item_novel_source_text_margin_end">15dp</dimen>
+
 </resources>

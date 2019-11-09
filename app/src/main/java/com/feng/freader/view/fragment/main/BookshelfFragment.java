@@ -1,4 +1,4 @@
-package com.feng.freader.view.fragment;
+package com.feng.freader.view.fragment.main;
 
 import android.util.Log;
 import android.view.View;

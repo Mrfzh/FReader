@@ -3,27 +3,23 @@ package com.feng.freader.view.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.Window;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.LinearInterpolator;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.feng.freader.R;
 import com.feng.freader.base.BaseActivity;
 import com.feng.freader.base.BasePresenter;
 import com.feng.freader.util.StatusBarUtil;
-import com.feng.freader.view.fragment.BookshelfFragment;
-import com.feng.freader.view.fragment.DiscoveryFragment;
-import com.feng.freader.view.fragment.MoreFragment;
+import com.feng.freader.view.fragment.main.BookshelfFragment;
+import com.feng.freader.view.fragment.main.DiscoveryFragment;
+import com.feng.freader.view.fragment.main.MoreFragment;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener{
 
