@@ -14,7 +14,8 @@
     <color name="color_main_bottom_bar_text_after">@android:color/holo_orange_light</color>
     <color name="color_main_bottom_bar_separator">#bbbbbb</color>
 
-    <color name="color_main_bg">#f1f1f1</color>
+    <!-- bookshelf -->
+    <color name="bookshelf_bg">#fdfdfd</color>
 
     <!-- discovery -->
     <color name="discovery_bg">#fdfdfd</color>
@@ -53,5 +54,13 @@
     <color name="item_novel_source_author">#666666</color>
     <color name="item_novel_source_introduce">#666666</color>
     <color name="item_novel_source_web_size">#999999</color>
+
+    <!-- item_history -->
+    <color name="item_history_bg">#e3e3e3</color>
+    <color name="item_history_bg_pressed">#f1f1f1</color>
+    <color name="item_history_text">#333333</color>
+
+    <!-- history -->
+    <color name="history_history_text">#333333</color>
 
 </resources>

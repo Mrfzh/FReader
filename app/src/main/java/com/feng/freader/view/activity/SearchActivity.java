@@ -38,6 +38,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     private SearchResultFragment mSearchResultFragment;
     private FragmentManager mFragmentManager = getSupportFragmentManager();
     private boolean mIsShowSearchResFg = false;     // 是否正在显示搜索结果 Fragment
+    private String mLastSearch = "";        // 记录上一搜索词
 
     @Override
     protected void doBeforeSetContentView() {
@@ -128,12 +129,18 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             case R.id.tv_search_search_text:
                 // 点击搜索后隐藏软键盘
                 SoftInputUtil.hideSoftInput(SearchActivity.this);
-
+                // 当前搜索词
+                String searchText = mSearchBarEt.getText().toString();
                 if (mIsShowSearchResFg) {
-                    // TODO 如果此时已经是搜索结果 Fg，就直接更新它
+                    // 如果此时已经是搜索结果 Fg，就直接更新它
+                    // 搜索同一个词时不用管
+                    if (!searchText.equals(mLastSearch)) {
+                        mSearchResultFragment.update(searchText);
+                    }
                 } else {
                     showSearchResFg();
                 }
+                mLastSearch = searchText;
                 // TODO 更新历史记录
                 break;
             case R.id.iv_search_delete_search_text:

@@ -34,4 +34,7 @@
     <dimen name="item_novel_source_text_margin_start">15dp</dimen>
     <dimen name="item_novel_source_text_margin_end">15dp</dimen>
 
+    <!-- item_history -->
+    <dimen name="item_history_bg_radius">20dp</dimen>
+
 </resources>

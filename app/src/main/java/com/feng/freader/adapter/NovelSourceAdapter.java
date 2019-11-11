@@ -46,7 +46,9 @@ public class NovelSourceAdapter extends
     public void onBindViewHolder(@NonNull NovelSourceViewHolder novelSourceViewHolder, int i) {
         Glide.with(mContext)
                 .load(mNovelSourceDataList.get(i).getCover())
-                .apply(new RequestOptions().placeholder(R.drawable.cover_place_holder))
+                .apply(new RequestOptions()
+                        .placeholder(R.drawable.cover_place_holder)
+                        .error(R.drawable.cover_error))
                 .into(novelSourceViewHolder.cover);
         novelSourceViewHolder.name.setText(mNovelSourceDataList.get(i).getName());
         // 作者可能为空

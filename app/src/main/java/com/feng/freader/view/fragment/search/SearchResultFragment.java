@@ -1,5 +1,6 @@
 package com.feng.freader.view.fragment.search;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -113,5 +114,10 @@ public class SearchResultFragment extends BaseFragment<SearchResultPresenter>
 
         mNovelSourceAdapter = new NovelSourceAdapter(getActivity(), mNovelSourceDataList);
         mNovelSourceRv.setAdapter(mNovelSourceAdapter);
+    }
+
+    public void update(String novelName) {
+        mPresenter.getNovelsSource(novelName);
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 }
