@@ -21,6 +21,7 @@ public class FlowLayout extends ViewGroup {
     private List<Rect> mChildrenPositionList = new ArrayList<>();   // 记录各子 View 的位置
     private int mMaxLines = Integer.MAX_VALUE;      // 最多显示的行数，默认无限制
     private int mVisibleItemCount;       // 可见的 item 数
+    private Adapter mAdapter;
 
     public FlowLayout(Context context) {
         super(context);
@@ -140,13 +141,24 @@ public class FlowLayout extends ViewGroup {
      * 设置 Adapter
      */
     public void setAdapter(Adapter adapter) {
+        mAdapter = adapter;
+        updateView();
+    }
+
+    /**
+     * 更新列表视图
+     */
+    public void updateView() {
+        if (mAdapter == null) {
+            return;
+        }
         // 移除之前的视图
         removeAllViews();
         // 添加 item
-        int n = adapter.getItemCount();
+        int n = mAdapter.getItemCount();
         for (int i = 0; i < n; i++) {
-            ViewHolder holder = adapter.onCreateViewHolder(this);
-            adapter.onBindViewHolder(holder, i);
+            ViewHolder holder = mAdapter.onCreateViewHolder(this);
+            mAdapter.onBindViewHolder(holder, i);
             View child = holder.itemView;
             addView(child);
         }
@@ -173,7 +185,6 @@ public class FlowLayout extends ViewGroup {
         public abstract void onBindViewHolder(VH holder, int position);
 
         public abstract int getItemCount();
-
     }
 
     public abstract static class ViewHolder {

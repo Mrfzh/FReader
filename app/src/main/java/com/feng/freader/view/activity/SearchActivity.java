@@ -1,5 +1,6 @@
 package com.feng.freader.view.activity;
 
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
@@ -7,7 +8,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,11 +15,18 @@ import android.widget.TextView;
 import com.feng.freader.R;
 import com.feng.freader.base.BaseActivity;
 import com.feng.freader.base.BasePresenter;
+import com.feng.freader.constant.EventBusCode;
+import com.feng.freader.db.DatabaseManager;
+import com.feng.freader.entity.eventbus.Event;
+import com.feng.freader.entity.eventbus.SearchUpdateInputEvent;
 import com.feng.freader.util.EditTextUtil;
 import com.feng.freader.util.SoftInputUtil;
 import com.feng.freader.util.StatusBarUtil;
 import com.feng.freader.view.fragment.search.HistoryFragment;
 import com.feng.freader.view.fragment.search.SearchResultFragment;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * @author Feng Zhaohao
@@ -36,9 +43,12 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
 
     private HistoryFragment mHistoryFragment;
     private SearchResultFragment mSearchResultFragment;
+
     private FragmentManager mFragmentManager = getSupportFragmentManager();
     private boolean mIsShowSearchResFg = false;     // 是否正在显示搜索结果 Fragment
     private String mLastSearch = "";        // 记录上一搜索词
+
+    private DatabaseManager mManager;   // 数据库管理类
 
     @Override
     protected void doBeforeSetContentView() {
@@ -57,7 +67,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     protected void initData() {
-
+        mManager = DatabaseManager.getInstance();
     }
 
     @Override
@@ -117,7 +127,23 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     protected boolean isRegisterEventBus() {
-        return false;
+        return true;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventCome(Event event) {
+        switch (event.getCode()) {
+            case EventBusCode.SEARCH_UPDATE_INPUT:
+                if (event.getData() instanceof SearchUpdateInputEvent) {
+                    SearchUpdateInputEvent sEvent = (SearchUpdateInputEvent) event.getData();
+                    mSearchBarEt.setText(sEvent.getInput());
+                    // 进行搜索
+                    doSearch();
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -127,21 +153,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                 finish();
                 break;
             case R.id.tv_search_search_text:
-                // 点击搜索后隐藏软键盘
-                SoftInputUtil.hideSoftInput(SearchActivity.this);
-                // 当前搜索词
-                String searchText = mSearchBarEt.getText().toString();
-                if (mIsShowSearchResFg) {
-                    // 如果此时已经是搜索结果 Fg，就直接更新它
-                    // 搜索同一个词时不用管
-                    if (!searchText.equals(mLastSearch)) {
-                        mSearchResultFragment.update(searchText);
-                    }
-                } else {
-                    showSearchResFg();
-                }
-                mLastSearch = searchText;
-                // TODO 更新历史记录
+                doSearch();
                 break;
             case R.id.iv_search_delete_search_text:
                 // 删除 EditText 内容
@@ -149,6 +161,37 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             default:
                 break;
         }
+    }
+
+    /**
+     * 进行搜索
+     */
+    private void doSearch() {
+        // 点击搜索后隐藏软键盘
+        SoftInputUtil.hideSoftInput(SearchActivity.this);
+        // 当前搜索词
+        final String searchText = mSearchBarEt.getText().toString().trim();
+        if (searchText.equals("")) {
+            showShortToast("输入不能为空");
+            return; // 不能为空
+        }
+        if (mIsShowSearchResFg) {
+            // 如果此时已经是搜索结果 Fg，就直接更新它
+            // 搜索同一个词时不用管
+            if (!searchText.equals(mLastSearch)) {
+                mSearchResultFragment.update(searchText);
+            }
+        } else {
+            showSearchResFg();
+        }
+        mLastSearch = searchText;
+        // 更新历史记录
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                updateHistoryDb(searchText);
+            }
+        }, 500);
     }
 
     /**
@@ -194,5 +237,20 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         ft.show(mHistoryFragment);
         ft.commit();
         mIsShowSearchResFg = false;
+    }
+
+    /**
+     * 更新历史记录数据库
+     *
+     * @param word 新输入的词语
+     */
+    private void updateHistoryDb(String word) {
+        mManager.deleteHistory(word);
+        mManager.insertHistory(word);
+        // 通知历史页面更新历史记录
+        if (mHistoryFragment != null) {
+            Log.d(TAG, "updateHistoryDb: run");
+            mHistoryFragment.updateHistory();
+        }
     }
 }

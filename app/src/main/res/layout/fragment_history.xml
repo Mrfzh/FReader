@@ -27,7 +27,8 @@
         android:src="@drawable/history_clear_all"
         android:layout_marginEnd="25dp"
         android:layout_marginTop="15dp"
-        android:padding="1dp"/>
+        android:padding="1dp"
+        android:visibility="gone"/>
 
     <com.feng.freader.widget.FlowLayout
         android:id="@+id/fv_history_history_list"

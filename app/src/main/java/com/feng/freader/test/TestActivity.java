@@ -1,11 +1,20 @@
 package com.feng.freader.test;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.feng.freader.R;
 import com.feng.freader.base.BaseActivity;
 import com.feng.freader.base.BasePresenter;
+import com.feng.freader.constant.Constant;
+import com.feng.freader.db.DatabaseHelper;
+import com.feng.freader.db.DatabaseManager;
 import com.feng.freader.widget.FlowLayout;
+import com.feng.freader.widget.TipDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +23,11 @@ public class TestActivity extends BaseActivity {
 
     private static final String TAG = "TestActivity";
 
-    private FlowLayout mFlowLayout;
-    private List<String> mContentList = new ArrayList<>();
+    private Button mCreateDbBtn;
+    private Button mInsertBtn;
+    private Button mSearchBtn;
+
+    private DatabaseManager mManager;
 
     @Override
     protected void doBeforeSetContentView() {
@@ -35,28 +47,52 @@ public class TestActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        for (int i = 0; i < 4; i++) {
-            mContentList.add("java");
-            mContentList.add("kotlin");
-            mContentList.add("android");
-            mContentList.add("android-studio");
-            mContentList.add("app");
-        }
+        mManager = DatabaseManager.getInstance();
     }
 
     @Override
     protected void initView() {
-        mFlowLayout = findViewById(R.id.fv_test_flow_layout);
-        // 设置 Adapter
-        FlowAdapter adapter = new FlowAdapter(this, mContentList);
-        mFlowLayout.setAdapter(adapter);
-        // 设置最多显示的行数
-        mFlowLayout.setMaxLines(3);
-        // 获取显示的 item 数
-        mFlowLayout.post(new Runnable() {
+        mCreateDbBtn = findViewById(R.id.btn_test_create_db);
+        mCreateDbBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                Log.d(TAG, "count = " + mFlowLayout.getVisibleItemCount());
+            public void onClick(View v) {
+                TipDialog dialog = new TipDialog.Builder(TestActivity.this) // 传入 Context
+                        .setTitle("注意")                         // 设置标题
+                        .setContent("是否要清空历史搜索")            // 设置内容
+                        .setEnsure("是")                         // 设置确定按钮的内容
+                        .setCancel("不了")                        // 设置否定按钮的内容
+                        .setOnClickListener(new TipDialog.OnClickListener() {   // 监听按钮的点击
+                            @Override
+                            public void clickEnsure() {
+                                // 点击确定按钮
+                            }
+
+                            @Override
+                            public void clickCancel() {
+                                // 点击否定按钮
+                            }
+                        })
+                        .build();   // 构建完毕
+                dialog.show();      // 显示 Dialog
+            }
+        });
+
+        mInsertBtn = findViewById(R.id.btn_test_insert);
+        mInsertBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 删除前 30 条数据
+                mManager.deleteHistories(30);
+                Log.d(TAG, "delete data");
+            }
+        });
+
+        mSearchBtn = findViewById(R.id.btn_test_search);
+        mSearchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 查询表中所有数据
+                Log.d(TAG, mManager.searchAllHistory().toString());
             }
         });
     }

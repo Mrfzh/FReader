@@ -20,6 +20,15 @@ public class HistoryAdapter extends FlowLayout.Adapter<HistoryAdapter.HistoryVie
 
     private Context mContext;
     private List<String> mContentList;
+    private HistoryAdapterListener mListener;
+
+    public interface HistoryAdapterListener {
+        void clickWord(String word);    // 点击历史搜索词语
+    }
+
+    public void setOnHistoryAdapterListener(HistoryAdapterListener listener) {
+        mListener = listener;
+    }
 
     public HistoryAdapter(Context mContext, List<String> mContentList) {
         this.mContext = mContext;
@@ -40,8 +49,21 @@ public class HistoryAdapter extends FlowLayout.Adapter<HistoryAdapter.HistoryVie
     }
 
     @Override
-    public void onBindViewHolder(HistoryViewHolder holder, int position) {
-        holder.content.setText(mContentList.get(position));
+    public void onBindViewHolder(HistoryViewHolder holder, final int position) {
+        String s = mContentList.get(position);
+        // 如果超过 8 个字符，只取前 8 个
+        if (s.length() > 8) {
+            s = s.substring(0, 8) + "...";
+        }
+        holder.content.setText(s);
+        holder.content.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.clickWord(mContentList.get(position));
+                }
+            }
+        });
     }
 
     @Override
@@ -56,5 +78,9 @@ public class HistoryAdapter extends FlowLayout.Adapter<HistoryAdapter.HistoryVie
             super(itemView);
             content = itemView.findViewById(R.id.tv_item_history_content);
         }
+    }
+
+    public void updateList(List<String> list) {
+        mContentList = list;
     }
 }

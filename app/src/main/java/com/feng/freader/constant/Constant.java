@@ -36,4 +36,13 @@ public class Constant {
 
     // 小说源 api 没有找到相关小说
     public static final String NOT_FOUND_NOVELS = "没有找到相关小说";
+
+    /* 数据库相关 */
+    // 数据库名
+    public static final String DB_NAME = "FReader.db";
+    // 历史记录表
+    public static final String TABLE_HISTORY = "TABLE_HISTORY";
+    // 历史记录表的记录
+    public static final String TABLE_HISTORY_ID = "TABLE_HISTORY_ID";       // 自增 id
+    public static final String TABLE_HISTORY_WORD = "TABLE_HISTORY_WORD";   // 搜索词
 }

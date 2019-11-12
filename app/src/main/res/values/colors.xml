@@ -63,4 +63,11 @@
     <!-- history -->
     <color name="history_history_text">#333333</color>
 
+    <!-- dialog_tip -->
+    <color name="color_tip_title">#505050</color>
+    <color name="color_tip_content">#888888</color>
+    <color name="color_tip_choice">#222222</color>
+    <color name="color_tip_line">#cccccc</color>
+    <color name="color_tip_bg">#f1f1f1</color>
+
 </resources>
