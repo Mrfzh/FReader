@@ -9,4 +9,5 @@
     android:padding="10dp"
     android:clickable="true"
     android:focusable="true"
-    android:text="@string/content" />
+    android:text="@string/content"
+    android:maxLines="1"/>

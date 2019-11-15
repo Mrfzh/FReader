@@ -15,6 +15,22 @@
         android:scrollbars="none"
         android:overScrollMode="never"/>
 
+    <TextView
+        android:id="@+id/tv_search_result_none"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/search_result_none"
+        android:textColor="@color/search_result_none_text"
+        android:textSize="20sp"
+        android:background="@color/search_result_none_bg"
+        android:gravity="center|top"
+        android:layout_marginTop="100dp"
+        android:visibility="gone"/>
+
     <ProgressBar
         android:id="@+id/pb_search_result_progress_bar"
         android:layout_width="wrap_content"

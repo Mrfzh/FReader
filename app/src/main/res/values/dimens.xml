@@ -37,4 +37,11 @@
     <!-- item_history -->
     <dimen name="item_history_bg_radius">20dp</dimen>
 
+    <!-- novel_intro -->
+    <dimen name="novel_intro_top_navi_bar_height">50dp</dimen>
+    <dimen name="novel_intro_top_navi_bar_margin_top">30dp</dimen>
+    <dimen name="novel_intro_text_margin_start_to_cover">15dp</dimen>
+    <dimen name="novel_intro_margin_start_and_end">25dp</dimen>
+    <dimen name="novel_intro_catalog_height">50dp</dimen>
+
 </resources>

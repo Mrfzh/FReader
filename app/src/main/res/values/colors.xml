@@ -70,4 +70,21 @@
     <color name="color_tip_line">#cccccc</color>
     <color name="color_tip_bg">#f1f1f1</color>
 
+    <!-- test -->
+    <color name="test_fore_ground">#aa111111</color>
+
+    <!-- search_result -->
+    <color name="search_result_none_bg">#f9f9f9</color>
+    <color name="search_result_none_text">#999999</color>
+
+    <!-- novel_intro -->
+    <color name="novel_intro_top_image_bg_fg">#99111111</color>
+    <color name="novel_intro_novel_name_text">#fdfdfd</color>
+    <color name="novel_intro_novel_author_text">#ededed</color>
+    <color name="novel_intro_novel_web_site_text">#f1f1f1</color>
+    <color name="novel_intro_line_between_cover_and_introduce">#d1d1d1</color>
+    <color name="novel_intro_separate_line">#f1f1f1</color>
+    <color name="novel_intro_catalog_text">#333333</color>
+    <color name="novel_intro_catalog_bg_pressed">#f1f1f1</color>
+
 </resources>

@@ -1,6 +1,7 @@
 package com.feng.freader.adapter;
 
 import android.content.Context;
+import android.graphics.BlurMaskFilter;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;

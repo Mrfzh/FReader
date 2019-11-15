@@ -5,42 +5,48 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <ImageView
+        android:id="@+id/iv_test_cover"
+        android:layout_width="0dp"
+        android:layout_height="250dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/default_cover"
+        android:scaleType="centerCrop"
+        />
+    <!--android:foreground="@color/test_fore_ground"-->
 
     <Button
-        android:id="@+id/btn_test_create_db"
+        android:id="@+id/btn_test_blur"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="弹出 Dialog"
+        android:text="高斯模糊"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/iv_test_cover" />
 
-    <Button
-        android:id="@+id/btn_test_insert"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="添加数据"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_test_create_db"
-        android:visibility="gone"/>
+    <!--<ImageView-->
+        <!--android:id="@+id/iv_test_cover"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="250dp"-->
+        <!--android:src="@drawable/default_cover"-->
+        <!--android:scaleType="centerCrop"-->
+        <!--android:foreground="@color/test_fore_ground"/>-->
 
-    <Button
-        android:id="@+id/btn_test_search"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="查询数据"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_test_insert"
-        android:visibility="gone"/>
+    <!--<Button-->
+        <!--android:id="@+id/btn_test_blur"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:text="高斯模糊"-->
+        <!--android:layout_below="@id/iv_test_cover"-->
+        <!--android:visibility="gone"/>-->
+
+
 </android.support.constraint.ConstraintLayout>

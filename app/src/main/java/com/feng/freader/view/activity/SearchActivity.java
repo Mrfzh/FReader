@@ -6,8 +6,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -76,6 +78,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         mBackIv.setOnClickListener(this);
 
         mSearchBarEt = findViewById(R.id.et_search_search_bar);
+        // 监听内容变化
         mSearchBarEt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -102,6 +105,19 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void afterTextChanged(Editable s) {
 
+            }
+        });
+        // 监听软键盘
+        mSearchBarEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                // 点击“完成”或者“下一项”
+                if (actionId == EditorInfo.IME_ACTION_DONE ||
+                        actionId == EditorInfo.IME_ACTION_NEXT) {
+                    // 进行搜索操作
+                    doSearch();
+                }
+                return false;
             }
         });
 

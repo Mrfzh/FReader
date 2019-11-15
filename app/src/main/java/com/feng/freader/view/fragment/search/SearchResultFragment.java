@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.feng.freader.R;
 import com.feng.freader.adapter.NovelSourceAdapter;
@@ -30,6 +31,7 @@ public class SearchResultFragment extends BaseFragment<SearchResultPresenter>
 
     private ProgressBar mProgressBar;
     private RecyclerView mNovelSourceRv;
+    private TextView mNoneTv;       // 没有找到相关小说时显示
 
     private NovelSourceAdapter mNovelSourceAdapter;
 
@@ -48,6 +50,7 @@ public class SearchResultFragment extends BaseFragment<SearchResultPresenter>
 
     @Override
     protected void initView() {
+        mNoneTv = getActivity().findViewById(R.id.tv_search_result_none);
         mProgressBar = getActivity().findViewById(R.id.pb_search_result_progress_bar);
 
         mNovelSourceRv = getActivity().findViewById(R.id.rv_search_result_novel_source_list);
@@ -89,6 +92,7 @@ public class SearchResultFragment extends BaseFragment<SearchResultPresenter>
 
     @Override
     public void getNovelsSourceSuccess(List<NovelSourceData> novelSourceDataList) {
+        mNoneTv.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.GONE);
         // 列表显示小说源
         mNovelSourceDataList = novelSourceDataList;
@@ -99,8 +103,8 @@ public class SearchResultFragment extends BaseFragment<SearchResultPresenter>
     public void getNovelsSourceError(String errorMsg) {
         mProgressBar.setVisibility(View.GONE);
         if (errorMsg.equals(Constant.NOT_FOUND_NOVELS)) {
-            // TODO 没有找到相关小说，设置状态页
-            showShortToast(Constant.NOT_FOUND_NOVELS);
+            // 没有找到相关小说，设置状态页
+            mNoneTv.setVisibility(View.VISIBLE);
         } else {
             // 其他错误
             showShortToast(errorMsg);

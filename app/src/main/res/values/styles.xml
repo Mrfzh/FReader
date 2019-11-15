@@ -17,4 +17,13 @@
         <item name="android:windowContentOverlay">@null</item>  <!-- 没有阴影 -->
     </style>
 
+    <!-- 隐藏标题栏和设置状态栏透明 -->
+    <style name="TransparentStatusBarTheme" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
 </resources>

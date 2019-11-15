@@ -12,7 +12,7 @@ import com.feng.freader.base.BaseDialog;
 
 /**
  * @author Feng Zhaohao
- * Created on 2018/12/9
+ * Created on 2019/11/12
  */
 public class TipDialog extends BaseDialog implements View.OnClickListener{
 
