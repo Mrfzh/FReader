@@ -1,6 +1,8 @@
 package com.feng.freader.entity.eventbus;
 
 /**
+ * 搜索页面更新输入
+ *
  * @author Feng Zhaohao
  * Created on 2019/11/12
  */

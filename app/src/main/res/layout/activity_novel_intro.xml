@@ -125,6 +125,16 @@
         android:textSize="14sp"
         android:maxLines="3"/>
 
+    <ImageView
+        android:id="@+id/iv_novel_intro_more_introduce"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_novel_intro_novel_introduce"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="@dimen/novel_intro_margin_start_and_end"
+        android:src="@drawable/novel_intro_more_introduce"
+        android:padding="1dp"/>
+
     <!-- separate line -->
 
     <View
@@ -132,7 +142,7 @@
         android:layout_width="0dp"
         android:layout_height="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_novel_intro_novel_introduce"
+        app:layout_constraintTop_toBottomOf="@id/iv_novel_intro_more_introduce"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="10dp"
         android:background="@color/novel_intro_separate_line"/>

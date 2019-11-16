@@ -14,9 +14,14 @@ import com.feng.freader.R;
 import com.feng.freader.adapter.NovelSourceAdapter;
 import com.feng.freader.base.BaseFragment;
 import com.feng.freader.constant.Constant;
+import com.feng.freader.constant.EventBusCode;
 import com.feng.freader.constract.ISearchResultContract;
 import com.feng.freader.entity.data.NovelSourceData;
+import com.feng.freader.entity.eventbus.Event;
+import com.feng.freader.entity.eventbus.NovelIntroInitEvent;
 import com.feng.freader.presenter.SearchResultPresenter;
+import com.feng.freader.util.EventBusUtil;
+import com.feng.freader.view.activity.NovelIntroActivity;
 
 import java.util.List;
 
@@ -117,6 +122,18 @@ public class SearchResultFragment extends BaseFragment<SearchResultPresenter>
         }
 
         mNovelSourceAdapter = new NovelSourceAdapter(getActivity(), mNovelSourceDataList);
+        mNovelSourceAdapter.setOnNovelSourceListener(new NovelSourceAdapter.NovelSourceListener() {
+            @Override
+            public void clickItem(int position) {
+                if (mNovelSourceDataList.isEmpty()) {
+                    return;
+                }
+                Event<NovelIntroInitEvent> event = new Event<>(EventBusCode.NOVEL_INTRO_INIT,
+                        new NovelIntroInitEvent(mNovelSourceDataList.get(position)));
+                EventBusUtil.sendStickyEvent(event);
+                jump2Activity(NovelIntroActivity.class);
+            }
+        });
         mNovelSourceRv.setAdapter(mNovelSourceAdapter);
     }
 

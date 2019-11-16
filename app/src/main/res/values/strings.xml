@@ -39,4 +39,7 @@
 
     <!-- novel_intro -->
     <string name="novel_intro_catalog">目录</string>
+
+    <!-- menu_novel_intro -->
+    <string name="menu_novel_intro_show_in_browser">在浏览器中显示</string>
 </resources>

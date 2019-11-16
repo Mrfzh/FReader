@@ -30,6 +30,15 @@ public class NovelSourceAdapter extends
 
     private Context mContext;
     private List<NovelSourceData> mNovelSourceDataList;
+    private NovelSourceListener mListener;
+
+    public void setOnNovelSourceListener(NovelSourceListener listener) {
+        mListener = listener;
+    }
+
+    public interface NovelSourceListener {
+        void clickItem(int position);
+    }
 
     public NovelSourceAdapter(Context mContext, List<NovelSourceData> mNovelSourceDataList) {
         this.mContext = mContext;
@@ -44,7 +53,7 @@ public class NovelSourceAdapter extends
     }
 
     @Override
-    public void onBindViewHolder(@NonNull NovelSourceViewHolder novelSourceViewHolder, int i) {
+    public void onBindViewHolder(@NonNull NovelSourceViewHolder novelSourceViewHolder, final int i) {
         Glide.with(mContext)
                 .load(mNovelSourceDataList.get(i).getCover())
                 .apply(new RequestOptions()
@@ -59,6 +68,13 @@ public class NovelSourceAdapter extends
 
         novelSourceViewHolder.introduce.setText(mNovelSourceDataList.get(i).getIntroduce());
         novelSourceViewHolder.webSite.setText(mNovelSourceDataList.get(i).getUrl());
+
+        novelSourceViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.clickItem(i);
+            }
+        });
     }
 
     @Override
