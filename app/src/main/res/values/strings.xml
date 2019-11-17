@@ -42,4 +42,13 @@
 
     <!-- menu_novel_intro -->
     <string name="menu_novel_intro_show_in_browser">在浏览器中显示</string>
+
+    <!-- catalog -->
+    <string name="catalog_title">目录</string>
+    <string name="catalog_chapter_count">共100章</string>
+    <string name="catalog_chapter_order">↑正序</string>
+    <string name="catalog_error_text">网络请求发生错误，请刷新重试</string>
+
+    <!-- item_catalog -->
+    <string name="item_catalog_content">第一章 重生归来</string>
 </resources>

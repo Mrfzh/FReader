@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.feng.freader">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".app.App"
@@ -13,8 +13,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".view.activity.CatalogActivity">
+
+        </activity>
         <activity android:name=".test.TestActivity">
 
         </activity>
@@ -25,13 +28,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.activity.MainActivity">
-
-        </activity>
-        <activity android:name=".view.activity.NovelIntroActivity"
-            android:theme="@style/TransparentStatusBarTheme">
-
-        </activity>
+        <activity android:name=".view.activity.MainActivity"></activity>
+        <activity
+            android:name=".view.activity.NovelIntroActivity"
+            android:theme="@style/TransparentStatusBarTheme"></activity>
     </application>
 
 </manifest>

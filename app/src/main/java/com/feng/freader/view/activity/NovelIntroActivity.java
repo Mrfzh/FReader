@@ -49,6 +49,7 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
     private TextView mNovelWebSiteTv;
     private TextView mNovelIntroduceTv;
     private ImageView mMoreIntroduceIv;
+    private TextView mCatalogTv;
 
     private NovelSourceData mNovelSourceData;
 
@@ -135,6 +136,9 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                 }
             }
         });
+
+        mCatalogTv = findViewById(R.id.tv_novel_intro_catalog);
+        mCatalogTv.setOnClickListener(this);
     }
 
     @Override
@@ -205,6 +209,13 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                     }
                 });
                 popupMenu.show();
+                break;
+            case R.id.tv_novel_intro_catalog:
+                Log.d(TAG, "startActivity: run");
+                Intent intent = new Intent(NovelIntroActivity.this, CatalogActivity.class);
+                intent.putExtra(CatalogActivity.KEY_URL, mNovelSourceData.getUrl());    // 传递当前小说的 url
+                startActivity(intent);
+                break;
             default:
                 break;
         }

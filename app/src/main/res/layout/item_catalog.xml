@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:minHeight="@dimen/item_catalog_height"
+    android:layout_height="@dimen/item_catalog_height">
+
+    <TextView
+        android:id="@+id/tv_item_catalog_chapter_name"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_catalog_height"
+        android:text="@string/item_catalog_content"
+        android:textColor="@color/item_catalog_text"
+        android:textSize="16sp"
+        android:gravity="start|center"
+        android:paddingStart="25dp"
+        android:paddingEnd="25dp"
+        android:background="@drawable/selector_item_catalog_bg"
+        android:clickable="true"
+        android:focusable="true"/>
+
+</RelativeLayout>
+

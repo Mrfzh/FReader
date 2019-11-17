@@ -87,4 +87,19 @@
     <color name="novel_intro_catalog_text">#333333</color>
     <color name="novel_intro_catalog_bg_pressed">#f1f1f1</color>
 
+    <!-- catalog -->
+    <color name="catalog_bg">#fdfdfd</color>
+    <color name="catalog_back_bg_pressed">#e1e1e1</color>
+    <color name="catalog_refresh_bg_pressed">#e1e1e1</color>
+    <color name="catalog_title_text">#333333</color>
+    <color name="catalog_chapter_count_text">#333333</color>
+    <color name="catalog_chapter_order_text">#333333</color>
+    <color name="catalog_chapter_order_bg_pressed">#e1e1e1</color>
+    <color name="catalog_separator">#f1f1f1</color>
+    <color name="catalog_error_page_text">#919191</color>
+    <color name="catalog_error_page_bg">#f5f5f5</color>
+
+    <!-- item_catalog -->
+    <color name="item_catalog_text">#333333</color>
+    <color name="item_catalog_bg_pressed">#e5e5e5</color>
 </resources>

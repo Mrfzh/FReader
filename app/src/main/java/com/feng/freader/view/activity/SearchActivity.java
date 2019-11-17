@@ -134,6 +134,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         StatusBarUtil.setLightColorStatusBar(this);
         getWindow().setStatusBarColor(getResources().getColor(R.color.search_bg));
 
+        Log.d(TAG, "doAfterInit: run");
         // EditText 获得焦点并显示软键盘
         EditTextUtil.focusAndShowSoftKeyboard(this, mSearchBarEt);
 

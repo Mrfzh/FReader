@@ -14,7 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:src="@drawable/default_cover"
         android:scaleType="centerCrop"
-        />
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/btn_test_blur"
@@ -25,6 +25,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_test_cover" />
+
 
     <!--<ImageView-->
         <!--android:id="@+id/iv_test_cover"-->

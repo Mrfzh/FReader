@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/catalog_bg">
+
+    <!-- top bar -->
+
+    <ImageView
+        android:id="@+id/iv_catalog_back"
+        android:layout_width="@dimen/catalog_top_bar_height"
+        android:layout_height="@dimen/catalog_top_bar_height"
+        android:background="@drawable/selector_catalog_back_bg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/catalog_back"
+        android:padding="13dp"
+        android:clickable="true"
+        android:focusable="true"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="@dimen/catalog_top_bar_height"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/catalog_title"
+        android:textColor="@color/catalog_title_text"
+        android:textSize="18sp"
+        android:gravity="center"/>
+
+    <ImageView
+        android:id="@+id/iv_catalog_refresh"
+        android:layout_width="@dimen/catalog_top_bar_height"
+        android:layout_height="@dimen/catalog_top_bar_height"
+        android:background="@drawable/selector_catalog_refresh_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/catalog_refresh"
+        android:padding="14dp"
+        android:clickable="true"
+        android:focusable="true"/>
+
+    <!-- second bar -->
+
+    <TextView
+        android:id="@+id/tv_catalog_chapter_count"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/catalog_second_bar_height"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_catalog_back"
+        android:textColor="@color/catalog_chapter_count_text"
+        android:textSize="16sp"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/tv_catalog_chapter_order"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/catalog_second_bar_height"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_catalog_back"
+        android:text="@string/catalog_chapter_order"
+        android:textColor="@color/catalog_chapter_order_text"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:background="@drawable/selector_catalog_chapter_order_bg"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"/>
+
+    <!-- separator -->
+
+    <View
+        android:id="@+id/v_catalog_separator"
+        android:layout_width="0dp"
+        android:layout_height="5dp"
+        android:background="@drawable/shape_catalog_separator"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_catalog_chapter_count"/>
+
+    <!-- list -->
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_catalog_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/v_catalog_separator"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:overScrollMode="never"
+        android:scrollbars="vertical"/>
+
+    <!-- error page -->
+
+    <TextView
+        android:id="@+id/tv_catalog_error_page"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_catalog_back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/catalog_error_page_bg"
+        android:text="@string/catalog_error_text"
+        android:textColor="@color/catalog_error_page_text"
+        android:textSize="20sp"
+        android:gravity="center|top"
+        android:paddingStart="50dp"
+        android:paddingEnd="50dp"
+        android:paddingTop="100dp"
+        android:visibility="gone"/>
+
+    <!-- progress bar -->
+
+    <ProgressBar
+        android:id="@+id/pb_catalog"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:indeterminateTint="@color/progress_bar" />
+
+</android.support.constraint.ConstraintLayout>

@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 
 import android.support.v7.widget.PopupMenu;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +18,11 @@ import com.bumptech.glide.request.RequestOptions;
 import com.feng.freader.R;
 import com.feng.freader.base.BaseActivity;
 import com.feng.freader.base.BasePresenter;
+import com.feng.freader.entity.bean.CatalogBean;
+import com.feng.freader.http.OkhttpCall;
+import com.feng.freader.http.OkhttpUtil;
 import com.feng.freader.util.BlurUtil;
+import com.google.gson.Gson;
 
 import java.security.MessageDigest;
 
@@ -57,9 +62,20 @@ public class TestActivity extends BaseActivity {
         mBlurBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PopupMenu popupMenu = new PopupMenu(TestActivity.this, mBlurBtn);
-                popupMenu.getMenuInflater().inflate(R.menu.menu_novel_intro, popupMenu.getMenu());
-                popupMenu.show();
+                String url = "http://api.pingcc.cn/?xsurl1=https://www.xbiquge6.com/69_69491/";
+                OkhttpUtil.getRequest(url, new OkhttpCall() {
+                    @Override
+                    public void onResponse(String json) {
+                        Gson gson = new Gson();
+                        CatalogBean bean = gson.fromJson(json, CatalogBean.class);
+                        Log.d(TAG, "onResponse: " + bean);
+                    }
+
+                    @Override
+                    public void onFailure(String errorMsg) {
+                        Log.d(TAG, "onFailure: " + errorMsg);
+                    }
+                });
             }
         });
     }

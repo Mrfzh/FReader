@@ -44,4 +44,10 @@
     <dimen name="novel_intro_margin_start_and_end">25dp</dimen>
     <dimen name="novel_intro_catalog_height">50dp</dimen>
 
+    <!-- catalog -->
+    <dimen name="catalog_top_bar_height">50dp</dimen>
+    <dimen name="catalog_second_bar_height">50dp</dimen>
+
+    <!-- item_catalog -->
+    <dimen name="item_catalog_height">50dp</dimen>
 </resources>
