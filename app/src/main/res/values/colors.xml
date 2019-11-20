@@ -102,4 +102,11 @@
     <!-- item_catalog -->
     <color name="item_catalog_text">#333333</color>
     <color name="item_catalog_bg_pressed">#e5e5e5</color>
+
+    <!-- item_bookshelf_novel -->
+    <color name="item_bookshelf_novel_name_bg">#93B6DC</color>
+    <color name="item_bookshelf_novel_name_text">#fcfcfc</color>
+
+    <!-- bookshelf -->
+    <color name="bookshelf_add_text">#fcfcfc</color>
 </resources>

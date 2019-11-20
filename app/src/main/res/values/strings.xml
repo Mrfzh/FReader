@@ -51,4 +51,7 @@
 
     <!-- item_catalog -->
     <string name="item_catalog_content">第一章 重生归来</string>
+
+    <!-- bookshelf -->
+    <string name="bookshelf_add">本机导入</string>
 </resources>

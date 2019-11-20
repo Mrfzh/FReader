@@ -1,24 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="200dp"
-    android:minHeight="200dp">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/item_bookshelf_novel_height"
+    android:minHeight="@dimen/item_bookshelf_novel_height"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp">
+
+    <ImageView
+        android:id="@+id/iv_item_bookshelf_novel_cover"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_bookshelf_novel_height"
+        android:src="@drawable/default_cover"
+        android:scaleType="fitXY" />
 
     <TextView
-        android:id="@+id/tv_item_bookshelf_novels_content"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@android:color/holo_blue_light"
-        android:layout_margin="10dp"
-        android:text="content"
+        android:id="@+id/tv_item_bookshelf_novel_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/item_bookshelf_novel_name_bg"
+        android:text="@string/item_novel_source_name"
+        android:textSize="12sp"
+        android:textColor="@color/item_bookshelf_novel_name_text"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:maxLines="1"
         android:gravity="center"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"/>
+        android:ellipsize="end"
+        android:layout_alignParentBottom="true"/>
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

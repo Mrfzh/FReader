@@ -4,14 +4,36 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bookshelf_bg">
+    android:background="@drawable/bookshelf_bg">
+
+    <ImageView
+        android:id="@+id/iv_bookshelf_add"
+        android:layout_width="@dimen/bookshelf_top_bar_height"
+        android:layout_height="@dimen/bookshelf_top_bar_height"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/bookshelf_add"
+        android:padding="13dp"
+        android:layout_marginTop="@dimen/bookshelf_top_bar_margin_top"/>
+
+    <TextView
+        android:id="@+id/tv_bookshelf_add"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/bookshelf_top_bar_height"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/iv_bookshelf_add"
+        android:text="@string/bookshelf_add"
+        android:textColor="@color/bookshelf_add_text"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/bookshelf_top_bar_margin_top"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_bookshelf_bookshelf_novels_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_bookshelf_add"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:overScrollMode="never" />

@@ -64,28 +64,7 @@ public class BookshelfFragment extends BaseFragment {
     private void initBookshelfNovelsRv() {
         mBookshelfNovelsRv = getActivity().findViewById(R.id.rv_bookshelf_bookshelf_novels_list);
         final GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3);
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int i) {
-                return i == 0? 3 : 1;
-                // 表示第 0 个 item 占 3 列（即占一整行），其他 item 占一列
-            }
-        });
         mBookshelfNovelsRv.setLayoutManager(gridLayoutManager);
         mBookshelfNovelsRv.setAdapter(new BookshelfNovelsAdapter(getActivity(), mContentList));
-        mBookshelfNovelsRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                // 当滑动停止时
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    // 如果第 0 个 item 不完全可见，则第 1 个 item 上滑，隐藏第 0 个 item
-                    if (gridLayoutManager.findFirstVisibleItemPosition() == 0 &&
-                            gridLayoutManager.findFirstCompletelyVisibleItemPosition() != 0) {
-                        RecyclerViewUtil.smoothScrollToPosition(mBookshelfNovelsRv, 1);
-                    }
-                }
-            }
-        });
     }
 }
