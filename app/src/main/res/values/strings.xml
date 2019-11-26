@@ -54,4 +54,9 @@
 
     <!-- bookshelf -->
     <string name="bookshelf_add">本机导入</string>
+
+    <!-- read -->
+    <string name="read_novel_title">章节名</string>
+    <string name="read_novel_progress">0.00%</string>
+    <string name="read_state">正在加载中…</string>
 </resources>

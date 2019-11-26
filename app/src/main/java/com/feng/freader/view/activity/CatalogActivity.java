@@ -1,5 +1,6 @@
 package com.feng.freader.view.activity;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -102,13 +103,14 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
     }
 
     private void initAdapter() {
-//        Log.d(TAG, "initAdapter: mChapterNameList = " + mChapterNameList);
         mCatalogAdapter = new CatalogAdapter(this, mChapterNameList);
         mCatalogAdapter.setOnCatalogListener(new CatalogAdapter.CatalogListener() {
             @Override
             public void clickItem(int position) {
-                // TODO 点击 item，跳转到相应小说阅读页
-                showShortToast("click " + position);
+                // 点击 item，跳转到相应小说阅读页
+                Intent intent = new Intent(CatalogActivity.this, ReadActivity.class);
+                intent.putExtra(ReadActivity.KEY_URL, mChapterUrlList.get(position));
+                startActivity(intent);
             }
         });
     }

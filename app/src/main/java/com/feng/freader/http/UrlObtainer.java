@@ -37,4 +37,14 @@ public class UrlObtainer {
     public static String getCatalogInfo(String url) {
         return "http://api.pingcc.cn/?xsurl1=" + url;
     }
+
+    /**
+     * 获取具体章节信息
+     *
+     * @param url 对应章节的 url
+     * @return
+     */
+    public static String getDetailedChapter(String url) {
+        return "http://api.pingcc.cn/?xsurl2=" + url;
+    }
 }

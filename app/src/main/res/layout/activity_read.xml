@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.feng.freader.widget.PageView
+        android:id="@+id/pv_read_page_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingStart="@dimen/read_margin_start"
+        android:paddingEnd="@dimen/read_margin_start"
+        android:paddingTop="70dp"
+        android:paddingBottom="@dimen/read_margin_top"
+        android:background="@color/read_page_bg"/>
+
+    <TextView
+        android:id="@+id/tv_read_novel_title"
+        android:layout_width="180dp"
+        android:layout_height="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="@dimen/read_margin_start"
+        android:gravity="center|start"
+        android:text="@string/read_novel_title"
+        android:textSize="12sp"
+        android:textColor="@color/read_novel_title_text"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:layout_marginTop="30dp"/>
+
+    <TextView
+        android:id="@+id/tv_read_novel_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="@dimen/read_margin_start"
+        android:gravity="center|start"
+        android:text="@string/read_novel_progress"
+        android:textSize="12sp"
+        android:textColor="@color/read_novel_progress" />
+
+    <TextView
+        android:id="@+id/tv_read_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/read_state"
+        android:textColor="@color/read_novel_text"
+        android:textSize="20sp"/>
+
+</android.support.constraint.ConstraintLayout>

@@ -109,4 +109,10 @@
 
     <!-- bookshelf -->
     <color name="bookshelf_add_text">#fcfcfc</color>
+
+    <!-- read -->
+    <color name="read_page_bg">#D4C4A3</color>
+    <color name="read_novel_title_text">#675639</color>
+    <color name="read_novel_text">#453417</color>
+    <color name="read_novel_progress">#5F4E31</color>
 </resources>

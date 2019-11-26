@@ -56,4 +56,8 @@
     <!-- bookshelf -->
     <dimen name="bookshelf_top_bar_height">50dp</dimen>
     <dimen name="bookshelf_top_bar_margin_top">30dp</dimen>
+
+    <!-- read -->
+    <dimen name="read_margin_top">45dp</dimen>
+    <dimen name="read_margin_start">20dp</dimen>
 </resources>

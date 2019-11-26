@@ -26,4 +26,10 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
+
+    <style name="CTheme" parent="TransparentStatusBarTheme">
+        <item name="android:windowFullscreen">true</item>   <!--全屏-->
+    </style>
+
+
 </resources>
