@@ -31,7 +31,9 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
     private static final String TAG = "CatalogActivity";
     private static final String ORDER_POSITIVE = "↑正序";
     private static final String ORDER_REVERSE = "↓倒序";
-    public static final String KEY_URL = "key_url";
+    public static final String KEY_URL = "catalog_key_url";
+    public static final String KEY_NAME = "catalog_key_name";
+    public static final String KEY_COVER = "catalog_key_cover";
 
     private ImageView mBackIv;
     private ImageView mRefreshIv;
@@ -43,8 +45,11 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
 
     private CatalogAdapter mCatalogAdapter;
     private String mUrl;
+    private String mName;
+    private String mCover;
     private List<String> mChapterNameList = new ArrayList<>();
     private List<String> mChapterUrlList = new ArrayList<>();
+
     private boolean mIsReverse = false;     // 是否倒序显示章节
     private boolean mIsReversing = false;   // 是否正在倒置，正在倒置时倒置操作无效
     private boolean mIsRefreshing = true;
@@ -67,6 +72,8 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
     @Override
     protected void initData() {
         mUrl = getIntent().getStringExtra(KEY_URL);
+        mName = getIntent().getStringExtra(KEY_NAME);
+        mCover = getIntent().getStringExtra(KEY_COVER);
     }
 
     @Override
@@ -94,7 +101,9 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
         StatusBarUtil.setLightColorStatusBar(this);
         getWindow().setStatusBarColor(getResources().getColor(R.color.catalog_bg));
 
-        mPresenter.getCatalogData(UrlObtainer.getCatalogInfo(mUrl));
+        if (mUrl != null) {
+            mPresenter.getCatalogData(UrlObtainer.getCatalogInfo(mUrl));
+        }
     }
 
     @Override
@@ -109,7 +118,10 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
             public void clickItem(int position) {
                 // 点击 item，跳转到相应小说阅读页
                 Intent intent = new Intent(CatalogActivity.this, ReadActivity.class);
-                intent.putExtra(ReadActivity.KEY_URL, mChapterUrlList.get(position));
+                intent.putExtra(ReadActivity.KEY_CHAPTER_URL, mChapterUrlList.get(position));
+                intent.putExtra(ReadActivity.KEY_NOVEL_URL, mUrl);
+                intent.putExtra(ReadActivity.KEY_NAME, mName);
+                intent.putExtra(ReadActivity.KEY_COVER, mCover);
                 startActivity(intent);
             }
         });
@@ -151,7 +163,8 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
         mIsRefreshing = false;
         mProgressBar.setVisibility(View.GONE);
         mChapterOrderTv.setVisibility(View.GONE);
-        if (errorMsg.equals(Constant.NOT_FOUND_CATALOG_INFO)) {
+        if (errorMsg.equals(Constant.NOT_FOUND_CATALOG_INFO)
+            || errorMsg.equals(Constant.JSON_ERROR)) {
             String s = "很抱歉，该小说链接已失效，请阅读其他源";
             mErrorPageTv.setText(s);
         } else {

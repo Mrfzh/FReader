@@ -49,7 +49,7 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
     @Override
     protected void initData() {
         mManager = DatabaseManager.getInstance();
-        mContentList = mManager.searchAllHistory();
+        mContentList = mManager.queryAllHistory();
     }
 
     @Override
@@ -111,7 +111,7 @@ public class HistoryFragment extends BaseFragment implements View.OnClickListene
             return;
         }
         // 更新历史搜索视图
-        mContentList = mManager.searchAllHistory();
+        mContentList = mManager.queryAllHistory();
         if (mContentList.size() != 0) {
             mClearAllIv.setVisibility(View.VISIBLE);
         }

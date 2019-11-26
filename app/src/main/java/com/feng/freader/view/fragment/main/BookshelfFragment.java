@@ -1,5 +1,6 @@
 package com.feng.freader.view.fragment.main;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,8 +12,16 @@ import com.feng.freader.R;
 import com.feng.freader.adapter.BookshelfNovelsAdapter;
 import com.feng.freader.base.BaseFragment;
 import com.feng.freader.base.BasePresenter;
+import com.feng.freader.constant.EventBusCode;
+import com.feng.freader.db.DatabaseManager;
+import com.feng.freader.entity.data.BookshelfNovelDbData;
+import com.feng.freader.entity.eventbus.Event;
 import com.feng.freader.util.RecyclerViewUtil;
 import com.feng.freader.util.StatusBarUtil;
+import com.feng.freader.view.activity.ReadActivity;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +36,13 @@ public class BookshelfFragment extends BaseFragment {
 
     private RecyclerView mBookshelfNovelsRv;
 
-    private List<String> mContentList = new ArrayList<>();
+    private List<BookshelfNovelDbData> mDataList = new ArrayList<>();
+    private DatabaseManager mDbManager;
+    private BookshelfNovelsAdapter mBookshelfNovelsAdapter;
 
     @Override
     protected void doInOnCreate() {
-
+        StatusBarUtil.setLightColorStatusBar(getActivity());
     }
 
     @Override
@@ -41,9 +52,8 @@ public class BookshelfFragment extends BaseFragment {
 
     @Override
     protected void initData() {
-        for (int i = 0; i < 20; i++) {
-            mContentList.add("Content " + i);
-        }
+        mDbManager = DatabaseManager.getInstance();
+        mDataList = mDbManager.queryAllBookshelfNovel();
     }
 
     @Override
@@ -58,13 +68,51 @@ public class BookshelfFragment extends BaseFragment {
 
     @Override
     protected boolean isRegisterEventBus() {
-        return false;
+        return true;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventCome(Event event) {
+        switch (event.getCode()) {
+            case EventBusCode.BOOKSHELF_UPDATE_LIST:
+                updateList();
+                break;
+            default:
+                break;
+        }
     }
 
     private void initBookshelfNovelsRv() {
         mBookshelfNovelsRv = getActivity().findViewById(R.id.rv_bookshelf_bookshelf_novels_list);
         final GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3);
         mBookshelfNovelsRv.setLayoutManager(gridLayoutManager);
-        mBookshelfNovelsRv.setAdapter(new BookshelfNovelsAdapter(getActivity(), mContentList));
+        initAdapter();
+        mBookshelfNovelsRv.setAdapter(mBookshelfNovelsAdapter);
     }
+
+    private void initAdapter() {
+        mBookshelfNovelsAdapter = new BookshelfNovelsAdapter(getActivity(), mDataList);
+        mBookshelfNovelsAdapter.setBookshelfNovelListener(new BookshelfNovelsAdapter.BookshelfNovelListener() {
+            @Override
+            public void clickItem(int position) {
+                Intent intent = new Intent(getActivity(), ReadActivity.class);
+                intent.putExtra(ReadActivity.KEY_NOVEL_URL, mDataList.get(position).getNovelUrl());
+                intent.putExtra(ReadActivity.KEY_NAME, mDataList.get(position).getName());
+                intent.putExtra(ReadActivity.KEY_COVER, mDataList.get(position).getCover());
+                intent.putExtra(ReadActivity.KEY_CHAPTER_URL, mDataList.get(position).getChapterUrl());
+                intent.putExtra(ReadActivity.KEY_POSITION, mDataList.get(position).getPosition());
+                startActivity(intent);
+            }
+        });
+    }
+
+    /**
+     * 更新列表信息
+     */
+    private void updateList() {
+        mDataList.clear();
+        mDataList.addAll(mDbManager.queryAllBookshelfNovel());
+        mBookshelfNovelsAdapter.notifyDataSetChanged();
+    }
+
 }

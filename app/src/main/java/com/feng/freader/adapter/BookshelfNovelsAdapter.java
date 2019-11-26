@@ -9,8 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.feng.freader.R;
+import com.feng.freader.entity.data.BookshelfNovelDbData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,11 +24,21 @@ import java.util.List;
 public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
 
     private Context mContext;
-    private List<String> mNameList;
+    private List<BookshelfNovelDbData> mDataList;
 
-    public BookshelfNovelsAdapter(Context mContext, List<String> mNameList) {
+    private BookshelfNovelListener mListener;
+
+    public interface BookshelfNovelListener {
+        void clickItem(int position);
+    }
+
+    public void setBookshelfNovelListener(BookshelfNovelListener mListener) {
+        this.mListener = mListener;
+    }
+
+    public BookshelfNovelsAdapter(Context mContext, List<BookshelfNovelDbData> mDataList) {
         this.mContext = mContext;
-        this.mNameList = mNameList;
+        this.mDataList = mDataList;
     }
 
     @NonNull
@@ -35,16 +49,29 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int i) {
         ContentViewHolder contentViewHolder = (ContentViewHolder) viewHolder;
-        contentViewHolder.name.setText(mNameList.get(i));
 
-        contentViewHolder.cover.setImageResource(R.drawable.default_cover);
+        contentViewHolder.name.setText(mDataList.get(i).getName());
+
+        Glide.with(mContext)
+                .load(mDataList.get(i).getCover())
+                .apply(new RequestOptions()
+                    .placeholder(R.drawable.cover_place_holder)
+                    .error(R.drawable.cover_error))
+                .into(contentViewHolder.cover);
+
+        contentViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.clickItem(i);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return mNameList.size();
+        return mDataList.size();
     }
 
     class ContentViewHolder extends RecyclerView.ViewHolder {

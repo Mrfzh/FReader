@@ -214,6 +214,8 @@ public class NovelIntroActivity extends BaseActivity implements View.OnClickList
                 Log.d(TAG, "startActivity: run");
                 Intent intent = new Intent(NovelIntroActivity.this, CatalogActivity.class);
                 intent.putExtra(CatalogActivity.KEY_URL, mNovelSourceData.getUrl());    // 传递当前小说的 url
+                intent.putExtra(CatalogActivity.KEY_NAME, mNovelSourceData.getName());  // 传递当前小说的名字
+                intent.putExtra(CatalogActivity.KEY_COVER, mNovelSourceData.getCover()); // 传递当前小说的封面
                 startActivity(intent);
                 break;
             default:

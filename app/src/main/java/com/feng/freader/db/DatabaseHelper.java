@@ -15,9 +15,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "fzh";
 
+    // 创建历史记录表
     private static final String CREATE_TABLE_HISTORY = "create table " + Constant.TABLE_HISTORY
             + " (" + Constant.TABLE_HISTORY_ID + " integer primary key autoincrement, "
             + Constant.TABLE_HISTORY_WORD + " text)";
+
+    // 创建书架书籍信息表
+    private static final String CREATE_TABLE_BOOKSHELF_NOVEL = "create table " + Constant.TABLE_BOOKSHELF_NOVEL
+            + " (" + Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL + " text primary key, "
+            + Constant.TABLE_BOOKSHELF_NOVEL_NAME + " text, "
+            + Constant.TABLE_BOOKSHELF_NOVEL_COVER + " text, "
+            + Constant.TABLE_BOOKSHELF_NOVEL_CHAPTER_URL + " text, "
+            + Constant.TABLE_BOOKSHELF_NOVEL_POSITION + " int)";
 
     DatabaseHelper(Context context, String name,
                    SQLiteDatabase.CursorFactory factory, int version) {
@@ -27,6 +36,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_HISTORY);
+        db.execSQL(CREATE_TABLE_BOOKSHELF_NOVEL);
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.feng.freader.app.App;
 import com.feng.freader.constant.Constant;
+import com.feng.freader.entity.data.BookshelfNovelDbData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +56,7 @@ public class DatabaseManager {
     /**
      * 查询所有历史记录（较新的记录排前面）
      */
-    public List<String> searchAllHistory() {
+    public List<String> queryAllHistory() {
         List<String> res = new ArrayList<>();
         Cursor cursor = mDb.query(Constant.TABLE_HISTORY, null, null,
                 null, null, null,null);
@@ -86,5 +87,55 @@ public class DatabaseManager {
      */
     public void deleteAllHistories() {
         mDb.delete(Constant.TABLE_HISTORY, null, null);
+    }
+
+    /**
+     * 插入一条书架书籍数据
+     */
+    public void insertBookshelfNovel(BookshelfNovelDbData dbData) {
+        ContentValues values = new ContentValues();
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL, dbData.getNovelUrl());
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_NAME, dbData.getName());
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_COVER, dbData.getCover());
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_CHAPTER_URL, dbData.getChapterUrl());
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_POSITION, dbData.getPosition());
+        mDb.insert(Constant.TABLE_BOOKSHELF_NOVEL, null, values);
+    }
+
+    /**
+     * 查询所有书架书籍信息
+     */
+    public List<BookshelfNovelDbData> queryAllBookshelfNovel() {
+        // 查询表中所有数据
+        Cursor cursor = mDb.query(Constant.TABLE_BOOKSHELF_NOVEL, null, null, null,
+                null, null ,null);
+        List<BookshelfNovelDbData> res = new ArrayList<>();
+        if (cursor.moveToLast()) {
+            do {
+                String novelUrl = cursor.getString(
+                        cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL));
+                String name = cursor.getString(
+                        cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_NAME));
+                String cover = cursor.getString(
+                        cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_COVER));
+                String chapterUrl = cursor.getString(
+                        cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_CHAPTER_URL));
+                int position = cursor.getInt(
+                        cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_POSITION));
+                res.add(new BookshelfNovelDbData(novelUrl, name, cover, chapterUrl, position));
+            } while (cursor.moveToPrevious());
+        }
+        cursor.close();
+
+        return res;
+    }
+
+    /**
+     * 根据小说 url 删除一条书架书籍数据集
+     */
+    public void deleteBookshelfNovel(String novelUrl) {
+        mDb.delete(Constant.TABLE_BOOKSHELF_NOVEL,
+                Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL + " = ?",
+                new String[]{novelUrl});
     }
 }

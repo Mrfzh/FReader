@@ -155,7 +155,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 // 切换 Fragment
                 changeFragment(FG_BOOKSHELF);
                 // 改变状态栏颜色
-                StatusBarUtil.setDarkColorStatusBar(this);
+                StatusBarUtil.setLightColorStatusBar(this);
                 break;
             case R.id.v_main_bottom_bar_discovery_bg:
                 // 如果已经点击了该菜单项，无视该操作

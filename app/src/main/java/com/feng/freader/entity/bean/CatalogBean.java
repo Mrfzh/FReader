@@ -61,6 +61,22 @@ public class CatalogBean {
         public void setAuthor(String author) {
             this.author = author;
         }
+
+        public String getTime() {
+            return time;
+        }
+
+        public void setTime(String time) {
+            this.time = time;
+        }
+
+        public String getCover() {
+            return cover;
+        }
+
+        public void setCover(String cover) {
+            this.cover = cover;
+        }
     }
 
     public static class ListBean {

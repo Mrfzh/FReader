@@ -15,7 +15,8 @@
     <color name="color_main_bottom_bar_separator">#bbbbbb</color>
 
     <!-- bookshelf -->
-    <color name="bookshelf_bg">#fdfdfd</color>
+    <color name="bookshelf_bg">#fafafa</color>
+    <color name="bookshelf_add_text">#333333</color>
 
     <!-- discovery -->
     <color name="discovery_bg">#fdfdfd</color>
@@ -106,9 +107,6 @@
     <!-- item_bookshelf_novel -->
     <color name="item_bookshelf_novel_name_bg">#93B6DC</color>
     <color name="item_bookshelf_novel_name_text">#fcfcfc</color>
-
-    <!-- bookshelf -->
-    <color name="bookshelf_add_text">#fcfcfc</color>
 
     <!-- read -->
     <color name="read_page_bg">#D4C4A3</color>

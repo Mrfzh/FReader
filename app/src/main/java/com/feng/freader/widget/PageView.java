@@ -223,4 +223,18 @@ public class PageView extends View {
         }
         return res;
     }
+
+    /**
+     * 获取当前页第一个字符的位置
+     */
+    public int getPosition() {
+        return mPosition;
+    }
+
+    /**
+     * 设置第一个字符的位置
+     */
+    public void setPosition(int mPosition) {
+        this.mPosition = mPosition;
+    }
 }
