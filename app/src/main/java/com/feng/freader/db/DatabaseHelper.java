@@ -25,7 +25,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + " (" + Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL + " text primary key, "
             + Constant.TABLE_BOOKSHELF_NOVEL_NAME + " text, "
             + Constant.TABLE_BOOKSHELF_NOVEL_COVER + " text, "
-            + Constant.TABLE_BOOKSHELF_NOVEL_CHAPTER_URL + " text, "
+            + Constant.TABLE_BOOKSHELF_NOVEL_CHAPTER_INDEX + " int, "
+            + Constant.TABLE_BOOKSHELF_NOVEL_PAGE_INDEX + " int, "
             + Constant.TABLE_BOOKSHELF_NOVEL_POSITION + " int)";
 
     DatabaseHelper(Context context, String name,

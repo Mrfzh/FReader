@@ -8,16 +8,18 @@ public class BookshelfNovelDbData {
     private String novelUrl;
     private String name;
     private String cover;
-    private String chapterUrl;
+    private int chapterIndex;
     private int position;
+    private int pageIndex;
 
-    public BookshelfNovelDbData(String novelUrl, String name,
-                                String cover, String chapterUrl, int position) {
+    public BookshelfNovelDbData(String novelUrl, String name, String cover,
+                                int chapterIndex, int position, int pageIndex) {
         this.novelUrl = novelUrl;
         this.name = name;
         this.cover = cover;
-        this.chapterUrl = chapterUrl;
+        this.chapterIndex = chapterIndex;
         this.position = position;
+        this.pageIndex = pageIndex;
     }
 
     public String getNovelUrl() {
@@ -44,14 +46,6 @@ public class BookshelfNovelDbData {
         this.cover = cover;
     }
 
-    public String getChapterUrl() {
-        return chapterUrl;
-    }
-
-    public void setChapterUrl(String chapterUrl) {
-        this.chapterUrl = chapterUrl;
-    }
-
     public int getPosition() {
         return position;
     }
@@ -60,14 +54,31 @@ public class BookshelfNovelDbData {
         this.position = position;
     }
 
+    public int getChapterIndex() {
+        return chapterIndex;
+    }
+
+    public void setChapterIndex(int chapterIndex) {
+        this.chapterIndex = chapterIndex;
+    }
+
+    public int getPageIndex() {
+        return pageIndex;
+    }
+
+    public void setPageIndex(int pageIndex) {
+        this.pageIndex = pageIndex;
+    }
+
     @Override
     public String toString() {
         return "BookshelfNovelDbData{" +
                 "novelUrl='" + novelUrl + '\'' +
                 ", name='" + name + '\'' +
                 ", cover='" + cover + '\'' +
-                ", chapterUrl='" + chapterUrl + '\'' +
+                ", chapterIndex=" + chapterIndex +
                 ", position=" + position +
+                ", pageIndex=" + pageIndex +
                 '}';
     }
 }

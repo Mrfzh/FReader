@@ -97,8 +97,9 @@ public class DatabaseManager {
         values.put(Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL, dbData.getNovelUrl());
         values.put(Constant.TABLE_BOOKSHELF_NOVEL_NAME, dbData.getName());
         values.put(Constant.TABLE_BOOKSHELF_NOVEL_COVER, dbData.getCover());
-        values.put(Constant.TABLE_BOOKSHELF_NOVEL_CHAPTER_URL, dbData.getChapterUrl());
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_CHAPTER_INDEX, dbData.getChapterIndex());
         values.put(Constant.TABLE_BOOKSHELF_NOVEL_POSITION, dbData.getPosition());
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_PAGE_INDEX, dbData.getPageIndex());
         mDb.insert(Constant.TABLE_BOOKSHELF_NOVEL, null, values);
     }
 
@@ -118,11 +119,14 @@ public class DatabaseManager {
                         cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_NAME));
                 String cover = cursor.getString(
                         cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_COVER));
-                String chapterUrl = cursor.getString(
-                        cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_CHAPTER_URL));
+                int chapterIndex = cursor.getInt(
+                        cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_CHAPTER_INDEX));
                 int position = cursor.getInt(
                         cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_POSITION));
-                res.add(new BookshelfNovelDbData(novelUrl, name, cover, chapterUrl, position));
+                int pageIndex = cursor.getInt(
+                        cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_PAGE_INDEX));
+                res.add(new BookshelfNovelDbData(novelUrl, name, cover,
+                        chapterIndex, position, pageIndex));
             } while (cursor.moveToPrevious());
         }
         cursor.close();

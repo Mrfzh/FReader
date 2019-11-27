@@ -118,10 +118,11 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
             public void clickItem(int position) {
                 // 点击 item，跳转到相应小说阅读页
                 Intent intent = new Intent(CatalogActivity.this, ReadActivity.class);
-                intent.putExtra(ReadActivity.KEY_CHAPTER_URL, mChapterUrlList.get(position));
                 intent.putExtra(ReadActivity.KEY_NOVEL_URL, mUrl);
                 intent.putExtra(ReadActivity.KEY_NAME, mName);
                 intent.putExtra(ReadActivity.KEY_COVER, mCover);
+                intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, position);
+                intent.putExtra(ReadActivity.KEY_IS_REVERSE, mIsReverse);
                 startActivity(intent);
             }
         });

@@ -56,6 +56,7 @@ public class Constant {
     public static final String TABLE_BOOKSHELF_NOVEL_NOVEL_URL = "TABLE_BOOKSHELF_NOVEL_NOVEL_URL"; // 小说 URL（主键）
     public static final String TABLE_BOOKSHELF_NOVEL_NAME = "TABLE_BOOKSHELF_NOVEL_NAME"; // 小说名
     public static final String TABLE_BOOKSHELF_NOVEL_COVER = "TABLE_BOOKSHELF_NOVEL_COVER"; // 小说封面
-    public static final String TABLE_BOOKSHELF_NOVEL_CHAPTER_URL = "TABLE_BOOKSHELF_NOVEL_CHAPTER_URL"; // 章节 URL
-    public static final String TABLE_BOOKSHELF_NOVEL_POSITION = "TABLE_BOOKSHELF_NOVEL_POSITION"; // 第一个字的索引（用于跳转到上一次进度）
+    public static final String TABLE_BOOKSHELF_NOVEL_CHAPTER_INDEX = "TABLE_BOOKSHELF_NOVEL_CHAPTER_INDEX"; // 章节索引
+    public static final String TABLE_BOOKSHELF_NOVEL_POSITION = "TABLE_BOOKSHELF_NOVEL_POSITION"; // 位置索引（用于跳转到上一次进度）
+    public static final String TABLE_BOOKSHELF_NOVEL_PAGE_INDEX = "TABLE_BOOKSHELF_NOVEL_PAGE_INDEX";   // 页数索引
 }

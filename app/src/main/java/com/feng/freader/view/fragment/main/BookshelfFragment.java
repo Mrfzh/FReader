@@ -96,11 +96,16 @@ public class BookshelfFragment extends BaseFragment {
             @Override
             public void clickItem(int position) {
                 Intent intent = new Intent(getActivity(), ReadActivity.class);
+                // 小说 url
                 intent.putExtra(ReadActivity.KEY_NOVEL_URL, mDataList.get(position).getNovelUrl());
+                // 小说名
                 intent.putExtra(ReadActivity.KEY_NAME, mDataList.get(position).getName());
+                // 小说封面 url
                 intent.putExtra(ReadActivity.KEY_COVER, mDataList.get(position).getCover());
-                intent.putExtra(ReadActivity.KEY_CHAPTER_URL, mDataList.get(position).getChapterUrl());
+                // 开始阅读的位置
+                intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, mDataList.get(position).getChapterIndex());
                 intent.putExtra(ReadActivity.KEY_POSITION, mDataList.get(position).getPosition());
+                intent.putExtra(ReadActivity.KEY_PAGE_INDEX, mDataList.get(position).getPageIndex());
                 startActivity(intent);
             }
         });

@@ -29,6 +29,7 @@ public class PageView extends View {
 
     private PageViewListener mListener;
     private String mContent;    // 文本内容
+    private boolean mIsShowContent = true;  // 是否显示文本内容
 
     private int mPosition = 0;  // 当前页第一个字的索引
     private int mNextPosition;  // 下一页第一个字的索引
@@ -38,6 +39,8 @@ public class PageView extends View {
 
     public interface PageViewListener {
         void updateProgress(String progress);     // 通知主活动更新进度
+        void next();    // 显示下一页
+        void pre();     // 显示上一页
     }
 
     public void setPageViewListener(PageViewListener listener) {
@@ -65,8 +68,19 @@ public class PageView extends View {
         mPaint.setColor(getResources().getColor(R.color.read_novel_text));
     }
 
-    public void setContent(String content) {
+    /**
+     * 初始化
+     *
+     * @param content 文本
+     * @param position 该页的首字索引
+     * @param pageIndex 页数
+     */
+    public void init(String content, int position, int pageIndex) {
         mContent = content;
+        mPosition = position;
+        mPageIndex = pageIndex;
+        mIsShowContent = true;
+        mFirstPosMap.clear();
         // 进行视图重绘
         invalidate();
     }
@@ -75,7 +89,7 @@ public class PageView extends View {
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
-        if (mContent == null || mContent.length() == 0) {
+        if (!mIsShowContent || mContent == null || mContent.length() == 0) {
             return;
         }
 
@@ -190,6 +204,7 @@ public class PageView extends View {
     private void next() {
         mPosition = mNextPosition;
         if (mPosition >= mContent.length()) { // 已经到达最后
+            mListener.next();
             return;
         }
         mPageIndex++;
@@ -201,6 +216,7 @@ public class PageView extends View {
      */
     private void pre() {
         if (mPageIndex == 0) {  // 已经是第一页
+            mListener.pre();
             return;
         }
         mPageIndex--;
@@ -232,9 +248,24 @@ public class PageView extends View {
     }
 
     /**
+     * 获取当前页索引
+     */
+    public int getPageIndex() {
+        return mPageIndex;
+    }
+
+    /**
      * 设置第一个字符的位置
      */
     public void setPosition(int mPosition) {
         this.mPosition = mPosition;
+    }
+
+    /**
+     * 清除所有内容
+     */
+    public void clear() {
+        mIsShowContent = false;
+        invalidate();
     }
 }
