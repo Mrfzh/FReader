@@ -113,4 +113,8 @@
     <color name="read_novel_title_text">#675639</color>
     <color name="read_novel_text">#453417</color>
     <color name="read_novel_progress">#5F4E31</color>
+    <color name="read_setting_bg">#2B211F</color>
+    <color name="read_bottom_bar_text">#6F6A66</color>
+    <color name="read_seek_bar_bg">#5B574E</color>
+    <color name="read_seek_bar_thumb">#f9f9f9</color>
 </resources>

@@ -41,6 +41,7 @@ public class PageView extends View {
         void updateProgress(String progress);     // 通知主活动更新进度
         void next();    // 显示下一页
         void pre();     // 显示上一页
+        void showOrHideSettingBar();  // 弹出或隐藏设置栏
     }
 
     public void setPageViewListener(PageViewListener listener) {
@@ -180,15 +181,15 @@ public class PageView extends View {
                 // 根据离开时的位置进行不同操作
                 float rawX = event.getRawX();
                 float screenWidth = BaseUtil.getScreenWidth();
-                if (rawX <= 0.4f * screenWidth) {
+                if (rawX <= 0.35f * screenWidth) {
                     // 上一页
                     pre();
-                } else if (rawX >= 0.6f * screenWidth) {
+                } else if (rawX >= 0.65f * screenWidth) {
                     // 下一页
                     next();
                 } else {
-                    // 弹出菜单
-                    Log.d(TAG, "onTouchEvent: 弹出菜单");
+                    // 弹出或隐藏菜单
+                    mListener.showOrHideSettingBar();
                 }
                 break;
             default:

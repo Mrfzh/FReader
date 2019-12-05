@@ -124,6 +124,8 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                 intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, position);
                 intent.putExtra(ReadActivity.KEY_IS_REVERSE, mIsReverse);
                 startActivity(intent);
+                // 跳转后活动结束
+                finish();
             }
         });
     }

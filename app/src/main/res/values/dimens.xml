@@ -60,4 +60,9 @@
     <!-- read -->
     <dimen name="read_margin_top">45dp</dimen>
     <dimen name="read_margin_start">20dp</dimen>
+    <dimen name="read_seek_bar_thumb_width">15dp</dimen>
+    <dimen name="read_bottom_bar_first_height">50dp</dimen>
+    <dimen name="read_bottom_bar_second_height">60dp</dimen>
+    <dimen name="read_bottom_bar_third_height">40dp</dimen>
+    <dimen name="read_bottom_bar_text_size">12sp</dimen>
 </resources>

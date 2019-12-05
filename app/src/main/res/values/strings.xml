@@ -59,4 +59,11 @@
     <string name="read_novel_title">章节名</string>
     <string name="read_novel_progress">0.00%</string>
     <string name="read_state">正在加载中…</string>
+    <string name="read_previous_chapter">上一章</string>
+    <string name="read_next_chapter">下一章</string>
+    <string name="read_catalog">目录</string>
+    <string name="read_brightness">亮度</string>
+    <string name="read_night_mode">夜间</string>
+    <string name="read_day_mode">日间</string>
+    <string name="read_setting">设置</string>
 </resources>
