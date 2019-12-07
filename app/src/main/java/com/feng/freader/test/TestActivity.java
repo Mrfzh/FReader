@@ -11,9 +11,11 @@ import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
+import android.widget.Switch;
 
 
 import com.bumptech.glide.Glide;
@@ -40,6 +42,7 @@ public class TestActivity extends BaseActivity {
     private View mTopView;
     private View mBottomView;
     private SeekBar mSeekBar;
+    private Switch mSwitch;
 
     private boolean mIsHide = true;
 
@@ -92,6 +95,18 @@ public class TestActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 mSeekBar.setProgress(30);
+            }
+        });
+
+        mSwitch = findViewById(R.id.sw_test);
+        mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    showShortToast("打开开关");
+                } else {
+                    showShortToast("关闭开关");
+                }
             }
         });
     }

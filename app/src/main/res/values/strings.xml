@@ -66,4 +66,5 @@
     <string name="read_night_mode">夜间</string>
     <string name="read_day_mode">日间</string>
     <string name="read_setting">设置</string>
+    <string name="read_system_brightness">系统亮度</string>
 </resources>

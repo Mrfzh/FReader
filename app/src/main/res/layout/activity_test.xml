@@ -23,7 +23,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"/>
 
     <View
         android:id="@+id/v_test_bottom"
@@ -43,7 +44,22 @@
         android:layout_marginTop="100dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_test" />
+        app:layout_constraintTop_toBottomOf="@id/btn_test"
+        android:visibility="gone"/>
+
+    <Switch
+        android:id="@+id/sw_test"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/read_brightness_bar_second_height"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:track="@drawable/selector_switch_track"
+        android:thumb="@drawable/selector_switch_thumb"
+        />
+
+
 
 
 </android.support.constraint.ConstraintLayout>

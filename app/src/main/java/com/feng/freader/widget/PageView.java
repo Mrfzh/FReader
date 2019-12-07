@@ -74,13 +74,12 @@ public class PageView extends View {
      *
      * @param content 文本
      * @param position 该页的首字索引
-     * @param pageIndex 页数
      */
-    public void init(String content, int position, int pageIndex) {
+    public void init(String content, int position) {
         mContent = content;
         mPosition = position;
-        mPageIndex = pageIndex;
         mIsShowContent = true;
+        mPageIndex = 0;
         mFirstPosMap.clear();
         // 进行视图重绘
         invalidate();

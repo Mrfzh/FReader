@@ -46,7 +46,6 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     public static final String KEY_COVER = "read_key_cover";
     public static final String KEY_CHAPTER_INDEX = "read_key_chapter_index";
     public static final String KEY_POSITION = "read_key_position";
-    public static final String KEY_PAGE_INDEX = "read_key_page_index";
     public static final String KEY_IS_REVERSE = "read_key_is_reverse";
 
     private PageView mPageView;
@@ -56,6 +55,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
 
     private RelativeLayout mTopSettingBarRv;
     private ConstraintLayout mBottomSettingBarCv;
+    private ConstraintLayout mBrightnessBarCv;
     private ImageView mBackIv;
     private ImageView mMenuIv;
     private TextView mPreviousChapterTv;
@@ -78,12 +78,12 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     private String mCover;  // 小说封面
     private int mChapterIndex;   // 当前阅读的章节索引
     private int mPosition;  // 文本开始读取位置
-    private int mPageIndex; // 文本开始读取的页
     private boolean mIsReverse; // 是否需要将章节列表倒序
 
     private DatabaseManager mDbManager;
     private boolean mIsLoadingChapter = false;  // 是否正在加载具体章节
     private boolean mIsShowingOrHidingSettingBar = false;  // 是否正在显示或隐藏设置栏
+    private boolean mIsShowBrightnessBar = false;   // 是否正在显示亮度栏
 
     @Override
     protected void doBeforeSetContentView() {
@@ -107,7 +107,6 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         mCover = getIntent().getStringExtra(KEY_COVER);
         mChapterIndex = getIntent().getIntExtra(KEY_CHAPTER_INDEX, 0);
         mPosition = getIntent().getIntExtra(KEY_POSITION, 0);
-        mPageIndex = getIntent().getIntExtra(KEY_PAGE_INDEX, 0);
         mIsReverse = getIntent().getBooleanExtra(KEY_IS_REVERSE, false);
         Log.d(TAG, "initData: mNovelUrl = " + mNovelUrl +
                 ", mName = " + mName + ", mCover = " + mCover + ", mPosition = " + mPosition);
@@ -119,6 +118,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     protected void initView() {
         mTopSettingBarRv = findViewById(R.id.rv_read_top_bar);
         mBottomSettingBarCv = findViewById(R.id.cv_read_bottom_bar);
+        mBrightnessBarCv = findViewById(R.id.cv_read_brightness_bar);
 
         mPageView = findViewById(R.id.pv_read_page_view);
         mPageView.setPageViewListener(new PageView.PageViewListener() {
@@ -152,6 +152,12 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             @Override
             public void showOrHideSettingBar() {
                 if (mIsShowingOrHidingSettingBar) {
+                    Log.d(TAG, "showOrHideSettingBar: run 1");
+                    return;
+                }
+                if (mIsShowBrightnessBar) {
+                    Log.d(TAG, "showOrHideSettingBar: run 2");
+                    hideBrightnessBar();
                     return;
                 }
                 mIsShowingOrHidingSettingBar = true;
@@ -159,6 +165,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     // 显示设置栏
                     showSettingBar();
                 } else {
+                    Log.d(TAG, "showOrHideSettingBar: run 3");
                     // 隐藏设置栏
                     hideSettingBar();
                 }
@@ -272,7 +279,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
 //        Log.d(TAG, "getDetailedChapterDataSuccess: mChapterUrlList = " + mChapterUrlList);
 //        Log.d(TAG, "getDetailedChapterDataSuccess: data = " + data);
         mStateTv.setVisibility(View.GONE);
-        mPageView.init(data.getContent(), mPosition, mPageIndex);
+        mPageView.init(data.getContent(), mPosition);
         mNovelTitleTv.setText(data.getName());
     }
 
@@ -292,7 +299,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         if (mIsLoadingChapter) {    // 已经在加载了
             return;
         }
-        mPosition = mPageIndex = 0;     // 归零
+        mPosition = 0;     // 归零
         mPageView.clear();              // 清除当前文字
         mStateTv.setVisibility(View.VISIBLE);
         mStateTv.setText(LOADING_TEXT);
@@ -327,7 +334,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         Animation bottomAnim = AnimationUtils.loadAnimation(
                 this, R.anim.read_setting_bottom_enter);
         mTopSettingBarRv.startAnimation(topAnim);
-        mBottomSettingBarCv.setAnimation(bottomAnim);
+        mBottomSettingBarCv.startAnimation(bottomAnim);
         mTopSettingBarRv.setVisibility(View.VISIBLE);
         mBottomSettingBarCv.setVisibility(View.VISIBLE);
     }
@@ -375,19 +382,63 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             }
         });
         mTopSettingBarRv.startAnimation(topExitAnim);
-        mBottomSettingBarCv.setAnimation(bottomExitAnim);
+        mBottomSettingBarCv.startAnimation(bottomExitAnim);
+    }
+
+    /**
+     * 显示亮度栏
+     */
+    private void showBrightnessBar() {
+        mIsShowBrightnessBar = true;
+        Animation bottomAnim = AnimationUtils.loadAnimation(
+                this, R.anim.read_setting_bottom_enter);
+        mBrightnessBarCv.startAnimation(bottomAnim);
+        mBrightnessBarCv.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 隐藏亮度栏
+     */
+    private void hideBrightnessBar() {
+        Animation bottomExitAnim = AnimationUtils.loadAnimation(
+                this, R.anim.read_setting_bottom_exit);
+        bottomExitAnim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mBrightnessBarCv.setVisibility(View.GONE);
+                mIsShowBrightnessBar = false;
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        mBrightnessBarCv.startAnimation(bottomExitAnim);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_read_back:
+                finish();
                 break;
             case R.id.iv_read_menu:
                 break;
             case R.id.tv_read_previous_chapter:
+                // 加载上一章节
+                mChapterIndex--;
+                showChapter();
                 break;
             case R.id.tv_read_next_chapter:
+                // 加载下一章节
+                mChapterIndex++;
+                showChapter();
                 break;
             case R.id.iv_read_catalog:
             case R.id.tv_read_catalog:
@@ -404,7 +455,9 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 break;
             case R.id.iv_read_brightness:
             case R.id.tv_read_brightness:
-                showShortToast("亮度");
+                // 隐藏底部设置栏，并显示亮度栏
+                hideSettingBar();
+                showBrightnessBar();
                 break;
             case R.id.iv_read_day_and_night_mode:
             case R.id.tv_read_day_and_night_mode:

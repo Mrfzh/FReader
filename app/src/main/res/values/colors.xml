@@ -117,4 +117,10 @@
     <color name="read_bottom_bar_text">#6F6A66</color>
     <color name="read_seek_bar_bg">#5B574E</color>
     <color name="read_seek_bar_thumb">#f9f9f9</color>
+    <color name="read_brightness_bar_line">#c1c1c1</color>
+    <color name="read_brightness_bar_text">#C3BEBA</color>
+    <color name="read_switch_thumb_on">#E7544D</color>
+    <color name="read_switch_thumb_off">#E6E9E8</color>
+    <color name="read_switch_track_on">#60302C</color>
+    <color name="read_switch_track_off"> #646562</color>
 </resources>

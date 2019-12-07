@@ -65,4 +65,8 @@
     <dimen name="read_bottom_bar_second_height">60dp</dimen>
     <dimen name="read_bottom_bar_third_height">40dp</dimen>
     <dimen name="read_bottom_bar_text_size">12sp</dimen>
+    <dimen name="read_brightness_bar_first_height">60dp</dimen>
+    <dimen name="read_brightness_bar_second_height">60dp</dimen>
+    <dimen name="read_switch_thumb_size">20dp</dimen>
+    <dimen name="read_switch_track_radius">20dp</dimen>
 </resources>
