@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager;
  * Created on 2019/11/9
  */
 public class SoftInputUtil {
+
     /**
      * 隐藏软键盘(只适用于Activity，不适用于Fragment)
      */

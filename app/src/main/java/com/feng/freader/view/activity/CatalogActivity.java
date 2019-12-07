@@ -16,11 +16,17 @@ import com.feng.freader.adapter.CatalogAdapter;
 import com.feng.freader.base.BaseActivity;
 import com.feng.freader.base.BasePresenter;
 import com.feng.freader.constant.Constant;
+import com.feng.freader.constant.EventBusCode;
 import com.feng.freader.constract.ICatalogContract;
 import com.feng.freader.entity.data.CatalogData;
+import com.feng.freader.entity.eventbus.Event;
+import com.feng.freader.entity.eventbus.HoldReadActivityEvent;
 import com.feng.freader.http.UrlObtainer;
 import com.feng.freader.presenter.CatalogPresenter;
 import com.feng.freader.util.StatusBarUtil;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,6 +53,13 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
     private String mUrl;
     private String mName;
     private String mCover;
+
+    /*
+     * 如果是在 ReadActivity 通过点击目录跳转过来，那么持有该 ReadActivity 的引用，
+     * 之后如果跳转到新的章节时，利用该引用结束旧的 ReadActivity
+     */
+    private ReadActivity mReadActivity;
+
     private List<String> mChapterNameList = new ArrayList<>();
     private List<String> mChapterUrlList = new ArrayList<>();
 
@@ -108,7 +121,21 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
 
     @Override
     protected boolean isRegisterEventBus() {
-        return false;
+        return true;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onStickyEventBusCome(Event event) {
+        switch (event.getCode()) {
+            case EventBusCode.CATALOG_HOLD_READ_ACTIVITY:
+                if (event.getData() instanceof HoldReadActivityEvent) {
+                    HoldReadActivityEvent holdReadActivityEvent = (HoldReadActivityEvent) event.getData();
+                    mReadActivity = holdReadActivityEvent.getReadActivity();
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     private void initAdapter() {
@@ -125,6 +152,9 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
                 intent.putExtra(ReadActivity.KEY_IS_REVERSE, mIsReverse);
                 startActivity(intent);
                 // 跳转后活动结束
+                if (mReadActivity != null) {
+                    mReadActivity.finish();
+                }
                 finish();
             }
         });

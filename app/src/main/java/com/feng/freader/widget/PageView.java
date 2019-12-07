@@ -33,14 +33,14 @@ public class PageView extends View {
 
     private int mPosition = 0;  // 当前页第一个字的索引
     private int mNextPosition;  // 下一页第一个字的索引
-    private int mPageIndex = 0; // 当前页的索引（第几页）
+    private int mPageIndex = 0; // 当前页的索引（第几页，并不一定从 0 开始，只是作为 hashMap 的 key 而存在）
     // 记录每页的第一个字的索引，key 为页号，value 为第一个字的索引
     private HashMap<Integer, Integer> mFirstPosMap = new HashMap<>();
 
     public interface PageViewListener {
         void updateProgress(String progress);     // 通知主活动更新进度
-        void next();    // 显示下一页
-        void pre();     // 显示上一页
+        void next();    // 显示下一章节
+        void pre();     // 显示上一章节
         void showOrHideSettingBar();  // 弹出或隐藏设置栏
     }
 
@@ -164,7 +164,6 @@ public class PageView extends View {
         } else {
             progress = String.valueOf(f * 100).substring(0,5) + "%";
         }
-//        Log.d(TAG, "drawText: progress = " + progress);
         if (mListener != null) {
             mListener.updateProgress(progress);
         }
@@ -205,7 +204,7 @@ public class PageView extends View {
     private void next() {
         mPosition = mNextPosition;
         if (mPosition >= mContent.length()) { // 已经到达最后
-            mListener.next();
+            mListener.next();   // 下一章节
             return;
         }
         mPageIndex++;
@@ -216,13 +215,18 @@ public class PageView extends View {
      * 绘制上一页
      */
     private void pre() {
-        if (mPageIndex == 0) {  // 已经是第一页
-            mListener.pre();
+        if (mPosition == 0) {  // 已经是第一页
+            mListener.pre();    // 上一章节
             return;
         }
         mPageIndex--;
-        mPosition = mFirstPosMap == null? 0 : mFirstPosMap.containsKey(mPageIndex) ?
-                mFirstPosMap.get(mPageIndex) : 0;
+        if (mFirstPosMap.containsKey(mPageIndex)) {
+            mPosition = mFirstPosMap.get(mPageIndex);
+        } else {
+            // mPosition 更新为上一页的首字符位置
+            updatePrePageFirstPos();
+        }
+
         invalidate();
     }
 
@@ -268,5 +272,45 @@ public class PageView extends View {
     public void clear() {
         mIsShowContent = false;
         invalidate();
+    }
+
+    /**
+     * 将 mPosition 更新为上一页的首字符位置
+     */
+    private void updatePrePageFirstPos() {
+        int currPos = mPosition - 1;  // 当前页的字符位置
+        float width = getWidth();
+        float height = getHeight();
+        int paddingTop = getPaddingTop();
+        int paddingBottom = getPaddingBottom();
+        int paddingStart = getPaddingStart();
+        int paddingEnd = getPaddingEnd();
+
+        float currY = height - paddingBottom;
+
+        while (currY >= mTextSize + paddingTop && currPos >= 0) {
+            // 绘制上一行
+            int num = 0;    // 上一行的字数
+            float textWidths = 0f;  // 上一行字体所占宽度
+            for (int i = currPos; i >= 0; i--) {
+                String currS = mContent.substring(i, i+1);
+                if (currS.equals("\n")) {    // 换行
+                    num++;
+                    break;
+                }
+                float textWidth = getTextWidth(mPaint, currS);
+                if (textWidths + textWidth >= width - paddingStart - paddingEnd) {  // 达到最大字数
+                    break;
+                }
+                textWidths += textWidth;
+                num++;
+            }
+
+            currPos -= num;
+            currY -= mTextSize + mRowSpace;
+        }
+
+        // 更新
+        mPosition = currPos - 1 < 0? 0 : currPos - 1;
     }
 }

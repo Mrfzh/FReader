@@ -1,5 +1,6 @@
 package com.feng.freader.view.activity;
 
+import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.feng.freader.db.DatabaseManager;
 import com.feng.freader.entity.data.BookshelfNovelDbData;
 import com.feng.freader.entity.data.DetailedChapterData;
 import com.feng.freader.entity.eventbus.Event;
+import com.feng.freader.entity.eventbus.HoldReadActivityEvent;
 import com.feng.freader.http.UrlObtainer;
 import com.feng.freader.presenter.ReadPresenter;
 import com.feng.freader.test.TestActivity;
@@ -389,7 +391,16 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 break;
             case R.id.iv_read_catalog:
             case R.id.tv_read_catalog:
-                showShortToast("目录");
+                // 目录
+                // 跳转到目录页面，并且将自己的引用传递给它
+                Event<HoldReadActivityEvent> event = new Event<>(EventBusCode.CATALOG_HOLD_READ_ACTIVITY,
+                        new HoldReadActivityEvent(ReadActivity.this));
+                EventBusUtil.sendStickyEvent(event);
+                Intent intent = new Intent(ReadActivity.this, CatalogActivity.class);
+                intent.putExtra(CatalogActivity.KEY_URL, mNovelUrl);    // 传递当前小说的 url
+                intent.putExtra(CatalogActivity.KEY_NAME, mName);  // 传递当前小说的名字
+                intent.putExtra(CatalogActivity.KEY_COVER, mCover); // 传递当前小说的封面
+                startActivity(intent);
                 break;
             case R.id.iv_read_brightness:
             case R.id.tv_read_brightness:
