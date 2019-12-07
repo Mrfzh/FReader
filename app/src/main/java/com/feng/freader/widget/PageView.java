@@ -312,4 +312,11 @@ public class PageView extends View {
         // 更新
         mPosition = currPos - 1 < 0? 0 : currPos - 1;
     }
+
+    /**
+     * 设置文字颜色
+     */
+    public void setTextColor(int color) {
+        mPaint.setColor(color);
+    }
 }

@@ -1,14 +1,18 @@
 package com.feng.freader.view.activity;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.support.constraint.ConstraintLayout;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.feng.freader.R;
@@ -23,6 +27,7 @@ import com.feng.freader.entity.eventbus.HoldReadActivityEvent;
 import com.feng.freader.http.UrlObtainer;
 import com.feng.freader.presenter.ReadPresenter;
 import com.feng.freader.test.TestActivity;
+import com.feng.freader.util.BaseUtil;
 import com.feng.freader.util.EventBusUtil;
 import com.feng.freader.util.StatusBarUtil;
 import com.feng.freader.widget.PageView;
@@ -69,6 +74,8 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     private TextView mBrightnessTv;
     private TextView mDayAndNightModeTv;
     private TextView mSettingTv;
+    private SeekBar mBrightnessProcessSb;
+    private Switch mSystemBrightnessSw;
 
     // 章节 url 列表（通过网络请求获取）
     private List<String> mChapterUrlList;
@@ -84,6 +91,8 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     private boolean mIsLoadingChapter = false;  // 是否正在加载具体章节
     private boolean mIsShowingOrHidingSettingBar = false;  // 是否正在显示或隐藏设置栏
     private boolean mIsShowBrightnessBar = false;   // 是否正在显示亮度栏
+    private boolean mIsSystemBrightness = true;     // 是否为系统亮度
+    private boolean mIsNightMode = false;           // 是否为夜间模式
 
     @Override
     protected void doBeforeSetContentView() {
@@ -152,11 +161,9 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             @Override
             public void showOrHideSettingBar() {
                 if (mIsShowingOrHidingSettingBar) {
-                    Log.d(TAG, "showOrHideSettingBar: run 1");
                     return;
                 }
                 if (mIsShowBrightnessBar) {
-                    Log.d(TAG, "showOrHideSettingBar: run 2");
                     hideBrightnessBar();
                     return;
                 }
@@ -165,7 +172,6 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     // 显示设置栏
                     showSettingBar();
                 } else {
-                    Log.d(TAG, "showOrHideSettingBar: run 3");
                     // 隐藏设置栏
                     hideSettingBar();
                 }
@@ -202,6 +208,49 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         mSettingTv.setOnClickListener(this);
 
         mNovelProcessSb = findViewById(R.id.sb_read_novel_progress);
+
+        mBrightnessProcessSb = findViewById(R.id.sb_read_brightness_bar_brightness_progress);
+        mBrightnessProcessSb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (!mIsSystemBrightness) {
+                    // 调整亮度
+                    BaseUtil.setWindowBrightness(ReadActivity.this,
+                            (float) progress / 100);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        mSystemBrightnessSw = findViewById(R.id.sw_read_system_brightness_switch);
+        mSystemBrightnessSw.setChecked(true);
+        mSystemBrightnessSw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // 变为系统亮度
+                    mIsSystemBrightness = true;
+                    // 将屏幕亮度设置为系统亮度
+                    BaseUtil.setWindowBrightness(ReadActivity.this,
+                            (float) BaseUtil.getSystemBrightness() / BaseUtil.getBrightnessMax());
+                } else {
+                    // 变为自定义亮度
+                    mIsSystemBrightness = false;
+                    // 将屏幕亮度设置为自定义亮度
+                    BaseUtil.setWindowBrightness(ReadActivity.this,
+                            (float) mBrightnessProcessSb.getProgress() / 100);
+                }
+            }
+        });
     }
 
     @Override
@@ -461,7 +510,14 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 break;
             case R.id.iv_read_day_and_night_mode:
             case R.id.tv_read_day_and_night_mode:
-                showShortToast("日间夜间模式");
+                if (!mIsNightMode) {    // 进入夜间模式
+                    nightMode();
+                    mIsNightMode = true;
+                } else {    // 进入日间模式
+                    dayMode();
+                    mIsNightMode = false;
+                }
+                hideSettingBar();
                 break;
             case R.id.iv_read_setting:
             case R.id.tv_read_setting:
@@ -470,5 +526,37 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             default:
                 break;
         }
+    }
+
+    /**
+     * 进入夜间模式
+     */
+    private void nightMode() {
+        // 设置图标和文字
+        mDayAndNightModeIv.setImageResource(R.drawable.read_day);
+        mDayAndNightModeTv.setText(getResources().getString(R.string.read_day_mode));
+        // 设置相关颜色
+        mNovelTitleTv.setTextColor(getResources().getColor(R.color.read_night_mode_title));
+        mNovelProgressTv.setTextColor(getResources().getColor(R.color.read_night_mode_title));
+        mStateTv.setTextColor(getResources().getColor(R.color.read_night_mode_text));
+        mPageView.setBackgroundColor(getResources().getColor(R.color.read_night_mode_bg));
+        mPageView.setTextColor(getResources().getColor(R.color.read_night_mode_text));
+        mPageView.invalidate();
+    }
+
+    /**
+     * 进入白天模式
+     */
+    private void dayMode() {
+        // 设置图标和文字
+        mDayAndNightModeIv.setImageResource(R.drawable.read_night);
+        mDayAndNightModeTv.setText(getResources().getString(R.string.read_night_mode));
+        // 设置相关颜色
+        mNovelTitleTv.setTextColor(getResources().getColor(R.color.read_novel_title_text));
+        mNovelProgressTv.setTextColor(getResources().getColor(R.color.read_novel_progress));
+        mStateTv.setTextColor(getResources().getColor(R.color.read_novel_text));
+        mPageView.setBackgroundColor(getResources().getColor(R.color.read_page_bg));
+        mPageView.setTextColor(getResources().getColor(R.color.read_novel_text));
+        mPageView.invalidate();
     }
 }
