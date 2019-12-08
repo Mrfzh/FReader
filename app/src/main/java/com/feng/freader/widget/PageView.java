@@ -67,7 +67,7 @@ public class PageView extends View {
     private void init() {
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
-        mPaint.setColor(getResources().getColor(R.color.read_novel_text));
+        mPaint.setColor(getResources().getColor(R.color.read_theme_0_text));
 
         mTextSize = SpUtil.getTextSize();
         mRowSpace = SpUtil.getRowSpace();

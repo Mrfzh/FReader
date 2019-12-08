@@ -109,10 +109,6 @@
     <color name="item_bookshelf_novel_name_text">#fcfcfc</color>
 
     <!-- read -->
-    <color name="read_page_bg">#D4C4A3</color>
-    <color name="read_novel_title_text">#675639</color>
-    <color name="read_novel_text">#453417</color>
-    <color name="read_novel_progress">#5F4E31</color>
     <color name="read_setting_bg">#2B211F</color>
     <color name="read_bottom_bar_text">#6F6A66</color>
     <color name="read_seek_bar_bg">#5B574E</color>
@@ -127,4 +123,16 @@
     <color name="read_night_mode_text">#676A71</color>
     <color name="read_night_mode_title">#575757</color>
     <color name="read_setting_bar_text">#C1BDBC</color>
+
+    <color name="read_theme_0_bg">#D4C4A3</color>
+    <color name="read_theme_0_text">#453417</color>
+    <color name="read_theme_1_bg">#F8F3EF</color>
+    <color name="read_theme_1_text">#453417</color>
+    <color name="read_theme_2_bg">#CCE9CD</color>
+    <color name="read_theme_2_text">#453417</color>
+    <color name="read_theme_3_bg">#323232</color>
+    <color name="read_theme_3_text">#D3D2CD</color>
+    <color name="read_theme_4_bg">#B69A96</color>
+    <color name="read_theme_4_text">#453417</color>
+
 </resources>

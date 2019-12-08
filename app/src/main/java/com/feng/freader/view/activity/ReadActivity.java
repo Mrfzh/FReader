@@ -85,6 +85,11 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     private ImageView mIncreaseFontIv;
     private ImageView mDecreaseRowSpaceIv;
     private ImageView mIncreaseRowSpaceIv;
+    private View mTheme0;
+    private View mTheme1;
+    private View mTheme2;
+    private View mTheme3;
+    private View mTheme4;
 
     // 章节 url 列表（通过网络请求获取）
     private List<String> mChapterUrlList;
@@ -101,12 +106,14 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     private boolean mIsShowingOrHidingBar = false;  // 是否正在显示或隐藏上下栏
     private boolean mIsShowBrightnessBar = false;   // 是否正在显示亮度栏
     private boolean mIsSystemBrightness = true;     // 是否为系统亮度
-    private boolean mIsNightMode = false;           // 是否为夜间模式
     private boolean mIsShowSettingBar = false;      // 是否正在显示设置栏
 
     // 从 sp 中读取
     private float mTextSize;    // 字体大小
     private float mRowSpace;    // 行距
+    private int mTheme;         // 阅读主题
+    private float mBrightness;  // 屏幕亮度，为 -1 时表示系统亮度
+    private boolean mIsNightMode;           // 是否为夜间模式
 
     private float mMinTextSize = 36f;
     private float mMaxTextSize = 76f;
@@ -143,6 +150,9 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
 
         mTextSize = SpUtil.getTextSize();
         mRowSpace = SpUtil.getRowSpace();
+        mTheme = SpUtil.getTheme();
+        mBrightness = SpUtil.getBrightness();
+        mIsNightMode = SpUtil.getIsNightMode();
     }
 
     @Override
@@ -242,8 +252,8 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (!mIsSystemBrightness) {
                     // 调整亮度
-                    BaseUtil.setWindowBrightness(ReadActivity.this,
-                            (float) progress / 100);
+                    mBrightness = (float) progress / 100;
+                    BaseUtil.setWindowBrightness(ReadActivity.this, mBrightness);
                 }
             }
 
@@ -259,13 +269,13 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         });
 
         mSystemBrightnessSw = findViewById(R.id.sw_read_system_brightness_switch);
-        mSystemBrightnessSw.setChecked(true);
         mSystemBrightnessSw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     // 变为系统亮度
                     mIsSystemBrightness = true;
+                    mBrightness = -1f;
                     // 将屏幕亮度设置为系统亮度
                     BaseUtil.setWindowBrightness(ReadActivity.this,
                             (float) BaseUtil.getSystemBrightness() / BaseUtil.getBrightnessMax());
@@ -273,8 +283,8 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     // 变为自定义亮度
                     mIsSystemBrightness = false;
                     // 将屏幕亮度设置为自定义亮度
-                    BaseUtil.setWindowBrightness(ReadActivity.this,
-                            (float) mBrightnessProcessSb.getProgress() / 100);
+                    mBrightness = (float) mBrightnessProcessSb.getProgress() / 100;
+                    BaseUtil.setWindowBrightness(ReadActivity.this, mBrightness);
                 }
             }
         });
@@ -287,12 +297,36 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         mDecreaseRowSpaceIv.setOnClickListener(this);
         mIncreaseRowSpaceIv = findViewById(R.id.iv_read_increase_row_space);
         mIncreaseRowSpaceIv.setOnClickListener(this);
+        mTheme0 = findViewById(R.id.v_read_theme_0);
+        mTheme0.setOnClickListener(this);
+        mTheme1 = findViewById(R.id.v_read_theme_1);
+        mTheme1.setOnClickListener(this);
+        mTheme2 = findViewById(R.id.v_read_theme_2);
+        mTheme2.setOnClickListener(this);
+        mTheme3 = findViewById(R.id.v_read_theme_3);
+        mTheme3.setOnClickListener(this);
+        mTheme4 = findViewById(R.id.v_read_theme_4);
+        mTheme4.setOnClickListener(this);
     }
 
     @Override
     protected void doAfterInit() {
         // 先通过小说 url 获取所有章节 url 信息
         mPresenter.getChapterUrlList(UrlObtainer.getCatalogInfo(mNovelUrl));
+
+        if (mBrightness == -1f) {    // 系统亮度
+            mSystemBrightnessSw.setChecked(true);
+        } else {    // 自定义亮度
+            mBrightnessProcessSb.setProgress((int) (100 * mBrightness));
+            mSystemBrightnessSw.setChecked(false);
+            BaseUtil.setWindowBrightness(this, mBrightness);
+        }
+
+        if (mIsNightMode) { // 夜间模式
+            nightMode();
+        } else {    // 日间模式
+            dayMode();
+        }
     }
 
     @Override
@@ -313,9 +347,12 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         Event event = new Event(EventBusCode.BOOKSHELF_UPDATE_LIST);
         EventBusUtil.sendEvent(event);
 
-        // 更新字体大小和行距
+        // 将相关数据存入 SP
         SpUtil.saveTextSize(mTextSize);
         SpUtil.saveRowSpace(mRowSpace);
+        SpUtil.saveTheme(mTheme);
+        SpUtil.saveBrightness(mBrightness);
+        SpUtil.saveIsNightMode(mIsNightMode);
     }
 
     @Override
@@ -589,10 +626,8 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             case R.id.tv_read_day_and_night_mode:
                 if (!mIsNightMode) {    // 进入夜间模式
                     nightMode();
-                    mIsNightMode = true;
                 } else {    // 进入日间模式
                     dayMode();
-                    mIsNightMode = false;
                 }
                 hideBar();
                 break;
@@ -630,6 +665,41 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 mRowSpace++;
                 mPageView.setRowSpace(mRowSpace);
                 break;
+            case R.id.v_read_theme_0:
+                if (!mIsNightMode && mTheme == 0) {
+                    break;
+                }
+                mTheme = 0;
+                updateWithTheme();
+                break;
+            case R.id.v_read_theme_1:
+                if (!mIsNightMode && mTheme == 1) {
+                    break;
+                }
+                mTheme = 1;
+                updateWithTheme();
+                break;
+            case R.id.v_read_theme_2:
+                if (!mIsNightMode && mTheme == 2) {
+                    break;
+                }
+                mTheme = 2;
+                updateWithTheme();
+                break;
+            case R.id.v_read_theme_3:
+                if (!mIsNightMode && mTheme == 3) {
+                    break;
+                }
+                mTheme = 3;
+                updateWithTheme();
+                break;
+            case R.id.v_read_theme_4:
+                if (!mIsNightMode && mTheme == 4) {
+                    break;
+                }
+                mTheme = 4;
+                updateWithTheme();
+                break;
             default:
                 break;
         }
@@ -639,6 +709,13 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
      * 进入夜间模式
      */
     private void nightMode() {
+        mIsNightMode = true;
+        // 取消主题
+        mTheme0.setSelected(false);
+        mTheme1.setSelected(false);
+        mTheme2.setSelected(false);
+        mTheme3.setSelected(false);
+        mTheme4.setSelected(false);
         // 设置图标和文字
         mDayAndNightModeIv.setImageResource(R.drawable.read_day);
         mDayAndNightModeTv.setText(getResources().getString(R.string.read_day_mode));
@@ -655,15 +732,64 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
      * 进入白天模式
      */
     private void dayMode() {
+        mIsNightMode = false;
         // 设置图标和文字
         mDayAndNightModeIv.setImageResource(R.drawable.read_night);
         mDayAndNightModeTv.setText(getResources().getString(R.string.read_night_mode));
+        // 根据主题进行相关设置
+        updateWithTheme();
+    }
+
+    /**
+     * 根据主题更新阅读界面
+     */
+    private void updateWithTheme() {
+        if (mIsNightMode) {
+            // 退出夜间模式
+            mDayAndNightModeIv.setImageResource(R.drawable.read_night);
+            mDayAndNightModeTv.setText(getResources().getString(R.string.read_night_mode));
+            mIsNightMode = false;
+        }
+        mTheme0.setSelected(false);
+        mTheme1.setSelected(false);
+        mTheme2.setSelected(false);
+        mTheme3.setSelected(false);
+        mTheme4.setSelected(false);
+        int bgColor = getResources().getColor(R.color.read_theme_0_bg);
+        int textColor = getResources().getColor(R.color.read_theme_0_text);
+        switch (mTheme) {
+            case 0:
+                mTheme0.setSelected(true);
+                bgColor = getResources().getColor(R.color.read_theme_0_bg);
+                textColor = getResources().getColor(R.color.read_theme_0_text);
+                break;
+            case 1:
+                mTheme1.setSelected(true);
+                bgColor = getResources().getColor(R.color.read_theme_1_bg);
+                textColor = getResources().getColor(R.color.read_theme_1_text);
+                break;
+            case 2:
+                mTheme2.setSelected(true);
+                bgColor = getResources().getColor(R.color.read_theme_2_bg);
+                textColor = getResources().getColor(R.color.read_theme_2_text);
+                break;
+            case 3:
+                mTheme3.setSelected(true);
+                bgColor = getResources().getColor(R.color.read_theme_3_bg);
+                textColor = getResources().getColor(R.color.read_theme_3_text);
+                break;
+            case 4:
+                mTheme4.setSelected(true);
+                bgColor = getResources().getColor(R.color.read_theme_4_bg);
+                textColor = getResources().getColor(R.color.read_theme_4_text);
+                break;
+        }
         // 设置相关颜色
-        mNovelTitleTv.setTextColor(getResources().getColor(R.color.read_novel_title_text));
-        mNovelProgressTv.setTextColor(getResources().getColor(R.color.read_novel_progress));
-        mStateTv.setTextColor(getResources().getColor(R.color.read_novel_text));
-        mPageView.setBackgroundColor(getResources().getColor(R.color.read_page_bg));
-        mPageView.setTextColor(getResources().getColor(R.color.read_novel_text));
+        mNovelTitleTv.setTextColor(textColor);
+        mNovelProgressTv.setTextColor(textColor);
+        mStateTv.setTextColor(textColor);
+        mPageView.setBackgroundColor(bgColor);
+        mPageView.setTextColor(textColor);
         mPageView.invalidate();
     }
 }

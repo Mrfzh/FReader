@@ -16,7 +16,7 @@
         android:paddingEnd="@dimen/read_margin_start"
         android:paddingTop="70dp"
         android:paddingBottom="@dimen/read_margin_top"
-        android:background="@color/read_page_bg"/>
+        android:background="@color/read_theme_0_bg" />
 
     <TextView
         android:id="@+id/tv_read_novel_title"
@@ -28,7 +28,7 @@
         android:gravity="center|start"
         android:text="@string/read_novel_title"
         android:textSize="12sp"
-        android:textColor="@color/read_novel_title_text"
+        android:textColor="@color/read_theme_0_text"
         android:maxLines="1"
         android:ellipsize="end"
         android:layout_marginTop="30dp"/>
@@ -43,7 +43,7 @@
         android:gravity="center|start"
         android:text="@string/read_novel_progress"
         android:textSize="12sp"
-        android:textColor="@color/read_novel_progress" />
+        android:textColor="@color/read_theme_0_text" />
 
     <TextView
         android:id="@+id/tv_read_state"
@@ -54,7 +54,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:text="@string/read_state"
-        android:textColor="@color/read_novel_text"
+        android:textColor="@color/read_theme_0_text"
         android:textSize="20sp"/>
 
     <!-- top bar -->
@@ -325,14 +325,14 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/cv_read_setting_bar"
         android:layout_width="0dp"
-        android:layout_height="90dp"
+        android:layout_height="140dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:background="@color/read_setting_bg"
-        android:visibility="gone"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        android:visibility="gone">
 
         <!-- first -->
 
@@ -415,6 +415,64 @@
             app:layout_constraintBottom_toBottomOf="@id/iv_read_increase_row_space"
             app:layout_constraintEnd_toEndOf="@id/iv_read_increase_row_space"
             app:layout_constraintStart_toStartOf="@id/iv_read_increase_row_space" />
+
+        <!-- second -->
+        <View
+            android:id="@+id/v_read_theme_0"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/read_setting_bar_second_height"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_read_decrease_font"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/v_read_theme_1"
+            android:background="@drawable/selector_read_theme_0"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="10dp"/>
+
+        <View
+            android:id="@+id/v_read_theme_1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/read_setting_bar_second_height"
+            app:layout_constraintStart_toEndOf="@id/v_read_theme_0"
+            app:layout_constraintTop_toBottomOf="@id/iv_read_decrease_font"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/v_read_theme_2"
+            android:background="@drawable/selector_read_theme_1"
+            android:layout_margin="10dp"/>
+
+        <View
+            android:id="@+id/v_read_theme_2"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/read_setting_bar_second_height"
+            app:layout_constraintStart_toEndOf="@id/v_read_theme_1"
+            app:layout_constraintTop_toBottomOf="@id/iv_read_decrease_font"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/v_read_theme_3"
+            android:background="@drawable/selector_read_theme_2"
+            android:layout_margin="10dp"/>
+
+        <View
+            android:id="@+id/v_read_theme_3"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/read_setting_bar_second_height"
+            app:layout_constraintStart_toEndOf="@id/v_read_theme_2"
+            app:layout_constraintTop_toBottomOf="@id/iv_read_decrease_font"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/v_read_theme_4"
+            android:background="@drawable/selector_read_theme_3"
+            android:layout_margin="10dp"/>
+
+        <View
+            android:id="@+id/v_read_theme_4"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/read_setting_bar_second_height"
+            app:layout_constraintStart_toEndOf="@id/v_read_theme_3"
+            app:layout_constraintTop_toBottomOf="@id/iv_read_decrease_font"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/selector_read_theme_4"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="20dp"/>
 
     </android.support.constraint.ConstraintLayout>
 
