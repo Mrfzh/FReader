@@ -126,4 +126,5 @@
     <color name="read_night_mode_bg">#010101</color>
     <color name="read_night_mode_text">#676A71</color>
     <color name="read_night_mode_title">#575757</color>
+    <color name="read_setting_bar_text">#C1BDBC</color>
 </resources>

@@ -67,4 +67,8 @@
     <string name="read_day_mode">日间</string>
     <string name="read_setting">设置</string>
     <string name="read_system_brightness">系统亮度</string>
+    <string name="read_decrease_font">缩小字体</string>
+    <string name="read_increase_font">放大字体</string>
+    <string name="read_decrease_row_space">减小行距</string>
+    <string name="read_increase_row_space">增大行距</string>
 </resources>

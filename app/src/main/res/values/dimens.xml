@@ -69,4 +69,5 @@
     <dimen name="read_brightness_bar_second_height">60dp</dimen>
     <dimen name="read_switch_thumb_size">20dp</dimen>
     <dimen name="read_switch_track_radius">20dp</dimen>
+    <dimen name="read_setting_bar_first_height">70dp</dimen>
 </resources>

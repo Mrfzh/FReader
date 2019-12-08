@@ -314,4 +314,100 @@
 
     </android.support.constraint.ConstraintLayout>
 
+    <!-- setting bar -->
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cv_read_setting_bar"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/read_setting_bg"
+        android:visibility="gone">
+
+        <!-- first -->
+
+        <ImageView
+            android:id="@+id/iv_read_decrease_font"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/read_setting_bar_first_height"
+            android:src="@drawable/read_decrease_font"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/iv_read_increase_font"
+            android:padding="22dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/iv_read_decrease_font"
+            app:layout_constraintEnd_toEndOf="@id/iv_read_decrease_font"
+            app:layout_constraintBottom_toBottomOf="@id/iv_read_decrease_font"
+            android:text="@string/read_decrease_font"
+            android:textColor="@color/read_setting_bar_text"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:id="@+id/iv_read_increase_font"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/read_setting_bar_first_height"
+            android:src="@drawable/read_increase_font"
+            app:layout_constraintStart_toEndOf="@id/iv_read_decrease_font"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/iv_read_decrease_row_space"
+            android:padding="22dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/iv_read_increase_font"
+            app:layout_constraintEnd_toEndOf="@id/iv_read_increase_font"
+            app:layout_constraintBottom_toBottomOf="@id/iv_read_increase_font"
+            android:text="@string/read_increase_font"
+            android:textColor="@color/read_setting_bar_text"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:id="@+id/iv_read_decrease_row_space"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/read_setting_bar_first_height"
+            android:padding="22dp"
+            android:src="@drawable/read_decrease_row_space"
+            app:layout_constraintStart_toEndOf="@id/iv_read_increase_font"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/iv_read_increase_row_space"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/read_decrease_row_space"
+            android:textColor="@color/read_setting_bar_text"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_read_decrease_row_space"
+            app:layout_constraintEnd_toEndOf="@id/iv_read_decrease_row_space"
+            app:layout_constraintStart_toStartOf="@id/iv_read_decrease_row_space" />
+
+        <ImageView
+            android:id="@+id/iv_read_increase_row_space"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/read_setting_bar_first_height"
+            android:padding="23dp"
+            android:src="@drawable/read_increase_row_space"
+            app:layout_constraintStart_toEndOf="@id/iv_read_decrease_row_space"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/read_increase_row_space"
+            android:textColor="@color/read_setting_bar_text"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_read_increase_row_space"
+            app:layout_constraintEnd_toEndOf="@id/iv_read_increase_row_space"
+            app:layout_constraintStart_toStartOf="@id/iv_read_increase_row_space" />
+
+    </android.support.constraint.ConstraintLayout>
+
 </android.support.constraint.ConstraintLayout>

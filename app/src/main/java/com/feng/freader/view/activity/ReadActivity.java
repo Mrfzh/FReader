@@ -59,8 +59,10 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     private TextView mStateTv;
 
     private RelativeLayout mTopSettingBarRv;
-    private ConstraintLayout mBottomSettingBarCv;
+    private ConstraintLayout mBottomBarCv;
     private ConstraintLayout mBrightnessBarCv;
+    private ConstraintLayout mSettingBarCv;
+
     private ImageView mBackIv;
     private ImageView mMenuIv;
     private TextView mPreviousChapterTv;
@@ -74,8 +76,14 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     private TextView mBrightnessTv;
     private TextView mDayAndNightModeTv;
     private TextView mSettingTv;
+
     private SeekBar mBrightnessProcessSb;
     private Switch mSystemBrightnessSw;
+
+    private ImageView mDecreaseFontIv;
+    private ImageView mIncreaseFontIv;
+    private ImageView mDecreaseRowSpaceIv;
+    private ImageView mIncreaseRowSpaceIv;
 
     // 章节 url 列表（通过网络请求获取）
     private List<String> mChapterUrlList;
@@ -89,10 +97,11 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
 
     private DatabaseManager mDbManager;
     private boolean mIsLoadingChapter = false;  // 是否正在加载具体章节
-    private boolean mIsShowingOrHidingSettingBar = false;  // 是否正在显示或隐藏设置栏
+    private boolean mIsShowingOrHidingBar = false;  // 是否正在显示或隐藏上下栏
     private boolean mIsShowBrightnessBar = false;   // 是否正在显示亮度栏
     private boolean mIsSystemBrightness = true;     // 是否为系统亮度
     private boolean mIsNightMode = false;           // 是否为夜间模式
+    private boolean mIsShowSettingBar = false;      // 是否正在显示设置栏
 
     @Override
     protected void doBeforeSetContentView() {
@@ -126,8 +135,9 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     @Override
     protected void initView() {
         mTopSettingBarRv = findViewById(R.id.rv_read_top_bar);
-        mBottomSettingBarCv = findViewById(R.id.cv_read_bottom_bar);
+        mBottomBarCv = findViewById(R.id.cv_read_bottom_bar);
         mBrightnessBarCv = findViewById(R.id.cv_read_brightness_bar);
+        mSettingBarCv = findViewById(R.id.cv_read_setting_bar);
 
         mPageView = findViewById(R.id.pv_read_page_view);
         mPageView.setPageViewListener(new PageView.PageViewListener() {
@@ -160,20 +170,24 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
 
             @Override
             public void showOrHideSettingBar() {
-                if (mIsShowingOrHidingSettingBar) {
+                if (mIsShowingOrHidingBar) {
                     return;
                 }
                 if (mIsShowBrightnessBar) {
                     hideBrightnessBar();
                     return;
                 }
-                mIsShowingOrHidingSettingBar = true;
-                if (mTopSettingBarRv.getVisibility() != View.VISIBLE) {
-                    // 显示设置栏
-                    showSettingBar();
-                } else {
-                    // 隐藏设置栏
+                if (mIsShowSettingBar) {
                     hideSettingBar();
+                    return;
+                }
+                mIsShowingOrHidingBar = true;
+                if (mTopSettingBarRv.getVisibility() != View.VISIBLE) {
+                    // 显示上下栏
+                    showBar();
+                } else {
+                    // 隐藏上下栏
+                    hideBar();
                 }
             }
         });
@@ -251,6 +265,15 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 }
             }
         });
+
+        mDecreaseFontIv = findViewById(R.id.iv_read_decrease_font);
+        mDecreaseFontIv.setOnClickListener(this);
+        mIncreaseFontIv= findViewById(R.id.iv_read_increase_font);
+        mIncreaseFontIv.setOnClickListener(this);
+        mDecreaseRowSpaceIv = findViewById(R.id.iv_read_decrease_row_space);
+        mDecreaseRowSpaceIv.setOnClickListener(this);
+        mIncreaseRowSpaceIv = findViewById(R.id.iv_read_increase_row_space);
+        mIncreaseRowSpaceIv.setOnClickListener(this);
     }
 
     @Override
@@ -358,9 +381,9 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     }
 
     /**
-     * 显示设置栏
+     * 显示上下栏
      */
-    private void showSettingBar() {
+    private void showBar() {
         Animation topAnim = AnimationUtils.loadAnimation(
                 this, R.anim.read_setting_top_enter);
         topAnim.setAnimationListener(new Animation.AnimationListener() {
@@ -372,7 +395,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             @Override
             public void onAnimationEnd(Animation animation) {
                 // 结束时重置标记
-                mIsShowingOrHidingSettingBar = false;
+                mIsShowingOrHidingBar = false;
             }
 
             @Override
@@ -383,15 +406,15 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         Animation bottomAnim = AnimationUtils.loadAnimation(
                 this, R.anim.read_setting_bottom_enter);
         mTopSettingBarRv.startAnimation(topAnim);
-        mBottomSettingBarCv.startAnimation(bottomAnim);
+        mBottomBarCv.startAnimation(bottomAnim);
         mTopSettingBarRv.setVisibility(View.VISIBLE);
-        mBottomSettingBarCv.setVisibility(View.VISIBLE);
+        mBottomBarCv.setVisibility(View.VISIBLE);
     }
 
     /**
      * 隐藏设置栏
      */
-    private void hideSettingBar() {
+    private void hideBar() {
         Animation topExitAnim = AnimationUtils.loadAnimation(
                 this, R.anim.read_setting_top_exit);
         topExitAnim.setAnimationListener(new Animation.AnimationListener() {
@@ -403,7 +426,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             @Override
             public void onAnimationEnd(Animation animation) {
                 mTopSettingBarRv.setVisibility(View.GONE);
-                mIsShowingOrHidingSettingBar = false;
+                mIsShowingOrHidingBar = false;
                 StatusBarUtil.setLightColorStatusBar(ReadActivity.this);
             }
 
@@ -422,7 +445,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                mBottomSettingBarCv.setVisibility(View.GONE);
+                mBottomBarCv.setVisibility(View.GONE);
             }
 
             @Override
@@ -431,7 +454,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             }
         });
         mTopSettingBarRv.startAnimation(topExitAnim);
-        mBottomSettingBarCv.startAnimation(bottomExitAnim);
+        mBottomBarCv.startAnimation(bottomExitAnim);
     }
 
     /**
@@ -471,6 +494,43 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         mBrightnessBarCv.startAnimation(bottomExitAnim);
     }
 
+    /**
+     * 显示设置栏
+     */
+    private void showSettingBar() {
+        mIsShowSettingBar = true;
+        Animation bottomAnim = AnimationUtils.loadAnimation(
+                this, R.anim.read_setting_bottom_enter);
+        mSettingBarCv.startAnimation(bottomAnim);
+        mSettingBarCv.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 隐藏设置栏
+     */
+    private void hideSettingBar() {
+        Animation bottomExitAnim = AnimationUtils.loadAnimation(
+                this, R.anim.read_setting_bottom_exit);
+        bottomExitAnim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mSettingBarCv.setVisibility(View.GONE);
+                mIsShowSettingBar = false;
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        mSettingBarCv.startAnimation(bottomExitAnim);
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -504,8 +564,8 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 break;
             case R.id.iv_read_brightness:
             case R.id.tv_read_brightness:
-                // 隐藏底部设置栏，并显示亮度栏
-                hideSettingBar();
+                // 隐藏上下栏，并显示亮度栏
+                hideBar();
                 showBrightnessBar();
                 break;
             case R.id.iv_read_day_and_night_mode:
@@ -517,11 +577,25 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     dayMode();
                     mIsNightMode = false;
                 }
-                hideSettingBar();
+                hideBar();
                 break;
             case R.id.iv_read_setting:
             case R.id.tv_read_setting:
-                showShortToast("设置");
+                // 隐藏上下栏，并显示设置栏
+                hideBar();
+                showSettingBar();
+                break;
+            case R.id.iv_read_decrease_font:
+                showShortToast("缩小字体");
+                break;
+            case R.id.iv_read_increase_font:
+                showShortToast("放大字体");
+                break;
+            case R.id.iv_read_decrease_row_space:
+                showShortToast("减小行距");
+                break;
+            case R.id.iv_read_increase_row_space:
+                showShortToast("增大行距");
                 break;
             default:
                 break;
