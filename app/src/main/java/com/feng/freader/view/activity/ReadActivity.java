@@ -29,6 +29,7 @@ import com.feng.freader.presenter.ReadPresenter;
 import com.feng.freader.test.TestActivity;
 import com.feng.freader.util.BaseUtil;
 import com.feng.freader.util.EventBusUtil;
+import com.feng.freader.util.SpUtil;
 import com.feng.freader.util.StatusBarUtil;
 import com.feng.freader.widget.PageView;
 
@@ -103,6 +104,15 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     private boolean mIsNightMode = false;           // 是否为夜间模式
     private boolean mIsShowSettingBar = false;      // 是否正在显示设置栏
 
+    // 从 sp 中读取
+    private float mTextSize;    // 字体大小
+    private float mRowSpace;    // 行距
+
+    private float mMinTextSize = 36f;
+    private float mMaxTextSize = 76f;
+    private float mMinRowSpace = 0f;
+    private float mMaxRowSpace = 48f;
+
     @Override
     protected void doBeforeSetContentView() {
         StatusBarUtil.setLightColorStatusBar(this);
@@ -126,10 +136,13 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         mChapterIndex = getIntent().getIntExtra(KEY_CHAPTER_INDEX, 0);
         mPosition = getIntent().getIntExtra(KEY_POSITION, 0);
         mIsReverse = getIntent().getBooleanExtra(KEY_IS_REVERSE, false);
-        Log.d(TAG, "initData: mNovelUrl = " + mNovelUrl +
-                ", mName = " + mName + ", mCover = " + mCover + ", mPosition = " + mPosition);
+//        Log.d(TAG, "initData: mNovelUrl = " + mNovelUrl +
+//                ", mName = " + mName + ", mCover = " + mCover + ", mPosition = " + mPosition);
 
         mDbManager = DatabaseManager.getInstance();
+
+        mTextSize = SpUtil.getTextSize();
+        mRowSpace = SpUtil.getRowSpace();
     }
 
     @Override
@@ -299,6 +312,10 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         // 更新书架页面数据
         Event event = new Event(EventBusCode.BOOKSHELF_UPDATE_LIST);
         EventBusUtil.sendEvent(event);
+
+        // 更新字体大小和行距
+        SpUtil.saveTextSize(mTextSize);
+        SpUtil.saveRowSpace(mRowSpace);
     }
 
     @Override
@@ -586,16 +603,32 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 showSettingBar();
                 break;
             case R.id.iv_read_decrease_font:
-                showShortToast("缩小字体");
+                if (mTextSize == mMinTextSize) {
+                    break;
+                }
+                mTextSize--;
+                mPageView.setTextSize(mTextSize);
                 break;
             case R.id.iv_read_increase_font:
-                showShortToast("放大字体");
+                if (mTextSize == mMaxTextSize) {
+                    break;
+                }
+                mTextSize++;
+                mPageView.setTextSize(mTextSize);
                 break;
             case R.id.iv_read_decrease_row_space:
-                showShortToast("减小行距");
+                if (mRowSpace == mMinRowSpace) {
+                    break;
+                }
+                mRowSpace--;
+                mPageView.setRowSpace(mRowSpace);
                 break;
             case R.id.iv_read_increase_row_space:
-                showShortToast("增大行距");
+                if (mRowSpace == mMaxRowSpace) {
+                    break;
+                }
+                mRowSpace++;
+                mPageView.setRowSpace(mRowSpace);
                 break;
             default:
                 break;

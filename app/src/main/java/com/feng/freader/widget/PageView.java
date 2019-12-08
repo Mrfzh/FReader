@@ -12,6 +12,7 @@ import android.view.View;
 import com.feng.freader.R;
 import com.feng.freader.util.BaseUtil;
 import com.feng.freader.util.BlurUtil;
+import com.feng.freader.util.SpUtil;
 
 import java.util.HashMap;
 
@@ -24,8 +25,8 @@ public class PageView extends View {
     private static final String TAG = "PageView";
 
     private Paint mPaint;
-    private float mTextSize = 64f;      // 字体大小
-    private float mRowSpace = 24f;     // 行距
+    private float mTextSize;      // 字体大小
+    private float mRowSpace;     // 行距
 
     private PageViewListener mListener;
     private String mContent;    // 文本内容
@@ -50,23 +51,26 @@ public class PageView extends View {
 
     public PageView(Context context) {
         super(context);
-        initPaint();
+        init();
     }
 
     public PageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initPaint();
+        init();
     }
 
     public PageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initPaint();
+        init();
     }
 
-    private void initPaint() {
+    private void init() {
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setColor(getResources().getColor(R.color.read_novel_text));
+
+        mTextSize = SpUtil.getTextSize();
+        mRowSpace = SpUtil.getRowSpace();
     }
 
     /**
@@ -318,5 +322,25 @@ public class PageView extends View {
      */
     public void setTextColor(int color) {
         mPaint.setColor(color);
+    }
+
+    /**
+     * 设置文字大小
+     */
+    public void setTextSize(float textSize) {
+        mTextSize = textSize;
+        // hashMap 缓存作废
+        mFirstPosMap.clear();
+        invalidate();
+    }
+
+    /**
+     * 设置行距
+     */
+    public void setRowSpace(float rowSpace) {
+        mRowSpace = rowSpace;
+        // hashMap 缓存作废
+        mFirstPosMap.clear();
+        invalidate();
     }
 }

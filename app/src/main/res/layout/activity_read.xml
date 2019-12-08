@@ -67,7 +67,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:background="@color/read_setting_bg"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
 
         <ImageView
             android:id="@+id/iv_read_back"
@@ -101,7 +103,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:background="@color/read_setting_bg"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
 
         <!-- first -->
 
@@ -246,7 +250,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:background="@color/read_setting_bg"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
 
         <!-- first -->
 
@@ -319,12 +325,14 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/cv_read_setting_bar"
         android:layout_width="0dp"
-        android:layout_height="70dp"
+        android:layout_height="90dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:background="@color/read_setting_bg"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
 
         <!-- first -->
 
