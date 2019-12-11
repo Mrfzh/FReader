@@ -1,12 +1,17 @@
 package com.feng.freader.view.activity;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.Window;
@@ -26,6 +31,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     private static final String TAG = "fzh";
 
     private static final int DUR_BOTTOM_BAR_ICON_ANIM = 500;
+    private static final int REQUEST_CODE_SD = 1;
 
     private static final int FG_BOOKSHELF = 0;
     private static final int FG_DISCOVERY = 1;
@@ -113,6 +119,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             // 第一次 onCreate 时默认加载该页面
             changeFragment(FG_BOOKSHELF);
         }
+
+        // 检查权限
+        checkPermission();
     }
 
     @Override
@@ -320,4 +329,32 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         ft.commit();
     }
 
+    /**
+     * 检查权限
+     */
+    private void checkPermission() {
+        //如果没有WRITE_EXTERNAL_STORAGE权限，则需要动态申请权限
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_CODE_SD);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_SD:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    break;
+                }
+                // 用户不同意
+                finish();
+                break;
+            default:
+                break;
+        }
+    }
 }

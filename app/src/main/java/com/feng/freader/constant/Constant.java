@@ -41,6 +41,8 @@ public class Constant {
     public static final String NOT_FOUND_CATALOG_INFO = "没有找到相关目录";
     // json 格式错误
     public static final String JSON_ERROR = "json 格式错误";
+    // 该小说已从本地删除
+    public static final String NOT_FOUND_FROM_LOCAL = "该小说已从本地删除";
 
     /* 数据库相关 */
     // 数据库名
@@ -58,5 +60,5 @@ public class Constant {
     public static final String TABLE_BOOKSHELF_NOVEL_COVER = "TABLE_BOOKSHELF_NOVEL_COVER"; // 小说封面
     public static final String TABLE_BOOKSHELF_NOVEL_CHAPTER_INDEX = "TABLE_BOOKSHELF_NOVEL_CHAPTER_INDEX"; // 章节索引
     public static final String TABLE_BOOKSHELF_NOVEL_POSITION = "TABLE_BOOKSHELF_NOVEL_POSITION"; // 位置索引（用于跳转到上一次进度）
-    public static final String TABLE_BOOKSHELF_NOVEL_PAGE_INDEX = "TABLE_BOOKSHELF_NOVEL_PAGE_INDEX";   // 页数索引
+    public static final String TABLE_BOOKSHELF_NOVEL_TYPE = "TABLE_BOOKSHELF_NOVEL_TYPE";   // 类型：0 为网络小说， 1 为本地小说
 }

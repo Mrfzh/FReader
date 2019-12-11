@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.feng.freader.R;
 import com.feng.freader.base.BaseActivity;
+import com.feng.freader.constant.Constant;
 import com.feng.freader.constant.EventBusCode;
 import com.feng.freader.constract.IReadContract;
 import com.feng.freader.db.DatabaseManager;
@@ -53,6 +54,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     public static final String KEY_CHAPTER_INDEX = "read_key_chapter_index";
     public static final String KEY_POSITION = "read_key_position";
     public static final String KEY_IS_REVERSE = "read_key_is_reverse";
+    public static final String KEY_TYPE = "read_key_type";
 
     private PageView mPageView;
     private TextView mNovelTitleTv;
@@ -94,9 +96,10 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     // 章节 url 列表（通过网络请求获取）
     private List<String> mChapterUrlList;
     // 以下内容通过 Intent 传入
-    private String mNovelUrl;   // 小说 url
+    private String mNovelUrl;   // 小说 url，本地小说为 filePath
     private String mName;   // 小说名
     private String mCover;  // 小说封面
+    private int mType;      // 小说类型，0 为网络小说， 1 为本地小说
     private int mChapterIndex;   // 当前阅读的章节索引
     private int mPosition;  // 文本开始读取位置
     private boolean mIsReverse; // 是否需要将章节列表倒序
@@ -107,6 +110,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     private boolean mIsShowBrightnessBar = false;   // 是否正在显示亮度栏
     private boolean mIsSystemBrightness = true;     // 是否为系统亮度
     private boolean mIsShowSettingBar = false;      // 是否正在显示设置栏
+    private boolean mIsNeedWrite2Db = true;         // 活动结束时是否需要将书籍信息写入数据库
 
     // 从 sp 中读取
     private float mTextSize;    // 字体大小
@@ -137,22 +141,26 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
 
     @Override
     protected void initData() {
+        // 从前一个活动传来
         mNovelUrl = getIntent().getStringExtra(KEY_NOVEL_URL);
         mName = getIntent().getStringExtra(KEY_NAME);
         mCover = getIntent().getStringExtra(KEY_COVER);
         mChapterIndex = getIntent().getIntExtra(KEY_CHAPTER_INDEX, 0);
         mPosition = getIntent().getIntExtra(KEY_POSITION, 0);
         mIsReverse = getIntent().getBooleanExtra(KEY_IS_REVERSE, false);
+        mType = getIntent().getIntExtra(KEY_TYPE, 0);
 //        Log.d(TAG, "initData: mNovelUrl = " + mNovelUrl +
 //                ", mName = " + mName + ", mCover = " + mCover + ", mPosition = " + mPosition);
 
-        mDbManager = DatabaseManager.getInstance();
-
+        // 从 SP 得到
         mTextSize = SpUtil.getTextSize();
         mRowSpace = SpUtil.getRowSpace();
         mTheme = SpUtil.getTheme();
         mBrightness = SpUtil.getBrightness();
         mIsNightMode = SpUtil.getIsNightMode();
+
+        // 其他
+        mDbManager = DatabaseManager.getInstance();
     }
 
     @Override
@@ -171,24 +179,32 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
 
             @Override
             public void next() {
-                if (mChapterIndex == mChapterUrlList.size() - 1) {
+                if (mType == 0) {
+                    if (mChapterIndex == mChapterUrlList.size() - 1) {
+                        showShortToast("已经到最后了");
+                        return;
+                    }
+                    // 加载下一章节
+                    mChapterIndex++;
+                    showChapter();
+                } else {
                     showShortToast("已经到最后了");
-                    return;
                 }
-                // 加载下一章节
-                mChapterIndex++;
-                showChapter();
             }
 
             @Override
             public void pre() {
-                if (mChapterIndex == 0) {
+                if (mType == 0) {
+                    if (mChapterIndex == 0) {
+                        showShortToast("已经到最前了");
+                        return;
+                    }
+                    // 加载上一章节
+                    mChapterIndex--;
+                    showChapter();
+                } else {
                     showShortToast("已经到最前了");
-                    return;
                 }
-                // 加载上一章节
-                mChapterIndex--;
-                showChapter();
             }
 
             @Override
@@ -311,8 +327,13 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
 
     @Override
     protected void doAfterInit() {
-        // 先通过小说 url 获取所有章节 url 信息
-        mPresenter.getChapterUrlList(UrlObtainer.getCatalogInfo(mNovelUrl));
+        if (mType == 0) {
+            // 先通过小说 url 获取所有章节 url 信息
+            mPresenter.getChapterUrlList(UrlObtainer.getCatalogInfo(mNovelUrl));
+        } else {
+            // 通过 FilePath 读取本地小说
+            mPresenter.loadTxt(mNovelUrl);
+        }
 
         if (mBrightness == -1f) {    // 系统亮度
             mSystemBrightnessSw.setChecked(true);
@@ -332,16 +353,18 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // 将书籍信息存入数据库
-        mDbManager.deleteBookshelfNovel(mNovelUrl);
-        if (mIsReverse) {   // 如果倒置了目录的话，需要倒置章节索引
-            mChapterIndex = mChapterUrlList.size() - 1 - mChapterIndex;
-        }
-        BookshelfNovelDbData dbData = new BookshelfNovelDbData(mNovelUrl, mName,
-                mCover, mChapterIndex, mPageView.getPosition(), mPageView.getPageIndex());
-        mDbManager.insertBookshelfNovel(dbData);
+        if (mIsNeedWrite2Db) {
+            // 将书籍信息存入数据库
+            mDbManager.deleteBookshelfNovel(mNovelUrl);
+            if (mIsReverse) {   // 如果倒置了目录的话，需要倒置章节索引
+                mChapterIndex = mChapterUrlList.size() - 1 - mChapterIndex;
+            }
+            BookshelfNovelDbData dbData = new BookshelfNovelDbData(mNovelUrl, mName,
+                    mCover, mChapterIndex, mPageView.getPosition(), mType);
+            mDbManager.insertBookshelfNovel(dbData);
 
-        Log.d(TAG, "dbData = " + mDbManager.queryAllBookshelfNovel());
+            Log.d(TAG, "dbData = " + mDbManager.queryAllBookshelfNovel());
+        }
 
         // 更新书架页面数据
         Event event = new Event(EventBusCode.BOOKSHELF_UPDATE_LIST);
@@ -419,6 +442,37 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     }
 
     /**
+     * 加载本地 txt 成功
+     */
+    @Override
+    public void loadTxtSuccess(String text) {
+        Log.d(TAG, "loadTxtSuccess: run");
+        mStateTv.setVisibility(View.GONE);
+        mPageView.init(text, mPosition);
+        mNovelTitleTv.setText(mName);
+    }
+
+    /**
+     * 加载本地 txt 失败
+     */
+    @Override
+    public void loadTxtError(String errorMsg) {
+        if (errorMsg.equals(Constant.NOT_FOUND_FROM_LOCAL)) {
+            // 该文件已从本地删除
+            mStateTv.setText("该文件已从本地删除");
+            mIsNeedWrite2Db = false;
+            // 从数据库中删除该条记录
+            mDbManager.deleteBookshelfNovel(mNovelUrl);
+            // 更新书架页面
+            Event event = new Event(EventBusCode.BOOKSHELF_UPDATE_LIST);
+            EventBusUtil.sendEvent(event);
+            return;
+        }
+        Log.d(TAG, "loadTxtError: run");
+        mStateTv.setText(errorMsg);
+    }
+
+    /**
      * 点击上一页/下一页后加载具体章节
      */
     private void showChapter() {
@@ -466,7 +520,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     }
 
     /**
-     * 隐藏设置栏
+     * 隐藏上下栏
      */
     private void hideBar() {
         Animation topExitAnim = AnimationUtils.loadAnimation(
@@ -595,26 +649,32 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 break;
             case R.id.tv_read_previous_chapter:
                 // 加载上一章节
-                mChapterIndex--;
-                showChapter();
+                if (mType == 0) {
+                    mChapterIndex--;
+                    showChapter();
+                }
                 break;
             case R.id.tv_read_next_chapter:
                 // 加载下一章节
-                mChapterIndex++;
-                showChapter();
+                if (mType == 0) {
+                    mChapterIndex++;
+                    showChapter();
+                }
                 break;
             case R.id.iv_read_catalog:
             case R.id.tv_read_catalog:
                 // 目录
-                // 跳转到目录页面，并且将自己的引用传递给它
-                Event<HoldReadActivityEvent> event = new Event<>(EventBusCode.CATALOG_HOLD_READ_ACTIVITY,
-                        new HoldReadActivityEvent(ReadActivity.this));
-                EventBusUtil.sendStickyEvent(event);
-                Intent intent = new Intent(ReadActivity.this, CatalogActivity.class);
-                intent.putExtra(CatalogActivity.KEY_URL, mNovelUrl);    // 传递当前小说的 url
-                intent.putExtra(CatalogActivity.KEY_NAME, mName);  // 传递当前小说的名字
-                intent.putExtra(CatalogActivity.KEY_COVER, mCover); // 传递当前小说的封面
-                startActivity(intent);
+                if (mType == 0) {
+                    // 跳转到目录页面，并且将自己的引用传递给它
+                    Event<HoldReadActivityEvent> event = new Event<>(EventBusCode.CATALOG_HOLD_READ_ACTIVITY,
+                            new HoldReadActivityEvent(ReadActivity.this));
+                    EventBusUtil.sendStickyEvent(event);
+                    Intent intent = new Intent(ReadActivity.this, CatalogActivity.class);
+                    intent.putExtra(CatalogActivity.KEY_URL, mNovelUrl);    // 传递当前小说的 url
+                    intent.putExtra(CatalogActivity.KEY_NAME, mName);  // 传递当前小说的名字
+                    intent.putExtra(CatalogActivity.KEY_COVER, mCover); // 传递当前小说的封面
+                    startActivity(intent);
+                }
                 break;
             case R.id.iv_read_brightness:
             case R.id.tv_read_brightness:

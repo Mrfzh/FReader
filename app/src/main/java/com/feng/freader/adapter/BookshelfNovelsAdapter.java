@@ -54,12 +54,16 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
 
         contentViewHolder.name.setText(mDataList.get(i).getName());
 
-        Glide.with(mContext)
-                .load(mDataList.get(i).getCover())
-                .apply(new RequestOptions()
-                    .placeholder(R.drawable.cover_place_holder)
-                    .error(R.drawable.cover_error))
-                .into(contentViewHolder.cover);
+        if (mDataList.get(i).getType() == 0) {
+            Glide.with(mContext)
+                    .load(mDataList.get(i).getCover())
+                    .apply(new RequestOptions()
+                            .placeholder(R.drawable.cover_place_holder)
+                            .error(R.drawable.cover_error))
+                    .into(contentViewHolder.cover);
+        } else {
+            contentViewHolder.cover.setImageResource(R.drawable.cover_error);
+        }
 
         contentViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

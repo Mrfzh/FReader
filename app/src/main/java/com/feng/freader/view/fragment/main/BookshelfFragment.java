@@ -1,11 +1,15 @@
 package com.feng.freader.view.fragment.main;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.feng.freader.R;
@@ -16,6 +20,7 @@ import com.feng.freader.constant.EventBusCode;
 import com.feng.freader.db.DatabaseManager;
 import com.feng.freader.entity.data.BookshelfNovelDbData;
 import com.feng.freader.entity.eventbus.Event;
+import com.feng.freader.util.FileUtil;
 import com.feng.freader.util.RecyclerViewUtil;
 import com.feng.freader.util.StatusBarUtil;
 import com.feng.freader.view.activity.ReadActivity;
@@ -23,6 +28,7 @@ import com.feng.freader.view.activity.ReadActivity;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,11 +36,13 @@ import java.util.List;
  * @author Feng Zhaohao
  * Created on 2019/10/20
  */
-public class BookshelfFragment extends BaseFragment {
+public class BookshelfFragment extends BaseFragment implements View.OnClickListener{
 
     private static final String TAG = "BookshelfFragment";
 
     private RecyclerView mBookshelfNovelsRv;
+    private TextView mLocalAddTv;
+    private ImageView mLocalAddIv;
 
     private List<BookshelfNovelDbData> mDataList = new ArrayList<>();
     private DatabaseManager mDbManager;
@@ -59,6 +67,11 @@ public class BookshelfFragment extends BaseFragment {
     @Override
     protected void initView() {
         initBookshelfNovelsRv();
+
+        mLocalAddTv = getActivity().findViewById(R.id.tv_bookshelf_add);
+        mLocalAddTv.setOnClickListener(this);
+        mLocalAddIv = getActivity().findViewById(R.id.iv_bookshelf_add);
+        mLocalAddIv.setOnClickListener(this);
     }
 
     @Override
@@ -102,6 +115,8 @@ public class BookshelfFragment extends BaseFragment {
                 intent.putExtra(ReadActivity.KEY_NAME, mDataList.get(position).getName());
                 // 小说封面 url
                 intent.putExtra(ReadActivity.KEY_COVER, mDataList.get(position).getCover());
+                // 小说类型
+                intent.putExtra(ReadActivity.KEY_TYPE, mDataList.get(position).getType());
                 // 开始阅读的位置
                 intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, mDataList.get(position).getChapterIndex());
                 intent.putExtra(ReadActivity.KEY_POSITION, mDataList.get(position).getPosition());
@@ -116,7 +131,53 @@ public class BookshelfFragment extends BaseFragment {
     private void updateList() {
         mDataList.clear();
         mDataList.addAll(mDbManager.queryAllBookshelfNovel());
+        Log.d(TAG, "updateList: list = " + mDataList);
         mBookshelfNovelsAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tv_bookshelf_add:
+            case R.id.iv_bookshelf_add:
+                // 导入本机小说
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("*/*");      // 最近文件（任意类型）
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivityForResult(intent, 1);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) { // 选择了才继续
+            Uri uri = data.getData();
+            String filePath = FileUtil.uri2FilePath(getActivity(), uri);
+            File file = new File(filePath);
+            String fileName = file.getName();
+            Log.d(TAG, "onActivityResult: fileLen = " + file.length());
+            String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);  // 后缀名
+            if (suffix.equals("txt")) {
+                if (mDbManager.isExistInBookshelfNovel(filePath)) {
+                    showShortToast("该小说已导入");
+                    return;
+                }
+                if (file.length() > 100000000) {
+                    showShortToast("文件过大");
+                    return;
+                }
+                // 将该小说的数据存入数据库
+                BookshelfNovelDbData dbData = new BookshelfNovelDbData(filePath, file.getName(),
+                        "", 0, 0, 1);
+                mDbManager.insertBookshelfNovel(dbData);
+                // 更新列表
+                updateList();
+            } else {
+                showShortToast("不支持该类型");
+            }
+        }
+    }
 }

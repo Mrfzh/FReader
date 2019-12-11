@@ -99,7 +99,7 @@ public class DatabaseManager {
         values.put(Constant.TABLE_BOOKSHELF_NOVEL_COVER, dbData.getCover());
         values.put(Constant.TABLE_BOOKSHELF_NOVEL_CHAPTER_INDEX, dbData.getChapterIndex());
         values.put(Constant.TABLE_BOOKSHELF_NOVEL_POSITION, dbData.getPosition());
-        values.put(Constant.TABLE_BOOKSHELF_NOVEL_PAGE_INDEX, dbData.getPageIndex());
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_TYPE, dbData.getType());
         mDb.insert(Constant.TABLE_BOOKSHELF_NOVEL, null, values);
     }
 
@@ -123,10 +123,10 @@ public class DatabaseManager {
                         cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_CHAPTER_INDEX));
                 int position = cursor.getInt(
                         cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_POSITION));
-                int pageIndex = cursor.getInt(
-                        cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_PAGE_INDEX));
+                int type = cursor.getInt(
+                        cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_TYPE));
                 res.add(new BookshelfNovelDbData(novelUrl, name, cover,
-                        chapterIndex, position, pageIndex));
+                        chapterIndex, position, type));
             } while (cursor.moveToPrevious());
         }
         cursor.close();
@@ -141,5 +141,23 @@ public class DatabaseManager {
         mDb.delete(Constant.TABLE_BOOKSHELF_NOVEL,
                 Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL + " = ?",
                 new String[]{novelUrl});
+    }
+
+    /**
+     * 查询 Bookshelf 表是否存在主键为 novelUrl 的记录
+     */
+    public boolean isExistInBookshelfNovel(String novelUrl) {
+        Cursor cursor = mDb.query(Constant.TABLE_BOOKSHELF_NOVEL, null,
+                Constant.TABLE_BOOKSHELF_NOVEL_NOVEL_URL+ " = ?", new String[]{novelUrl},
+                null,null, null ,null);
+        boolean res = false;
+        if (cursor.moveToLast()) {
+            do {
+                res = true;
+            } while (cursor.moveToPrevious());
+        }
+        cursor.close();
+
+        return res;
     }
 }

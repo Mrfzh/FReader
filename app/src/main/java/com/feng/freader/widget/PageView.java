@@ -29,7 +29,7 @@ public class PageView extends View {
     private float mRowSpace;     // 行距
 
     private PageViewListener mListener;
-    private String mContent;    // 文本内容
+    private String mContent = "";    // 文本内容
     private boolean mIsShowContent = true;  // 是否显示文本内容
 
     private int mPosition = 0;  // 当前页第一个字的索引
@@ -123,8 +123,15 @@ public class PageView extends View {
             for (int i = mPosition; i < mContent.length(); i++) {
                 String currS = mContent.substring(i, i+1);
                 if (currS.equals("\n")) {    // 换行
+                    Log.d(TAG, "drawText: 换行");
                     num++;
                     break;
+                }
+                if (currS.equals("\t")) {
+                    Log.d(TAG, "drawText: \\t");
+                }
+                if (currS.equals("\r")) {
+                    Log.d(TAG, "drawText: \\r");
                 }
                 float textWidth = getTextWidth(mPaint, currS);
                 if (textWidths + textWidth >= width - paddingStart - paddingEnd) {  // 达到最大字数
@@ -180,6 +187,9 @@ public class PageView extends View {
             case MotionEvent.ACTION_MOVE:
                 break;
             case MotionEvent.ACTION_UP:
+                if (mContent.equals("")) {
+                    break;
+                }
                 // 根据离开时的位置进行不同操作
                 float rawX = event.getRawX();
                 float screenWidth = BaseUtil.getScreenWidth();

@@ -49,6 +49,20 @@ public class ReadPresenter extends BasePresenter<IReadContract.View>
     }
 
     @Override
+    public void loadTxtSuccess(String text) {
+        if (isAttachView()) {
+            getMvpView().loadTxtSuccess(text);
+        }
+    }
+
+    @Override
+    public void loadTxtError(String errorMsg) {
+        if (isAttachView()) {
+            getMvpView().loadTxtError(errorMsg);
+        }
+    }
+
+    @Override
     public void getChapterUrlList(String url) {
         mModel.getChapterUrlList(url);
     }
@@ -56,5 +70,10 @@ public class ReadPresenter extends BasePresenter<IReadContract.View>
     @Override
     public void getDetailedChapterData(String url) {
         mModel.getDetailedChapterData(url);
+    }
+
+    @Override
+    public void loadTxt(String filePath) {
+        mModel.loadTxt(filePath);
     }
 }

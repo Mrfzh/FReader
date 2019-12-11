@@ -1,5 +1,10 @@
 package com.feng.freader.model;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+
+import com.feng.freader.constant.Constant;
 import com.feng.freader.constract.IReadContract;
 import com.feng.freader.entity.bean.CatalogBean;
 import com.feng.freader.entity.bean.DetailedChapterBean;
@@ -8,6 +13,13 @@ import com.feng.freader.http.OkhttpCall;
 import com.feng.freader.http.OkhttpUtil;
 import com.google.gson.Gson;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +28,7 @@ import java.util.List;
  * Created on 2019/11/25
  */
 public class ReadModel implements IReadContract.Model {
+    private static final String TAG = "ReadModel";
 
     private IReadContract.Presenter mPresenter;
     private Gson mGson;
@@ -76,5 +89,60 @@ public class ReadModel implements IReadContract.Model {
                 mPresenter.getDetailedChapterDataError(errorMsg);
             }
         });
+    }
+
+    @Override
+    public void loadTxt(final String filePath) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                File file = new File(filePath);
+                BufferedReader br = null;
+                StringBuilder builder = null;
+                String error = "";
+                try {
+                    br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "gbk"));
+                    builder = new StringBuilder();
+                    String str;
+                    while ((str = br.readLine()) != null) {
+                        builder.append(str);
+                        builder.append("\n");
+                    }
+                } catch (FileNotFoundException e) {
+                    Log.d(TAG, "e1 = " + e.getMessage());
+                    e.printStackTrace();
+                    error = Constant.NOT_FOUND_FROM_LOCAL;
+                } catch (UnsupportedEncodingException e) {
+                    Log.d(TAG, "e2 = " + e.getMessage());
+                    e.printStackTrace();
+                    error = e.getMessage();
+                } catch (IOException e) {
+                    Log.d(TAG, "e3 = " + e.getMessage());
+                    e.printStackTrace();
+                    error = e.getMessage();
+                } finally {
+                    try {
+                        if (br != null) {
+                            br.close();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                final String finalError = error;
+                final String text =  builder == null? "" : builder.toString();
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (finalError.equals("")) {
+                            mPresenter.loadTxtSuccess(text);
+                        } else {
+                            mPresenter.loadTxtError(finalError);
+                        }
+                    }
+                });
+            }
+        }).start();
     }
 }
