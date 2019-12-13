@@ -1,8 +1,10 @@
 package com.feng.freader.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.feng.freader.R;
 import com.feng.freader.entity.data.BookshelfNovelDbData;
+import com.feng.freader.util.FileUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +25,7 @@ import java.util.List;
  * Created on 2019/10/28
  */
 public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
+    private static final String TAG = "BookshelfNovelsAdapter";
 
     private Context mContext;
     private List<BookshelfNovelDbData> mDataList;
@@ -54,15 +58,28 @@ public class BookshelfNovelsAdapter extends RecyclerView.Adapter {
 
         contentViewHolder.name.setText(mDataList.get(i).getName());
 
-        if (mDataList.get(i).getType() == 0) {
+        if (mDataList.get(i).getType() == 0) {  // 网络小说
             Glide.with(mContext)
                     .load(mDataList.get(i).getCover())
                     .apply(new RequestOptions()
                             .placeholder(R.drawable.cover_place_holder)
                             .error(R.drawable.cover_error))
                     .into(contentViewHolder.cover);
-        } else {
+        } else if (mDataList.get(i).getType() == 1){    // 本地 txt 小说
             contentViewHolder.cover.setImageResource(R.drawable.cover_error);
+        } else if (mDataList.get(i).getType() == 2) {   // 本地 epub 小说
+            if (mDataList.get(i).getCover().equals("")) {
+                contentViewHolder.cover.setImageResource(R.drawable.cover_error);
+            } else {
+                String coverPath = mDataList.get(i).getCover();
+//                Log.d(TAG, "onBindViewHolder: coverPath = " + coverPath);
+                Bitmap bitmap = FileUtil.loadLocalPicture(coverPath);
+                if (bitmap != null) {
+                    contentViewHolder.cover.setImageBitmap(bitmap);
+                } else {
+                    contentViewHolder.cover.setImageResource(R.drawable.cover_error);
+                }
+            }
         }
 
         contentViewHolder.itemView.setOnClickListener(new View.OnClickListener() {

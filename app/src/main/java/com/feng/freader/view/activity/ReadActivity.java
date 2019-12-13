@@ -1,11 +1,9 @@
 package com.feng.freader.view.activity;
 
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.support.constraint.ConstraintLayout;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.CompoundButton;
@@ -27,8 +25,7 @@ import com.feng.freader.entity.eventbus.Event;
 import com.feng.freader.entity.eventbus.HoldReadActivityEvent;
 import com.feng.freader.http.UrlObtainer;
 import com.feng.freader.presenter.ReadPresenter;
-import com.feng.freader.test.TestActivity;
-import com.feng.freader.util.BaseUtil;
+import com.feng.freader.util.ScreenUtil;
 import com.feng.freader.util.EventBusUtil;
 import com.feng.freader.util.SpUtil;
 import com.feng.freader.util.StatusBarUtil;
@@ -269,7 +266,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 if (!mIsSystemBrightness) {
                     // 调整亮度
                     mBrightness = (float) progress / 100;
-                    BaseUtil.setWindowBrightness(ReadActivity.this, mBrightness);
+                    ScreenUtil.setWindowBrightness(ReadActivity.this, mBrightness);
                 }
             }
 
@@ -293,14 +290,14 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     mIsSystemBrightness = true;
                     mBrightness = -1f;
                     // 将屏幕亮度设置为系统亮度
-                    BaseUtil.setWindowBrightness(ReadActivity.this,
-                            (float) BaseUtil.getSystemBrightness() / BaseUtil.getBrightnessMax());
+                    ScreenUtil.setWindowBrightness(ReadActivity.this,
+                            (float) ScreenUtil.getSystemBrightness() / ScreenUtil.getBrightnessMax());
                 } else {
                     // 变为自定义亮度
                     mIsSystemBrightness = false;
                     // 将屏幕亮度设置为自定义亮度
                     mBrightness = (float) mBrightnessProcessSb.getProgress() / 100;
-                    BaseUtil.setWindowBrightness(ReadActivity.this, mBrightness);
+                    ScreenUtil.setWindowBrightness(ReadActivity.this, mBrightness);
                 }
             }
         });
@@ -340,7 +337,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         } else {    // 自定义亮度
             mBrightnessProcessSb.setProgress((int) (100 * mBrightness));
             mSystemBrightnessSw.setChecked(false);
-            BaseUtil.setWindowBrightness(this, mBrightness);
+            ScreenUtil.setWindowBrightness(this, mBrightness);
         }
 
         if (mIsNightMode) { // 夜间模式

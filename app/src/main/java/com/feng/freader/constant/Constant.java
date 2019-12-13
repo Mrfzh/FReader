@@ -1,5 +1,7 @@
 package com.feng.freader.constant;
 
+import com.feng.freader.app.App;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -58,7 +60,14 @@ public class Constant {
     public static final String TABLE_BOOKSHELF_NOVEL_NOVEL_URL = "TABLE_BOOKSHELF_NOVEL_NOVEL_URL"; // 小说 URL（主键）
     public static final String TABLE_BOOKSHELF_NOVEL_NAME = "TABLE_BOOKSHELF_NOVEL_NAME"; // 小说名
     public static final String TABLE_BOOKSHELF_NOVEL_COVER = "TABLE_BOOKSHELF_NOVEL_COVER"; // 小说封面
-    public static final String TABLE_BOOKSHELF_NOVEL_CHAPTER_INDEX = "TABLE_BOOKSHELF_NOVEL_CHAPTER_INDEX"; // 章节索引
-    public static final String TABLE_BOOKSHELF_NOVEL_POSITION = "TABLE_BOOKSHELF_NOVEL_POSITION"; // 位置索引（用于跳转到上一次进度）
-    public static final String TABLE_BOOKSHELF_NOVEL_TYPE = "TABLE_BOOKSHELF_NOVEL_TYPE";   // 类型：0 为网络小说， 1 为本地小说
+    // 章节索引：网络小说和本地 epub 小说为目录索引，本地 txt 小说无需该属性
+    public static final String TABLE_BOOKSHELF_NOVEL_CHAPTER_INDEX = "TABLE_BOOKSHELF_NOVEL_CHAPTER_INDEX";
+    // 位置索引（用于跳转到上一次进度）：网络小说和 txt 是 String 文本的位置，对于 epub，
+    public static final String TABLE_BOOKSHELF_NOVEL_POSITION = "TABLE_BOOKSHELF_NOVEL_POSITION";
+    // 类型：0 为网络小说， 1 为本地 txt 小说, 2 为本地 epub 小说
+    public static final String TABLE_BOOKSHELF_NOVEL_TYPE = "TABLE_BOOKSHELF_NOVEL_TYPE";
+
+
+    /* 文件存储 */
+    public static final String EPUB_SAVE_PATH = App.getContext().getFilesDir() + "/epubFile";
 }

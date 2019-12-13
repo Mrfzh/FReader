@@ -47,4 +47,35 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:overScrollMode="never" />
 
+    <RelativeLayout
+        android:id="@+id/rv_bookshelf_loading"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="#f1f1f1"
+        android:padding="10dp"
+        android:visibility="gone">
+
+        <ProgressBar
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:indeterminateTint="@android:color/holo_blue_light" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:text="导入 epub 小说中..."
+            android:textSize="16sp"
+            android:textColor="#222222"/>
+
+    </RelativeLayout>
+
 </android.support.constraint.ConstraintLayout>

@@ -14,7 +14,7 @@ import com.feng.freader.app.App;
  * @author Feng Zhaohao
  * Created on 2019/11/10
  */
-public class BaseUtil {
+public class ScreenUtil {
 
     /**
      * 根据手机的分辨率从 dp 的单位 转成为 px(像素)

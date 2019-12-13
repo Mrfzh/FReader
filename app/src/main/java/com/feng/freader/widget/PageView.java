@@ -2,7 +2,6 @@ package com.feng.freader.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -10,8 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.feng.freader.R;
-import com.feng.freader.util.BaseUtil;
-import com.feng.freader.util.BlurUtil;
+import com.feng.freader.util.ScreenUtil;
 import com.feng.freader.util.SpUtil;
 
 import java.util.HashMap;
@@ -192,7 +190,7 @@ public class PageView extends View {
                 }
                 // 根据离开时的位置进行不同操作
                 float rawX = event.getRawX();
-                float screenWidth = BaseUtil.getScreenWidth();
+                float screenWidth = ScreenUtil.getScreenWidth();
                 if (rawX <= 0.35f * screenWidth) {
                     // 上一页
                     pre();

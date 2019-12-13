@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.feng.freader.R;
-import com.feng.freader.util.BaseUtil;
+import com.feng.freader.util.ScreenUtil;
 import com.feng.freader.widget.FlowLayout;
 
 import java.util.List;
@@ -41,7 +41,7 @@ public class HistoryAdapter extends FlowLayout.Adapter<HistoryAdapter.HistoryVie
                 .inflate(R.layout.item_history, parent, false);
         // 给 View 设置 margin
         ViewGroup.MarginLayoutParams mlp = new ViewGroup.MarginLayoutParams(view.getLayoutParams());
-        int margin = BaseUtil.dip2px(mContext, 5);
+        int margin = ScreenUtil.dip2px(mContext, 5);
         mlp.setMargins(margin, margin, margin, margin);
         view.setLayoutParams(mlp);
 
