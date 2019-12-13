@@ -27,7 +27,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Constant.TABLE_BOOKSHELF_NOVEL_COVER + " text, "
             + Constant.TABLE_BOOKSHELF_NOVEL_CHAPTER_INDEX + " int, "
             + Constant.TABLE_BOOKSHELF_NOVEL_TYPE + " int, "
-            + Constant.TABLE_BOOKSHELF_NOVEL_POSITION + " int)";
+            + Constant.TABLE_BOOKSHELF_NOVEL_POSITION + " int, "
+            + Constant.TABLE_BOOKSHELF_NOVEL_SECOND_POSITION + " int)";
 
     DatabaseHelper(Context context, String name,
                    SQLiteDatabase.CursorFactory factory, int version) {

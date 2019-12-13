@@ -61,6 +61,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     public static final String KEY_POSITION = "read_key_position";
     public static final String KEY_IS_REVERSE = "read_key_is_reverse";
     public static final String KEY_TYPE = "read_key_type";
+    public static final String KEY_SECOND_POSITION = "read_key_second_position";
 
     private PageView mPageView;
     private TextView mNovelTitleTv;
@@ -100,18 +101,23 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     private View mTheme4;
 
     // 章节 url 列表（通过网络请求获取）
-    private List<String> mChapterUrlList;
+    private List<String> mChapterUrlList = new ArrayList<>();
+    // Epub Opf 文件数据
+    private OpfData mOpfData;
     // Epub 文件的目录
     private List<TocItem> mEpubToc = new ArrayList<>();
+    // Epub 章节数据
+    private List<EpubData> mEpubDataList = new ArrayList<>();
 
     // 以下内容通过 Intent 传入
     private String mNovelUrl;   // 小说 url，本地小说为 filePath
     private String mName;   // 小说名
     private String mCover;  // 小说封面
-    private int mType;      // 小说类型，0 为网络小说， 1 为本地小说
+    private int mType;      // 小说类型，0 为网络小说， 1 为本地 txt 小说, 2 为本地 epub 小说
     private int mChapterIndex;   // 当前阅读的章节索引
     private int mPosition;  // 文本开始读取位置
     private boolean mIsReverse; // 是否需要将章节列表倒序
+    private int mSecondPosition; // epub 用
 
     private DatabaseManager mDbManager;
     private boolean mIsLoadingChapter = false;  // 是否正在加载具体章节
@@ -158,6 +164,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         mPosition = getIntent().getIntExtra(KEY_POSITION, 0);
         mIsReverse = getIntent().getBooleanExtra(KEY_IS_REVERSE, false);
         mType = getIntent().getIntExtra(KEY_TYPE, 0);
+        mSecondPosition = getIntent().getIntExtra(KEY_SECOND_POSITION, 0);
 //        Log.d(TAG, "initData: mNovelUrl = " + mNovelUrl +
 //                ", mName = " + mName + ", mCover = " + mCover + ", mPosition = " + mPosition);
 
@@ -199,7 +206,13 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 } else if (mType == 1) {
                     showShortToast("已经到最后了");
                 } else if (mType == 2){
-
+                    if (mChapterIndex == mEpubDataList.size() - 1) {
+                        showShortToast("已经到最后了");
+                        return;
+                    }
+                    // 加载下一章节
+                    mChapterIndex++;
+                    showChapter();
                 }
             }
 
@@ -216,7 +229,13 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 } else if (mType == 1){
                     showShortToast("已经到最前了");
                 } else if (mType == 2){
-
+                    if (mChapterIndex == 0) {
+                        showShortToast("已经到最前了");
+                        return;
+                    }
+                    // 加载上一章节
+                    mChapterIndex--;
+                    showChapter();
                 }
             }
 
@@ -511,8 +530,9 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             return;
         }
         Log.d(TAG, "getOpfDataSuccess: toc = " + mEpubToc);
-        // 解析相应章节的数据
-        mPresenter.getEpubChapterData(opfData.getSpine().get(4));
+        mOpfData = opfData;
+        // 获取具体章节数据
+        mPresenter.getEpubChapterData(mOpfData.getSpine().get(mChapterIndex));
     }
 
     /**
@@ -525,16 +545,23 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
 
     @Override
     public void getEpubChapterDataSuccess(List<EpubData> dataList) {
+        mIsLoadingChapter = false;
         if (dataList == null || dataList.isEmpty()) {
             mStateTv.setText("读取失败");
             return;
         }
-//        FileUtil.writeTxtToLocal("data = " + dataList);
-        // TODO 通知 PageView 绘制章节数据
+        mStateTv.setVisibility(View.GONE);
+        // 通知 PageView 绘制章节数据
+        mPageView.initDrawEpub(dataList, mPosition, mSecondPosition);
+        // 设置该节的名称
+        String title = dataList.get(0).getType() == EpubData.TYPE.TITLE?
+                dataList.get(0).getData() : "";
+        mNovelTitleTv.setText(title);
     }
 
     @Override
     public void getEpubChapterDataError(String errorMsg) {
+        mIsLoadingChapter = false;
         mStateTv.setText("读取失败");
     }
 
@@ -545,13 +572,31 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         if (mIsLoadingChapter) {    // 已经在加载了
             return;
         }
-        mPosition = 0;     // 归零
-        mPageView.clear();              // 清除当前文字
-        mStateTv.setVisibility(View.VISIBLE);
-        mStateTv.setText(LOADING_TEXT);
-        mIsLoadingChapter = true;
-        mPresenter.getDetailedChapterData(UrlObtainer.getDetailedChapter(
-                mChapterUrlList.get(mChapterIndex)));
+        if (mType == 1) {   // 显示网络小说
+            mPosition = 0;     // 归零
+            mPageView.clear();              // 清除当前文字
+            mStateTv.setVisibility(View.VISIBLE);
+            mStateTv.setText(LOADING_TEXT);
+            mIsLoadingChapter = true;
+            if (!mChapterUrlList.isEmpty()) {
+                mPresenter.getDetailedChapterData(UrlObtainer.getDetailedChapter(
+                        mChapterUrlList.get(mChapterIndex)));
+            } else {
+                mStateTv.setText("加载失败");
+                mIsLoadingChapter = false;
+            }
+        } else if (mType == 2) {    // 显示 epub 小说
+            mPageView.clear();              // 清除当前文字或图片
+            mStateTv.setVisibility(View.VISIBLE);
+            mStateTv.setText(LOADING_TEXT);
+            mIsLoadingChapter = true;
+            if (mOpfData != null) {
+                mPresenter.getEpubChapterData(mOpfData.getSpine().get(mChapterIndex));
+            } else {
+                mStateTv.setText("加载失败");
+                mIsLoadingChapter = false;
+            }
+        }
     }
 
     /**

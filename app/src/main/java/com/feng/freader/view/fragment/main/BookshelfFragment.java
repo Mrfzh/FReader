@@ -199,6 +199,7 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                 // 开始阅读的位置
                 intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, mDataList.get(position).getChapterIndex());
                 intent.putExtra(ReadActivity.KEY_POSITION, mDataList.get(position).getPosition());
+                intent.putExtra(ReadActivity.KEY_SECOND_POSITION, mDataList.get(position).getSecondPosition());
                 startActivity(intent);
             }
         });

@@ -1,8 +1,16 @@
 package com.feng.freader.util;
 
+import android.os.Handler;
+import android.os.Looper;
+
+import com.feng.freader.entity.epub.EpubData;
 import com.feng.freader.entity.epub.OpfData;
 import com.feng.freader.entity.epub.TocItem;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -289,6 +297,88 @@ public class EpubUtils {
             if (inputStreamReader != null) {
                 inputStreamReader.close();
             }
+        }
+
+        return dataList;
+    }
+
+    /**
+     * 解析 html/xhtml 文件，得到章节信息
+     */
+    public static List<EpubData> getEpubData(String filePath) throws IOException {
+        List<EpubData> dataList = new ArrayList<>();
+        File file = new File(filePath);
+        Document document = Jsoup.parse(file, null);
+        Elements allElements = document.getAllElements();
+        StringBuilder builder = new StringBuilder();    // 存放文本
+        for (Element element : allElements) {
+            // 该值大于 1 时，表示内部还有其他标签，跳过
+            if (element.getAllElements().size() > 1) {
+                continue;
+            }
+            // <div> 获取一个段落
+            if (element.is("div")) {
+                if (element.text().equals("")) {
+                    continue;
+                }
+                builder.append(element.text());
+                builder.append("\n");
+            }
+            // <p> 获取一个段落
+            else if (element.is("p")) {
+                if (element.text().equals("")) {
+                    continue;
+                }
+                builder.append(element.text());
+                builder.append("\n");
+            }
+            // <img> 获取图片地址
+            else if (element.is("img")) {
+                if (element.attr("src").equals("")) {
+                    continue;
+                }
+                if (!builder.toString().equals("")) {
+                    EpubData epubData = new EpubData(builder.toString(), EpubData.TYPE.TEXT);
+                    dataList.add(epubData);
+                    builder = new StringBuilder();
+                }
+                String picPath = file.getParent() + "/" + element.attr("src");
+                EpubData epubData = new EpubData(picPath, EpubData.TYPE.IMG);
+                dataList.add(epubData);
+            }
+            // <a> 获取超链接
+            else if (element.is("a")) {
+                if (element.text().equals("")) {
+                    continue;
+                }
+                // 先简化一下，将超链接当作普通文本
+                builder.append(element.text());
+                builder.append("\n");
+//                if (!builder.toString().equals("")) {
+//                    EpubData epubData = new EpubData(builder.toString(), EpubData.TYPE.TEXT);
+//                    dataList.add(epubData);
+//                    builder = new StringBuilder();
+//                }
+//                EpubData epubData = new EpubData(element.text(), EpubData.TYPE.LINK);
+//                dataList.add(epubData);
+            } else if (element.is("h1") || element.is("h2") ||
+                    element.is("h3") || element.is("h4") ||
+                    element.is("h5") || element.is("h6")) {
+                if (element.text().equals("")) {
+                    continue;
+                }
+                if (!builder.toString().equals("")) {
+                    EpubData epubData = new EpubData(builder.toString(), EpubData.TYPE.TEXT);
+                    dataList.add(epubData);
+                    builder = new StringBuilder();
+                }
+                EpubData epubData = new EpubData(element.text(), EpubData.TYPE.TITLE);
+                dataList.add(epubData);
+            }
+        }
+        if (!builder.toString().equals("")) {
+            EpubData epubData = new EpubData(builder.toString(), EpubData.TYPE.TEXT);
+            dataList.add(epubData);
         }
 
         return dataList;

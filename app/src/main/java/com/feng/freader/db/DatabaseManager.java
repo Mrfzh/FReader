@@ -100,6 +100,7 @@ public class DatabaseManager {
         values.put(Constant.TABLE_BOOKSHELF_NOVEL_CHAPTER_INDEX, dbData.getChapterIndex());
         values.put(Constant.TABLE_BOOKSHELF_NOVEL_POSITION, dbData.getPosition());
         values.put(Constant.TABLE_BOOKSHELF_NOVEL_TYPE, dbData.getType());
+        values.put(Constant.TABLE_BOOKSHELF_NOVEL_SECOND_POSITION, dbData.getSecondPosition());
         mDb.insert(Constant.TABLE_BOOKSHELF_NOVEL, null, values);
     }
 
@@ -125,8 +126,10 @@ public class DatabaseManager {
                         cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_POSITION));
                 int type = cursor.getInt(
                         cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_TYPE));
+                int secondPosition = cursor.getInt(
+                        cursor.getColumnIndex(Constant.TABLE_BOOKSHELF_NOVEL_SECOND_POSITION));
                 res.add(new BookshelfNovelDbData(novelUrl, name, cover,
-                        chapterIndex, position, type));
+                        chapterIndex, position, type, secondPosition));
             } while (cursor.moveToPrevious());
         }
         cursor.close();

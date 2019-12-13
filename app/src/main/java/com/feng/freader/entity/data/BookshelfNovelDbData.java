@@ -11,15 +11,22 @@ public class BookshelfNovelDbData {
     private int chapterIndex;
     private int position;
     private int type;
+    private int secondPosition;
 
     public BookshelfNovelDbData(String novelUrl, String name, String cover,
                                 int chapterIndex, int position, int type) {
+        this(novelUrl, name, cover, chapterIndex, position, type, 0);
+    }
+
+    public BookshelfNovelDbData(String novelUrl, String name, String cover, int chapterIndex,
+                                int position, int type, int secondPosition) {
         this.novelUrl = novelUrl;
         this.name = name;
         this.cover = cover;
         this.chapterIndex = chapterIndex;
         this.position = position;
         this.type = type;
+        this.secondPosition = secondPosition;
     }
 
     public String getNovelUrl() {
@@ -70,6 +77,14 @@ public class BookshelfNovelDbData {
         this.type = type;
     }
 
+    public int getSecondPosition() {
+        return secondPosition;
+    }
+
+    public void setSecondPosition(int secondPosition) {
+        this.secondPosition = secondPosition;
+    }
+
     @Override
     public String toString() {
         return "BookshelfNovelDbData{" +
@@ -79,6 +94,7 @@ public class BookshelfNovelDbData {
                 ", chapterIndex=" + chapterIndex +
                 ", position=" + position +
                 ", type=" + type +
+                ", secondPosition=" + secondPosition +
                 '}';
     }
 }
