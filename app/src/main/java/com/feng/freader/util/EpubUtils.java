@@ -1,6 +1,7 @@
 package com.feng.freader.util;
 
 import com.feng.freader.entity.epub.OpfData;
+import com.feng.freader.entity.epub.TocItem;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -223,5 +224,73 @@ public class EpubUtils {
         }
 
         return opfPath;
+    }
+
+    /**
+     * 解析 ncx 文件，得到目录信息
+     */
+    public static List<TocItem> getTocData(String ncxPath) throws XmlPullParserException, IOException {
+        List<TocItem> dataList = new ArrayList<>();
+        XmlPullParser pullParser;
+        InputStreamReader inputStreamReader = null;
+        File ncxFile = new File(ncxPath);
+        try {
+            // 创建Pull解析器
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            pullParser = factory.newPullParser();
+            // 设置xml数据源
+            inputStreamReader = new InputStreamReader(new FileInputStream(ncxPath));
+            pullParser.setInput(inputStreamReader);
+
+            TocItem item = null;
+            boolean flag = false;
+            int eventType = pullParser.getEventType();
+            // 开始解析。如果解析遇到的事件是文件解析结束的话就退出循环
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                String currentNodeName = pullParser.getName();
+                switch (eventType) {
+                    case XmlPullParser.START_TAG:
+                        // 开始解析某个节点
+                        switch (currentNodeName) {
+                            case "navPoint":
+                                flag = true;
+                                item = new TocItem();
+                                break;
+                            case "text":
+                                if (!flag) {
+                                    break;
+                                }
+                                item.setTitle(pullParser.nextText());
+                                break;
+                            case "content":
+                                if (!flag) {
+                                    break;
+                                }
+                                String path = ncxFile.getParent() + "/" + pullParser
+                                        .getAttributeValue(null, "src");
+                                item.setPath(path);
+                                break;
+                        }
+                        break;
+                    case XmlPullParser.END_TAG:
+                        // 结束某个节点的解析
+                        if (currentNodeName.equals("navPoint")) {
+                            flag = false;
+                            dataList.add(item);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                // 继续解析下一个事件
+                eventType = pullParser.next();
+            }
+        } finally {
+            if (inputStreamReader != null) {
+                inputStreamReader.close();
+            }
+        }
+
+        return dataList;
     }
 }

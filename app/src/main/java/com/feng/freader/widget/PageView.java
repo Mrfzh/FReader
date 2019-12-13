@@ -9,10 +9,13 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.feng.freader.R;
+import com.feng.freader.entity.epub.EpubData;
 import com.feng.freader.util.ScreenUtil;
 import com.feng.freader.util.SpUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author Feng Zhaohao
@@ -27,14 +30,23 @@ public class PageView extends View {
     private float mRowSpace;     // 行距
 
     private PageViewListener mListener;
-    private String mContent = "";    // 文本内容
     private boolean mIsShowContent = true;  // 是否显示文本内容
+    // 0 为绘制普通文本（网络小说和本地 txt），1 为绘制 epub 文本（本地 epub）
+    private int mType = 0;
 
+    /* 纯文本绘制用 */
+    private String mContent = "";    // 文本内容
     private int mPosition = 0;  // 当前页第一个字的索引
     private int mNextPosition;  // 下一页第一个字的索引
     private int mPageIndex = 0; // 当前页的索引（第几页，并不一定从 0 开始，只是作为 hashMap 的 key 而存在）
     // 记录每页的第一个字的索引，key 为页号，value 为第一个字的索引
     private HashMap<Integer, Integer> mFirstPosMap = new HashMap<>();
+
+    /* epub 绘制用 */
+    private List<EpubData> mEpubDataList = new ArrayList<>();   // epub 内容
+    private int mFirstPos;      // 第一位置索引，指向某个 EpubData
+    private int mSecondPos;     // 第二位置索引，指向 EpubData 内部字符串
+
 
     public interface PageViewListener {
         void updateProgress(String progress);     // 通知主活动更新进度
@@ -72,19 +84,24 @@ public class PageView extends View {
     }
 
     /**
-     * 初始化
+     * 初始化，绘制纯文本
      *
      * @param content 文本
      * @param position 该页的首字索引
      */
-    public void init(String content, int position) {
+    public void initDrawText(String content, int position) {
         mContent = content;
         mPosition = position;
         mIsShowContent = true;
         mPageIndex = 0;
         mFirstPosMap.clear();
+        mType = 0;
         // 进行视图重绘
         invalidate();
+    }
+
+    public void initDrawEpub(List<EpubData> epubDataList, int pos, int secondPos) {
+
     }
 
     @Override
@@ -96,7 +113,11 @@ public class PageView extends View {
         }
 
         mPaint.setTextSize(mTextSize);
-        drawText(canvas);
+        if (mType == 0) {
+            drawText(canvas);
+        } else if (mType == 1) {
+            drawEpub(canvas);
+        }
     }
 
     private void drawText(Canvas canvas) {
@@ -176,6 +197,8 @@ public class PageView extends View {
             mListener.updateProgress(progress);
         }
     }
+
+    private void drawEpub(Canvas canvas) {}
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {

@@ -3,6 +3,8 @@ package com.feng.freader.presenter;
 import com.feng.freader.base.BasePresenter;
 import com.feng.freader.constract.IReadContract;
 import com.feng.freader.entity.data.DetailedChapterData;
+import com.feng.freader.entity.epub.EpubData;
+import com.feng.freader.entity.epub.OpfData;
 import com.feng.freader.model.ReadModel;
 
 import java.util.List;
@@ -63,6 +65,34 @@ public class ReadPresenter extends BasePresenter<IReadContract.View>
     }
 
     @Override
+    public void getOpfDataSuccess(OpfData opfData) {
+        if (isAttachView()) {
+            getMvpView().getOpfDataSuccess(opfData);
+        }
+    }
+
+    @Override
+    public void getOpfDataError(String errorMsg) {
+        if (isAttachView()) {
+            getMvpView().getOpfDataError(errorMsg);
+        }
+    }
+
+    @Override
+    public void getEpubChapterDataSuccess(List<EpubData> dataList) {
+        if (isAttachView()) {
+            getMvpView().getEpubChapterDataSuccess(dataList);
+        }
+    }
+
+    @Override
+    public void getEpubChapterDataError(String errorMsg) {
+        if (isAttachView()) {
+            getMvpView().getEpubChapterDataError(errorMsg);
+        }
+    }
+
+    @Override
     public void getChapterUrlList(String url) {
         mModel.getChapterUrlList(url);
     }
@@ -75,5 +105,15 @@ public class ReadPresenter extends BasePresenter<IReadContract.View>
     @Override
     public void loadTxt(String filePath) {
         mModel.loadTxt(filePath);
+    }
+
+    @Override
+    public void getOpfData(String filePath) {
+        mModel.getOpfData(filePath);
+    }
+
+    @Override
+    public void getEpubChapterData(String filePath) {
+        mModel.getEpubChapterData(filePath);
     }
 }

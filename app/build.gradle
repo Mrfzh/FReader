@@ -38,4 +38,6 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
     // okhttp3
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    // jsoup
+    implementation 'org.jsoup:jsoup:1.12.1'
 }

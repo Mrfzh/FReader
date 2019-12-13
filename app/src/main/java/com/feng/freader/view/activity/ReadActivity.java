@@ -21,16 +21,25 @@ import com.feng.freader.constract.IReadContract;
 import com.feng.freader.db.DatabaseManager;
 import com.feng.freader.entity.data.BookshelfNovelDbData;
 import com.feng.freader.entity.data.DetailedChapterData;
+import com.feng.freader.entity.epub.EpubData;
+import com.feng.freader.entity.epub.OpfData;
+import com.feng.freader.entity.epub.TocItem;
 import com.feng.freader.entity.eventbus.Event;
 import com.feng.freader.entity.eventbus.HoldReadActivityEvent;
 import com.feng.freader.http.UrlObtainer;
 import com.feng.freader.presenter.ReadPresenter;
+import com.feng.freader.util.EpubUtils;
+import com.feng.freader.util.FileUtil;
 import com.feng.freader.util.ScreenUtil;
 import com.feng.freader.util.EventBusUtil;
 import com.feng.freader.util.SpUtil;
 import com.feng.freader.util.StatusBarUtil;
 import com.feng.freader.widget.PageView;
 
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -92,6 +101,9 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
 
     // 章节 url 列表（通过网络请求获取）
     private List<String> mChapterUrlList;
+    // Epub 文件的目录
+    private List<TocItem> mEpubToc = new ArrayList<>();
+
     // 以下内容通过 Intent 传入
     private String mNovelUrl;   // 小说 url，本地小说为 filePath
     private String mName;   // 小说名
@@ -184,8 +196,10 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     // 加载下一章节
                     mChapterIndex++;
                     showChapter();
-                } else {
+                } else if (mType == 1) {
                     showShortToast("已经到最后了");
+                } else if (mType == 2){
+
                 }
             }
 
@@ -199,8 +213,10 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     // 加载上一章节
                     mChapterIndex--;
                     showChapter();
-                } else {
+                } else if (mType == 1){
                     showShortToast("已经到最前了");
+                } else if (mType == 2){
+
                 }
             }
 
@@ -327,9 +343,12 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         if (mType == 0) {
             // 先通过小说 url 获取所有章节 url 信息
             mPresenter.getChapterUrlList(UrlObtainer.getCatalogInfo(mNovelUrl));
-        } else {
+        } else if (mType == 1){
             // 通过 FilePath 读取本地小说
             mPresenter.loadTxt(mNovelUrl);
+        } else if (mType == 2) {
+            // 先根据 filePath 获得 OpfData
+            mPresenter.getOpfData(mNovelUrl);
         }
 
         if (mBrightness == -1f) {    // 系统亮度
@@ -425,7 +444,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
 //        Log.d(TAG, "getDetailedChapterDataSuccess: mChapterUrlList = " + mChapterUrlList);
 //        Log.d(TAG, "getDetailedChapterDataSuccess: data = " + data);
         mStateTv.setVisibility(View.GONE);
-        mPageView.init(data.getContent(), mPosition);
+        mPageView.initDrawText(data.getContent(), mPosition);
         mNovelTitleTv.setText(data.getName());
     }
 
@@ -445,7 +464,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     public void loadTxtSuccess(String text) {
         Log.d(TAG, "loadTxtSuccess: run");
         mStateTv.setVisibility(View.GONE);
-        mPageView.init(text, mPosition);
+        mPageView.initDrawText(text, mPosition);
         mNovelTitleTv.setText(mName);
     }
 
@@ -467,6 +486,56 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         }
         Log.d(TAG, "loadTxtError: run");
         mStateTv.setText(errorMsg);
+    }
+
+    /**
+     * 获取 Epub 的 Opf 文件数据成功
+     */
+    @Override
+    public void getOpfDataSuccess(OpfData opfData) {
+        if (opfData == null) {
+            mStateTv.setText("读取失败");
+            return;
+        }
+        mNovelTitleTv.setText(opfData.getTitle());
+        // 解析 ncx 文件，得到小说目录
+        try {
+            mEpubToc = EpubUtils.getTocData(opfData.getNcx());
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+            mStateTv.setText("读取失败");
+            return;
+        } catch (IOException e) {
+            e.printStackTrace();
+            mStateTv.setText("读取失败");
+            return;
+        }
+        Log.d(TAG, "getOpfDataSuccess: toc = " + mEpubToc);
+        // 解析相应章节的数据
+        mPresenter.getEpubChapterData(opfData.getSpine().get(4));
+    }
+
+    /**
+     * 获取 Epub 的 Opf 文件数据失败
+     */
+    @Override
+    public void getOpfDataError(String errorMsg) {
+        mStateTv.setText("读取失败");
+    }
+
+    @Override
+    public void getEpubChapterDataSuccess(List<EpubData> dataList) {
+        if (dataList == null || dataList.isEmpty()) {
+            mStateTv.setText("读取失败");
+            return;
+        }
+//        FileUtil.writeTxtToLocal("data = " + dataList);
+        // TODO 通知 PageView 绘制章节数据
+    }
+
+    @Override
+    public void getEpubChapterDataError(String errorMsg) {
+        mStateTv.setText("读取失败");
     }
 
     /**
