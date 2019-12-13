@@ -253,6 +253,7 @@ public class PageView extends View {
     }
 
     private void drawEpub(Canvas canvas) {
+        Log.d(TAG, "drawEpub: mFirstPos = " + mFirstPos);
         float width = getWidth();
         float height = getHeight();
         int paddingTop = getPaddingTop();
@@ -329,13 +330,15 @@ public class PageView extends View {
                     // 绘制图片
                     String picPath = mEpubDataList.get(mFirstPos).getData();
                     Bitmap bitmap = FileUtil.loadLocalPicture(picPath);
-                    Rect src = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-                    float scale = (float) bitmap.getHeight() / (float) bitmap.getWidth();
-                    int w = (int)width - paddingStart - paddingEnd;
-                    int h = (int) (w * scale);
-                    Rect dst = new Rect(paddingStart, paddingTop,
-                            (int)width - paddingEnd, paddingTop + h);
-                    canvas.drawBitmap(bitmap, src, dst, null);
+                    if (bitmap != null) {
+                        Rect src = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+                        float scale = (float) bitmap.getHeight() / (float) bitmap.getWidth();
+                        int w = (int)width - paddingStart - paddingEnd;
+                        int h = (int) (w * scale);
+                        Rect dst = new Rect(paddingStart, paddingTop,
+                                (int)width - paddingEnd, paddingTop + h);
+                        canvas.drawBitmap(bitmap, src, dst, null);
+                    }
                     // 更新变量
                     mNextFirstPos = mFirstPos + 1;
                     mNextSecondPos = 0;
@@ -359,12 +362,6 @@ public class PageView extends View {
             case MotionEvent.ACTION_MOVE:
                 break;
             case MotionEvent.ACTION_UP:
-                if (mType == TYPE_TXT && mContent.equals("")) {
-                    break;
-                }
-                if (mType == TYPE_EPUB && mEpubDataList.isEmpty()) {
-                    break;
-                }
                 // 根据离开时的位置进行不同操作
                 float rawX = event.getRawX();
                 float screenWidth = ScreenUtil.getScreenWidth();
@@ -467,6 +464,14 @@ public class PageView extends View {
      */
     public void setPosition(int mPosition) {
         this.mPosition = mPosition;
+    }
+
+    public int getFirstPos() {
+        return mFirstPos;
+    }
+
+    public int getSecondPos() {
+        return mSecondPos;
     }
 
     /**

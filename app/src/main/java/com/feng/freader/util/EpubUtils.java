@@ -2,6 +2,7 @@ package com.feng.freader.util;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.feng.freader.entity.epub.EpubData;
 import com.feng.freader.entity.epub.OpfData;
@@ -31,6 +32,8 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 public class EpubUtils {
+
+    private static final String TAG = "EpubUtils";
 
     /**
      * 将 filePath 的文件解压到 savePath 中
@@ -107,6 +110,52 @@ public class EpubUtils {
         createDirIfNotExist(file.getParentFile());
     }
 
+
+    /**
+     * 得到 opf 文件的位置
+     */
+    public static String getOpfPath(String savePath) throws XmlPullParserException, IOException {
+        String containerPath = savePath + "/META-INF/container.xml";
+        String opfPath = "";
+        XmlPullParser pullParser;
+        InputStreamReader inputStreamReader = null;
+        try {
+            // 创建Pull解析器
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            pullParser = factory.newPullParser();
+            // 设置xml数据源
+            inputStreamReader = new InputStreamReader(new FileInputStream(containerPath));
+            pullParser.setInput(inputStreamReader);
+
+            int eventType = pullParser.getEventType();
+            // 开始解析。如果解析遇到的事件是文件解析结束的话就退出循环
+            boolean flag = false;
+            while (!flag && eventType != XmlPullParser.END_DOCUMENT) {
+                String currentNodeName = pullParser.getName();
+                switch (eventType) {
+                    case XmlPullParser.START_TAG:
+                        // 开始解析某个节点
+                        if (currentNodeName.equals("rootfile")) {
+                            opfPath = savePath + "/" + pullParser
+                                    .getAttributeValue(null, "full-path");
+                            flag = true;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                // 继续解析下一个事件
+                eventType = pullParser.next();
+            }
+        } finally {
+            if (inputStreamReader != null) {
+                inputStreamReader.close();
+            }
+        }
+
+        return opfPath;
+    }
+
     /**
      * 解析 opf 文件
      */
@@ -115,6 +164,7 @@ public class EpubUtils {
         XmlPullParser pullParser;
         InputStreamReader inputStreamReader = null;
         File opfFile = new File(opfFilePath);
+        opfData.setParentPath(opfFile.getParent());
         try {
             // 创建Pull解析器
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
@@ -190,51 +240,6 @@ public class EpubUtils {
     }
 
     /**
-     * 得到 opf 文件的位置
-     */
-    public static String getOpfPath(String savePath) throws XmlPullParserException, IOException {
-        String containerPath = savePath + "/META-INF/container.xml";
-        String opfPath = "";
-        XmlPullParser pullParser;
-        InputStreamReader inputStreamReader = null;
-        try {
-            // 创建Pull解析器
-            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-            pullParser = factory.newPullParser();
-            // 设置xml数据源
-            inputStreamReader = new InputStreamReader(new FileInputStream(containerPath));
-            pullParser.setInput(inputStreamReader);
-
-            int eventType = pullParser.getEventType();
-            // 开始解析。如果解析遇到的事件是文件解析结束的话就退出循环
-            boolean flag = false;
-            while (!flag && eventType != XmlPullParser.END_DOCUMENT) {
-                String currentNodeName = pullParser.getName();
-                switch (eventType) {
-                    case XmlPullParser.START_TAG:
-                        // 开始解析某个节点
-                        if (currentNodeName.equals("rootfile")) {
-                            opfPath = savePath + "/" + pullParser
-                                    .getAttributeValue(null, "full-path");
-                            flag = true;
-                        }
-                        break;
-                    default:
-                        break;
-                }
-                // 继续解析下一个事件
-                eventType = pullParser.next();
-            }
-        } finally {
-            if (inputStreamReader != null) {
-                inputStreamReader.close();
-            }
-        }
-
-        return opfPath;
-    }
-
-    /**
      * 解析 ncx 文件，得到目录信息
      */
     public static List<TocItem> getTocData(String ncxPath) throws XmlPullParserException, IOException {
@@ -305,13 +310,15 @@ public class EpubUtils {
     /**
      * 解析 html/xhtml 文件，得到章节信息
      */
-    public static List<EpubData> getEpubData(String filePath) throws IOException {
+    public static List<EpubData> getEpubData(String parentPath, String filePath) throws IOException {
+        Log.d(TAG, "getEpubData: filePath = " + filePath);
         List<EpubData> dataList = new ArrayList<>();
         File file = new File(filePath);
         Document document = Jsoup.parse(file, null);
         Elements allElements = document.getAllElements();
         StringBuilder builder = new StringBuilder();    // 存放文本
         for (Element element : allElements) {
+            Log.d(TAG, "getEpubData: run");
             // 该值大于 1 时，表示内部还有其他标签，跳过
             if (element.getAllElements().size() > 1) {
                 continue;
@@ -342,10 +349,32 @@ public class EpubUtils {
                     dataList.add(epubData);
                     builder = new StringBuilder();
                 }
-                String picPath = file.getParent() + "/" + element.attr("src");
+                String value = element.attr("src");
+                String picPath;
+                if (value.substring(0, 2).equals("..")) {
+                    picPath = parentPath + value.substring(value.indexOf("/"));
+                } else {
+                    picPath = parentPath + "/" + value;
+                }
+                Log.d(TAG, "getEpubData: picpath = " + picPath);
                 EpubData epubData = new EpubData(picPath, EpubData.TYPE.IMG);
                 dataList.add(epubData);
             }
+//            // <image> 获取图片地址
+//            else if (element.is("image")) {
+//                if (element.attr("xlink:href").equals("")) {
+//                    continue;
+//                }
+//                if (!builder.toString().equals("")) {
+//                    EpubData epubData = new EpubData(builder.toString(), EpubData.TYPE.TEXT);
+//                    dataList.add(epubData);
+//                    builder = new StringBuilder();
+//                }
+//                String value = element.attr("xlink:href");
+//                String picPath = parentPath + value.substring(value.indexOf("/"));
+//                EpubData epubData = new EpubData(picPath, EpubData.TYPE.IMG);
+//                dataList.add(epubData);
+//            }
             // <a> 获取超链接
             else if (element.is("a")) {
                 if (element.text().equals("")) {

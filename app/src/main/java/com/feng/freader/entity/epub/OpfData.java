@@ -11,6 +11,7 @@ public class OpfData {
     private String title;   // 小说名
     private String cover;   // 小说封面路径
     private String ncx;     // ncx 文件路径
+    private String parentPath;  // opf 文件的父目录
     private List<String> spine;     // 小说阅读顺序，每个元素为 text 的相对位置
 
     public OpfData() {
@@ -20,12 +21,6 @@ public class OpfData {
         spine = new ArrayList<>();
     }
 
-    public OpfData(String title, String cover, String ncx, List<String> spine) {
-        this.title = title;
-        this.cover = cover;
-        this.ncx = ncx;
-        this.spine = spine;
-    }
 
     public String getTitle() {
         return title;
@@ -59,12 +54,21 @@ public class OpfData {
         this.spine = spine;
     }
 
+    public String getParentPath() {
+        return parentPath;
+    }
+
+    public void setParentPath(String parentPath) {
+        this.parentPath = parentPath;
+    }
+
     @Override
     public String toString() {
         return "OpfData{" +
                 "title='" + title + '\'' +
                 ", cover='" + cover + '\'' +
                 ", ncx='" + ncx + '\'' +
+                ", parentPath='" + parentPath + '\'' +
                 ", spine=" + spine +
                 '}';
     }

@@ -113,7 +113,7 @@ public class ReadPresenter extends BasePresenter<IReadContract.View>
     }
 
     @Override
-    public void getEpubChapterData(String filePath) {
-        mModel.getEpubChapterData(filePath);
+    public void getEpubChapterData(String parentPath, String filePath) {
+        mModel.getEpubChapterData(parentPath, filePath);
     }
 }

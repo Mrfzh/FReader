@@ -232,10 +232,10 @@ public class ReadModel implements IReadContract.Model {
      * @param filePath 读取的文件路径
      */
     @Override
-    public void getEpubChapterData(String filePath) {
+    public void getEpubChapterData(String parentPath, String filePath) {
         List<EpubData> dataList = new ArrayList<>();
         try {
-           dataList = EpubUtils.getEpubData(filePath);
+           dataList = EpubUtils.getEpubData(parentPath, filePath);
         } catch (IOException e) {
             e.printStackTrace();
             new Handler(Looper.getMainLooper()).post(new Runnable() {
