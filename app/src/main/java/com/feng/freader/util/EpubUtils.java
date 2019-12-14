@@ -1,12 +1,10 @@
 package com.feng.freader.util;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 import com.feng.freader.entity.epub.EpubData;
+import com.feng.freader.entity.epub.EpubTocItem;
 import com.feng.freader.entity.epub.OpfData;
-import com.feng.freader.entity.epub.TocItem;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -18,7 +16,6 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +25,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 public class EpubUtils {
@@ -242,8 +238,8 @@ public class EpubUtils {
     /**
      * 解析 ncx 文件，得到目录信息
      */
-    public static List<TocItem> getTocData(String ncxPath) throws XmlPullParserException, IOException {
-        List<TocItem> dataList = new ArrayList<>();
+    public static List<EpubTocItem> getTocData(String ncxPath) throws XmlPullParserException, IOException {
+        List<EpubTocItem> dataList = new ArrayList<>();
         XmlPullParser pullParser;
         InputStreamReader inputStreamReader = null;
         File ncxFile = new File(ncxPath);
@@ -255,7 +251,7 @@ public class EpubUtils {
             inputStreamReader = new InputStreamReader(new FileInputStream(ncxPath));
             pullParser.setInput(inputStreamReader);
 
-            TocItem item = null;
+            EpubTocItem item = null;
             boolean flag = false;
             int eventType = pullParser.getEventType();
             // 开始解析。如果解析遇到的事件是文件解析结束的话就退出循环
@@ -267,7 +263,7 @@ public class EpubUtils {
                         switch (currentNodeName) {
                             case "navPoint":
                                 flag = true;
-                                item = new TocItem();
+                                item = new EpubTocItem();
                                 break;
                             case "text":
                                 if (!flag) {
@@ -349,32 +345,26 @@ public class EpubUtils {
                     dataList.add(epubData);
                     builder = new StringBuilder();
                 }
-                String value = element.attr("src");
-                String picPath;
-                if (value.substring(0, 2).equals("..")) {
-                    picPath = parentPath + value.substring(value.indexOf("/"));
-                } else {
-                    picPath = parentPath + "/" + value;
+                String srcValue = element.attr("src");
+                String picPath = getImagePath(parentPath, srcValue);
+                String altValue = element.attr("alt");
+                String secondPath = "";
+                if (!altValue.equals("")) {
+                    int last = srcValue.lastIndexOf("/");
+                    if (last == -1) {
+                        secondPath = getImagePath(parentPath, altValue);
+                    } else {
+                        altValue = srcValue.substring(0, last+1) + altValue;
+                        secondPath = getImagePath(parentPath, altValue);
+                    }
+                    last = srcValue.lastIndexOf(".");
+                    if (last != -1) {
+                        secondPath = secondPath + srcValue.substring(last);
+                    }
                 }
-                Log.d(TAG, "getEpubData: picpath = " + picPath);
-                EpubData epubData = new EpubData(picPath, EpubData.TYPE.IMG);
+                EpubData epubData = new EpubData(picPath, secondPath, EpubData.TYPE.IMG);
                 dataList.add(epubData);
             }
-//            // <image> 获取图片地址
-//            else if (element.is("image")) {
-//                if (element.attr("xlink:href").equals("")) {
-//                    continue;
-//                }
-//                if (!builder.toString().equals("")) {
-//                    EpubData epubData = new EpubData(builder.toString(), EpubData.TYPE.TEXT);
-//                    dataList.add(epubData);
-//                    builder = new StringBuilder();
-//                }
-//                String value = element.attr("xlink:href");
-//                String picPath = parentPath + value.substring(value.indexOf("/"));
-//                EpubData epubData = new EpubData(picPath, EpubData.TYPE.IMG);
-//                dataList.add(epubData);
-//            }
             // <a> 获取超链接
             else if (element.is("a")) {
                 if (element.text().equals("")) {
@@ -383,14 +373,9 @@ public class EpubUtils {
                 // 先简化一下，将超链接当作普通文本
                 builder.append(element.text());
                 builder.append("\n");
-//                if (!builder.toString().equals("")) {
-//                    EpubData epubData = new EpubData(builder.toString(), EpubData.TYPE.TEXT);
-//                    dataList.add(epubData);
-//                    builder = new StringBuilder();
-//                }
-//                EpubData epubData = new EpubData(element.text(), EpubData.TYPE.LINK);
-//                dataList.add(epubData);
-            } else if (element.is("h1") || element.is("h2") ||
+            }
+            // <h1> - <h6>, 获取标题
+            else if (element.is("h1") || element.is("h2") ||
                     element.is("h3") || element.is("h4") ||
                     element.is("h5") || element.is("h6")) {
                 if (element.text().equals("")) {
@@ -411,5 +396,18 @@ public class EpubUtils {
         }
 
         return dataList;
+    }
+
+
+    private static String getImagePath(String parentPath, String value) {
+        String picPath;
+        if (value.length() >= 2 && value.substring(0, 2).equals("..")) {
+            picPath = parentPath + value.substring(value.indexOf("/"));
+        } else if (value.length() >= 1 && value.substring(0, 1).equals("/")) {
+            picPath = parentPath + value;
+        } else {
+            picPath = parentPath + "/" + value;
+        }
+        return picPath;
     }
 }

@@ -137,15 +137,36 @@ public class PageView extends View {
             return;
         }
 
-        mPaint.setTextSize(mTextSize);
         if (mType == TYPE_TXT) {
             drawText(canvas);
         } else if (mType == TYPE_EPUB) {
             drawEpub(canvas);
         }
+
+        // 计算当前进度
+        float f = 0;
+        if (mType == TYPE_TXT) {
+            f = (float) mNextPosition / (float) mContent.length();
+        } else if (mType == TYPE_EPUB) {
+            f = calEpubProgress(mNextFirstPos, mNextSecondPos);
+        }
+        String progress;
+        if (f < 0.1f) {
+            progress = String.valueOf(f * 100);
+            int end = Math.min(4, progress.length());
+            progress = progress.substring(0, end) + "%";
+        } else {
+            progress = String.valueOf(f * 100);
+            int end = Math.min(5, progress.length());
+            progress = progress.substring(0, end) + "%";
+        }
+        if (mListener != null) {
+            mListener.updateProgress(progress);
+        }
     }
 
     private void drawText(Canvas canvas) {
+        mPaint.setTextSize(mTextSize);
         drawText(canvas, mTextSize + getPaddingTop());
         mFirstPosMap.put(mPageIndex, mPosition);
     }
@@ -229,31 +250,9 @@ public class PageView extends View {
                 mNextSecondPos = posRecord;
             }
         }
-
-        // 计算当前进度
-        float f = 0;
-        if (mType == TYPE_TXT) {
-            f = (float) mNextPosition / (float) mContent.length();
-        } else if (mType == TYPE_EPUB) {
-            f = (float) mNextFirstPos / (float) mEpubDataList.size();
-        }
-        String progress;
-        if (f < 0.1f) {
-            progress = String.valueOf(f * 100);
-            int end = Math.min(4, progress.length());
-            progress = progress.substring(0, end) + "%";
-        } else {
-            progress = String.valueOf(f * 100);
-            int end = Math.min(5, progress.length());
-            progress = progress.substring(0, end) + "%";
-        }
-        if (mListener != null) {
-            mListener.updateProgress(progress);
-        }
     }
 
     private void drawEpub(Canvas canvas) {
-        Log.d(TAG, "drawEpub: mFirstPos = " + mFirstPos);
         float width = getWidth();
         float height = getHeight();
         int paddingTop = getPaddingTop();
@@ -269,7 +268,7 @@ public class PageView extends View {
                 currY = mTextSize + mTextSize + paddingTop;
                 break;
         }
-
+        // 开始绘制
         boolean isFinished = false;
         int tempFirstPos = mFirstPos;
         int tempSecondPos = mSecondPos;
@@ -278,8 +277,8 @@ public class PageView extends View {
             switch (epubData.getType()) {
                 case TEXT:
                     // 普通文本绘制
-                    mPaint.setTextSize(mTextSize);  // 标题的字体更大
-                    mPaint.setTextAlign(Paint.Align.LEFT);    // 文字居中
+                    mPaint.setTextSize(mTextSize);
+                    mPaint.setTextAlign(Paint.Align.LEFT);
                     drawText(canvas, currY);
                     isFinished = true;
                     break;
@@ -328,8 +327,14 @@ public class PageView extends View {
                     break;
                 case IMG:
                     // 绘制图片
+                    mPaint.setTextSize(mTextSize);
+                    mPaint.setTextAlign(Paint.Align.CENTER);
                     String picPath = mEpubDataList.get(mFirstPos).getData();
                     Bitmap bitmap = FileUtil.loadLocalPicture(picPath);
+                    if (bitmap == null) {
+                        String secondPath = mEpubDataList.get(mFirstPos).getSecondData();
+                        bitmap = FileUtil.loadLocalPicture(secondPath);
+                    }
                     if (bitmap != null) {
                         Rect src = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
                         float scale = (float) bitmap.getHeight() / (float) bitmap.getWidth();
@@ -338,6 +343,8 @@ public class PageView extends View {
                         Rect dst = new Rect(paddingStart, paddingTop,
                                 (int)width - paddingEnd, paddingTop + h);
                         canvas.drawBitmap(bitmap, src, dst, null);
+                    } else {
+                        canvas.drawText("图片加载失败", width/2, height/2, mPaint);
                     }
                     // 更新变量
                     mNextFirstPos = mFirstPos + 1;
@@ -352,6 +359,35 @@ public class PageView extends View {
         // 更新 map
         mFirstPosMap.put(mPageIndex, mFirstPos);
         mSecondPosMap.put(mPageIndex, mSecondPos);
+    }
+
+    /**
+     * epub 根据 firstPos 和 secondPos 计算进度
+     */
+    private float calEpubProgress(int firstPos, int secondPos) {
+        if (firstPos == mEpubDataList.size()) {
+            return 1f;
+        }
+        // 计算数据量
+        int curr = 0;
+        int sum = 0;
+        for (int i = 0; i < mEpubDataList.size(); i++) {
+            EpubData epubData = mEpubDataList.get(i);
+            if (firstPos == i) {
+                curr = sum + secondPos;
+            }
+            switch (epubData.getType()) {
+                case IMG:
+                    sum += 1;
+                    break;
+                case TEXT:
+                case TITLE:
+                    sum += epubData.getData().length();
+                    break;
+            }
+        }
+
+        return (float) curr / (float) sum;
     }
 
     @Override
@@ -419,7 +455,7 @@ public class PageView extends View {
                 mPosition = mFirstPosMap.get(mPageIndex);
             } else {
                 // mPosition 更新为上一页的首字符位置
-                updatePrePageFirstPos();
+                updatePrePosTxt();
             }
         } else if (mType == TYPE_EPUB) {
             if (mFirstPos == 0 && mSecondPos == 0) {
@@ -430,8 +466,8 @@ public class PageView extends View {
                 mFirstPos = mFirstPosMap.get(mPageIndex);
                 mSecondPos = mSecondPosMap.get(mPageIndex);
             } else {
-                // TODO 计算 epub 的上一章节的位置索引
-                mListener.pre();    // 上一章节
+                // 计算 epub 的上一章节的位置索引
+                updatePrePosEpub();
             }
         }
         invalidate();
@@ -485,7 +521,7 @@ public class PageView extends View {
     /**
      * 将 mPosition 更新为上一页的首字符位置
      */
-    private void updatePrePageFirstPos() {
+    private void updatePrePosTxt() {
         int currPos = mPosition - 1;  // 当前页的字符位置
         float width = getWidth();
         float height = getHeight();
@@ -495,6 +531,7 @@ public class PageView extends View {
         int paddingEnd = getPaddingEnd();
 
         float currY = height - paddingBottom;
+        mPaint.setTextSize(mTextSize);
 
         while (currY >= mTextSize + paddingTop && currPos >= 0) {
             // 绘制上一行
@@ -520,6 +557,191 @@ public class PageView extends View {
 
         // 更新
         mPosition = currPos - 1 < 0? 0 : currPos - 1;
+    }
+
+    /**
+     * 将 mFirstPos, mSecondPos 更新为上一页的值
+     */
+    private void updatePrePosEpub() {
+        if (mSecondPos == 0) {   // 当前页是新的一页
+            // 上一数据是图片
+            if (mEpubDataList.get(mFirstPos-1).getType() == EpubData.TYPE.IMG) {
+                mFirstPos--;
+                return;
+            }
+            // 上一数据是标题或文本
+            boolean finished = false;
+            int tempFirst = mFirstPos - 1;
+            int tempSecond = mEpubDataList.get(tempFirst).getData().length()-1;
+            int remainHeight = getHeight() - getPaddingTop() - getPaddingBottom();
+            while (!finished) {
+                EpubData epubData = mEpubDataList.get(tempFirst);
+                switch (epubData.getType()) {
+                    case IMG:
+                        mFirstPos = tempFirst+1;
+                        mSecondPos = 0;
+                        finished = true;
+                        break;
+                    case TITLE:
+                        float textSize = mTextSize * 2;
+                        mPaint.setTextSize(textSize);
+                        while (remainHeight >= textSize && tempSecond >= 0) {
+                            float totalWidth = 0f;
+                            int num = 0;
+                            for (int i = tempSecond; i >= 0; i--) {
+                                String currS = mEpubDataList.get(tempFirst).getData().substring(i, i+1);
+                                float textWidth = getTextWidth(mPaint, currS);
+                                if (textWidth + totalWidth > getWidth() - getPaddingStart() - getPaddingEnd()) {
+                                    break;
+                                }
+                                totalWidth += textWidth;
+                                num++;
+                            }
+                            tempSecond -= num;
+                            remainHeight -= textSize + mRowSpace;
+                        }
+                        // 判断是否绘制完
+                        if (tempSecond < 0) {  // 绘制完
+                            tempFirst--;
+                            if (tempFirst < 0) {
+                                mFirstPos = 0;
+                                mSecondPos = 0;
+                                finished = true;
+                                break;
+                            }
+                            tempSecond = mEpubDataList.get(tempFirst).getData().length()-1;
+                        } else {    // 没有绘制完
+                            mFirstPos = tempFirst;
+                            mSecondPos = tempSecond+1;
+                            finished = true;
+                        }
+                        break;
+                    case TEXT:
+                        mPaint.setTextSize(mTextSize);
+                        while (remainHeight >= mTextSize && tempSecond >= 0) {
+                            float totalWidth = 0f;
+                            int num = 0;
+                            for (int i = tempSecond; i >= 0; i--) {
+                                String currS = mEpubDataList.get(tempFirst).getData().substring(i,i+1);
+                                if (currS.equals("\n")) {
+                                    num++;
+                                    break;
+                                }
+                                float textWidth = getTextWidth(mPaint, currS);
+                                if (textWidth + totalWidth > getWidth() - getPaddingStart() - getPaddingEnd()) {
+                                    break;
+                                }
+                                totalWidth += textWidth;
+                                num++;
+                            }
+                            tempSecond -= num;
+                            remainHeight -= mTextSize + mRowSpace;
+                        }
+                        // 判断是否绘制完
+                        if (tempSecond < 0) {  // 绘制完
+                            tempFirst--;
+                            if (tempFirst < 0) {
+                                mFirstPos = 0;
+                                mSecondPos = 0;
+                                finished = true;
+                                break;
+                            }
+                            tempSecond = mEpubDataList.get(tempFirst).getData().length()-1;
+                        } else {    // 没有绘制完
+                            mFirstPos = tempFirst;
+                            mSecondPos = tempSecond+1;
+                            finished = true;
+                        }
+                        break;
+                }
+            }
+        } else {    // 当前页不是新的
+            boolean finished = false;
+            int tempFirst = mFirstPos;
+            int tempSecond = mSecondPos-1;
+            int remainHeight = getHeight() - getPaddingTop() - getPaddingBottom();
+            while (!finished) {
+                EpubData epubData = mEpubDataList.get(tempFirst);
+                switch (epubData.getType()) {
+                    case IMG:
+                        mFirstPos = tempFirst+1;
+                        mSecondPos = 0;
+                        finished = true;
+                        break;
+                    case TITLE:
+                        float textSize = mTextSize * 2;
+                        mPaint.setTextSize(textSize);
+                        while (remainHeight >= textSize && tempSecond >= 0) {
+                            float totalWidth = 0f;
+                            int num = 0;
+                            for (int i = tempSecond; i >= 0; i--) {
+                                String currS = mEpubDataList.get(tempFirst).getData().substring(i, i+1);
+                                float textWidth = getTextWidth(mPaint, currS);
+                                if (textWidth + totalWidth > getWidth() - getPaddingStart() - getPaddingEnd()) {
+                                    break;
+                                }
+                                totalWidth += textWidth;
+                                num++;
+                            }
+                            tempSecond -= num;
+                            remainHeight -= textSize + mRowSpace;
+                        }
+                        // 判断是否绘制完
+                        if (tempSecond < 0) {  // 绘制完
+                            tempFirst--;
+                            if (tempFirst < 0) {
+                                mFirstPos = 0;
+                                mSecondPos = 0;
+                                finished = true;
+                                break;
+                            }
+                            tempSecond = mEpubDataList.get(tempFirst).getData().length()-1;
+                        } else {    // 没有绘制完
+                            mFirstPos = tempFirst;
+                            mSecondPos = tempSecond+1;
+                            finished = true;
+                        }
+                        break;
+                    case TEXT:
+                        mPaint.setTextSize(mTextSize);
+                        while (remainHeight >= mTextSize && tempSecond >= 0) {
+                            float totalWidth = 0f;
+                            int num = 0;
+                            for (int i = tempSecond; i >= 0; i--) {
+                                String currS = mEpubDataList.get(tempFirst).getData().substring(i,i+1);
+                                if (currS.equals("\n")) {
+                                    num++;
+                                    break;
+                                }
+                                float textWidth = getTextWidth(mPaint, currS);
+                                if (textWidth + totalWidth > getWidth() - getPaddingStart() - getPaddingEnd()) {
+                                    break;
+                                }
+                                totalWidth += textWidth;
+                                num++;
+                            }
+                            tempSecond -= num;
+                            remainHeight -= mTextSize + mRowSpace;
+                        }
+                        // 判断是否绘制完
+                        if (tempSecond < 0) {  // 绘制完
+                            tempFirst--;
+                            if (tempFirst < 0) {
+                                mFirstPos = 0;
+                                mSecondPos = 0;
+                                finished = true;
+                                break;
+                            }
+                            tempSecond = mEpubDataList.get(tempFirst).getData().length()-1;
+                        } else {    // 没有绘制完
+                            mFirstPos = tempFirst;
+                            mSecondPos = tempSecond+1;
+                            finished = true;
+                        }
+                        break;
+                }
+            }
+        }
     }
 
     /**

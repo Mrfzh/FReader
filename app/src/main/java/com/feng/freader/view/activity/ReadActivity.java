@@ -1,6 +1,7 @@
 package com.feng.freader.view.activity;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.util.Log;
 import android.view.View;
@@ -23,13 +24,13 @@ import com.feng.freader.entity.data.BookshelfNovelDbData;
 import com.feng.freader.entity.data.DetailedChapterData;
 import com.feng.freader.entity.epub.EpubData;
 import com.feng.freader.entity.epub.OpfData;
-import com.feng.freader.entity.epub.TocItem;
+import com.feng.freader.entity.epub.EpubTocItem;
+import com.feng.freader.entity.eventbus.EpubCatalogInitEvent;
 import com.feng.freader.entity.eventbus.Event;
 import com.feng.freader.entity.eventbus.HoldReadActivityEvent;
 import com.feng.freader.http.UrlObtainer;
 import com.feng.freader.presenter.ReadPresenter;
 import com.feng.freader.util.EpubUtils;
-import com.feng.freader.util.FileUtil;
 import com.feng.freader.util.ScreenUtil;
 import com.feng.freader.util.EventBusUtil;
 import com.feng.freader.util.SpUtil;
@@ -105,7 +106,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     // Epub Opf 文件数据
     private OpfData mOpfData;
     // Epub 文件的目录
-    private List<TocItem> mEpubToc = new ArrayList<>();
+    private List<EpubTocItem> mEpubTocList = new ArrayList<>();
     // 图片的父目录，为 opf 文件的父目录
     private String mParentPath = "";
 
@@ -498,7 +499,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         mParentPath = opfData.getParentPath();
         // 解析 ncx 文件，得到小说目录
         try {
-            mEpubToc = EpubUtils.getTocData(opfData.getNcx());
+            mEpubTocList = EpubUtils.getTocData(opfData.getNcx());
         } catch (XmlPullParserException e) {
             e.printStackTrace();
             mStateTv.setText("读取失败");
@@ -567,8 +568,13 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             mStateTv.setText(LOADING_TEXT);
             mIsLoadingChapter = true;
             if (!mChapterUrlList.isEmpty()) {
-                mPresenter.getDetailedChapterData(UrlObtainer.getDetailedChapter(
-                        mChapterUrlList.get(mChapterIndex)));
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mPresenter.getDetailedChapterData(UrlObtainer.getDetailedChapter(
+                                mChapterUrlList.get(mChapterIndex)));
+                    }
+                }, 200);
             } else {
                 mStateTv.setText("加载失败");
                 mIsLoadingChapter = false;
@@ -582,7 +588,12 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
             mStateTv.setText(LOADING_TEXT);
             mIsLoadingChapter = true;
             if (mOpfData != null) {
-                mPresenter.getEpubChapterData(mParentPath, mOpfData.getSpine().get(mChapterIndex));
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mPresenter.getEpubChapterData(mParentPath, mOpfData.getSpine().get(mChapterIndex));
+                    }
+                }, 200);
             } else {
                 mStateTv.setText("加载失败");
                 mIsLoadingChapter = false;
@@ -780,6 +791,15 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     intent.putExtra(CatalogActivity.KEY_NAME, mName);  // 传递当前小说的名字
                     intent.putExtra(CatalogActivity.KEY_COVER, mCover); // 传递当前小说的封面
                     startActivity(intent);
+                } else if (mType == 1) {
+                    showShortToast("本地 txt 小说暂不支持目录");
+                } else if (mType == 2) {
+                    // 跳转到 epub 目录界面
+                    Event<EpubCatalogInitEvent> event = new Event<>(EventBusCode.EPUB_CATALOG_INIT,
+                            new EpubCatalogInitEvent(ReadActivity.this, mEpubTocList,
+                                    mOpfData, mNovelUrl, mName, mCover));
+                    EventBusUtil.sendStickyEvent(event);
+                    jumpToNewActivity(EpubCatalogActivity.class);
                 }
                 break;
             case R.id.iv_read_brightness:

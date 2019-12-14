@@ -6,6 +6,7 @@ package com.feng.freader.entity.epub;
  */
 public class EpubData {
     private String data; // 对于图片，为图片的绝对地址
+    private String secondData;  // 图片用，备份地址，data 不行就来找这个
     private TYPE type;  // Epub 数据类型
 
     public enum TYPE {
@@ -16,7 +17,12 @@ public class EpubData {
     }
 
     public EpubData(String data, TYPE type) {
+        this(data, "", type);
+    }
+
+    public EpubData(String data, String secondData, TYPE type) {
         this.data = data;
+        this.secondData = secondData;
         this.type = type;
     }
 
@@ -36,10 +42,19 @@ public class EpubData {
         this.type = type;
     }
 
+    public String getSecondData() {
+        return secondData;
+    }
+
+    public void setSecondData(String secondData) {
+        this.secondData = secondData;
+    }
+
     @Override
     public String toString() {
         return "EpubData{" +
                 "data='" + data + '\'' +
+                ", secondData='" + secondData + '\'' +
                 ", type=" + type +
                 '}';
     }

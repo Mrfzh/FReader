@@ -4,14 +4,14 @@ package com.feng.freader.entity.epub;
  * @author Feng Zhaohao
  * Created on 2019/12/13
  */
-public class TocItem {
+public class EpubTocItem {
     private String title;   // 目录标题
     private String path;    // 文件绝对路径
 
-    public TocItem() {
+    public EpubTocItem() {
     }
 
-    public TocItem(String title, String path) {
+    public EpubTocItem(String title, String path) {
         this.title = title;
         this.path = path;
     }
@@ -34,7 +34,7 @@ public class TocItem {
 
     @Override
     public String toString() {
-        return "TocItem{" +
+        return "EpubTocItem{" +
                 "title='" + title + '\'' +
                 ", path='" + path + '\'' +
                 '}';
