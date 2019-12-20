@@ -8,6 +8,7 @@ import com.feng.freader.R;
 import com.feng.freader.adapter.HotRankAdapter;
 import com.feng.freader.base.BaseTabFragment;
 import com.feng.freader.constract.IMaleContract;
+import com.feng.freader.entity.data.DiscoveryNovelData;
 import com.feng.freader.entity.data.HotRankData;
 import com.feng.freader.presenter.MalePresenter;
 
@@ -22,7 +23,7 @@ import java.util.List;
  * Created on 2019/11/4
  */
 public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMaleContract.View {
-    private static final String TAG = "fzh";
+    private static final String TAG = "MaleFragment";
 
     private RecyclerView mHotRankRv;
 
@@ -49,6 +50,7 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
     @Override
     protected void doInOnCreate() {
         mPresenter.getHotRankData();
+        mPresenter.getCategoryNovels();
     }
 
     @Override
@@ -66,6 +68,9 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
         return 0;
     }
 
+    /**
+     * 获取热门榜单数据成功
+     */
     @Override
     public void getHotRankDataSuccess(HotRankData hotRankData) {
         Log.d(TAG, "getHotRankDataSuccess: run");
@@ -73,9 +78,28 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
         initHotRankAdapter();
     }
 
+    /**
+     * 获取热门榜单数据失败
+     */
     @Override
     public void getHotRankDataError(List<String> errorMsgList) {
 
+    }
+
+    /**
+     * 获取分类小说数据成功
+     */
+    @Override
+    public void getCategoryNovelsSuccess(List<DiscoveryNovelData> dataList) {
+        Log.d(TAG, "getCategoryNovelsSuccess: " + dataList);
+    }
+
+    /**
+     * 获取分类小说数据失败
+     */
+    @Override
+    public void getCategoryNovelsError(String errorMsg) {
+        Log.d(TAG, "getCategoryNovelsError: " + errorMsg);
     }
 
     private void initHotRankAdapter() {

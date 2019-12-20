@@ -10,6 +10,7 @@ import java.util.List;
  * Created on 2019/11/6
  */
 public class Constant {
+    /* 热门榜单相关 */
     // 男生热门榜单的榜单数
     public static final int MALE_HOT_RANK_NUM = 5;
     // 男生热门榜单的 id
@@ -72,4 +73,22 @@ public class Constant {
 
     /* 文件存储 */
     public static final String EPUB_SAVE_PATH = App.getContext().getFilesDir() + "/epubFile";
+
+    /* 分类小说相关 */
+    // gender
+    public static final String CATEGORY_GENDER_MALE = "male";   // 男生
+    public static final String CATEGORY_GENDER_FEMALE = "female";   // 女生
+    public static final String CATEGORY_GENDER_PRESS = "press";   // 出版
+    // type
+    public static final String CATEGORY_TYPE_HOT = "hot";   // 热门
+    public static final String CATEGORY_TYPE_NEW = "new";   // 新书
+    public static final String CATEGORY_TYPE_REPUTATION = "reputation";   // 好评
+    public static final String CATEGORY_TYPE_OVER = "over";   // 完结
+    public static final String CATEGORY_TYPE_MONTH = "month";   // 包月
+    // major（男生）
+    public static final String CATEGORY_MAJOR_XH = "玄幻";
+    public static final String CATEGORY_MAJOR_QH = "奇幻";
+    public static final String CATEGORY_MAJOR_WX = "武侠";
+    public static final String CATEGORY_MAJOR_XX = "仙侠";
+    public static final String CATEGORY_MAJOR_DS = "都市";
 }

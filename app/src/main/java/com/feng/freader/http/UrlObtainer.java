@@ -1,5 +1,7 @@
 package com.feng.freader.http;
 
+import com.feng.freader.constant.Constant;
+
 /**
  * 获取相应的 url
  *
@@ -46,5 +48,24 @@ public class UrlObtainer {
      */
     public static String getDetailedChapter(String url) {
         return "http://api.pingcc.cn/?xsurl2=" + url;
+    }
+
+    /**
+     * 获取分类小说（发现页面）
+     *
+     * @param gender 性别
+     * @param major 一级分类
+     * @param num 数量
+     * @return
+     */
+    public static String getCategoryNovels(String gender, String major, int num) {
+        return "https://api.zhuishushenqi.com/book/by-categories?gender=" +
+                gender +
+                "&type=" +
+                Constant.CATEGORY_TYPE_HOT +
+                "&major=" +
+                major +
+                "&minor=&start=0&limit=" +
+                num;
     }
 }
