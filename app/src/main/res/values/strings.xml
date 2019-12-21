@@ -71,4 +71,11 @@
     <string name="read_increase_font">放大字体</string>
     <string name="read_decrease_row_space">减小行距</string>
     <string name="read_increase_row_space">增大行距</string>
+
+    <!-- item_category -->
+    <string name="item_category_category_name">热血玄幻</string>
+    <string name="item_category_more">更多玄幻小说</string>
+
+    <!-- item_category_novel -->
+    <string name="item_category_novel_name">小说名</string>
 </resources>

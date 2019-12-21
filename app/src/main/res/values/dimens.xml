@@ -72,4 +72,10 @@
     <dimen name="read_setting_bar_first_height">70dp</dimen>
     <dimen name="read_setting_bar_second_height">30dp</dimen>
     <dimen name="read_theme_radius">15dp</dimen>
+
+    <!-- item_category -->
+    <dimen name="item_category_first_height">15dp</dimen>
+    <dimen name="item_category_second_height">50dp</dimen>
+    <dimen name="item_category_category_name_size">18sp</dimen>
+    <dimen name="item_category_more_size">14sp</dimen>
 </resources>

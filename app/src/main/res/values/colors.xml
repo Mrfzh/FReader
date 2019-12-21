@@ -135,4 +135,12 @@
     <color name="read_theme_4_bg">#B69A96</color>
     <color name="read_theme_4_text">#453417</color>
 
+    <!-- item_category -->
+    <color name="item_category_top_bar">#f6f6f6</color>
+    <color name="item_category_category_name">#1C1C1C</color>
+    <color name="item_category_more">#737373</color>
+
+    <!-- item_category_novel -->
+    <color name="item_category_novel_name">#1F1F1F</color>
+
 </resources>

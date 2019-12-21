@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.feng.freader.R;
+import com.feng.freader.adapter.CatalogAdapter;
+import com.feng.freader.adapter.CategoryAdapter;
 import com.feng.freader.adapter.HotRankAdapter;
 import com.feng.freader.base.BaseTabFragment;
 import com.feng.freader.constract.IMaleContract;
@@ -26,8 +28,13 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
     private static final String TAG = "MaleFragment";
 
     private RecyclerView mHotRankRv;
+    private RecyclerView mCategoryNovelRv;
 
     private HotRankData mHotRankData;
+    private CategoryAdapter mCategoryAdapter;
+    private List<String> mCategoryNameList = new ArrayList<>();
+    private List<String> mMoreList = new ArrayList<>();
+    private List<DiscoveryNovelData> mNovelDataList = new ArrayList<>();
 
     @Override
     protected int getLayoutId() {
@@ -36,7 +43,12 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
 
     @Override
     protected void initData() {
-
+        mCategoryNameList.add("热血玄幻");
+        mCategoryNameList.add("都市生活");
+        mCategoryNameList.add("武侠世界");
+        mMoreList.add("更多玄幻小说");
+        mMoreList.add("更多都市小说");
+        mMoreList.add("更多武侠小说");
     }
 
     @Override
@@ -45,6 +57,9 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         manager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mHotRankRv.setLayoutManager(manager);
+
+        mCategoryNovelRv = getActivity().findViewById(R.id.rv_male_category_novel_list);
+        mCategoryNovelRv.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     @Override
@@ -91,7 +106,8 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
      */
     @Override
     public void getCategoryNovelsSuccess(List<DiscoveryNovelData> dataList) {
-        Log.d(TAG, "getCategoryNovelsSuccess: " + dataList);
+        mNovelDataList = dataList;
+        initCategoryAdapter();
     }
 
     /**
@@ -115,5 +131,13 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
         HotRankAdapter adapter = new HotRankAdapter(getActivity(),
                mHotRankData.getRankNameList(), hotRankNovelList);
         mHotRankRv.setAdapter(adapter);
+    }
+
+    private void initCategoryAdapter() {
+        if (mCategoryAdapter == null) {
+            mCategoryAdapter = new CategoryAdapter(getActivity(),
+                    mCategoryNameList, mMoreList, mNovelDataList);
+            mCategoryNovelRv.setAdapter(mCategoryAdapter);
+        }
     }
 }

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/discovery_bg">
+
+    <View
+        android:id="@+id/v_item_category_top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_category_first_height"
+        android:background="@color/item_category_top_bar"/>
+
+    <TextView
+        android:id="@+id/tv_item_category_category_name"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/item_category_second_height"
+        android:layout_below="@id/v_item_category_top_bar"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="20dp"
+        android:text="@string/item_category_category_name"
+        android:textColor="@color/item_category_category_name"
+        android:textSize="@dimen/item_category_category_name_size"
+        android:gravity="center"/>
+
+    <ImageView
+        android:id="@+id/iv_item_category_more"
+        android:layout_width="15dp"
+        android:layout_height="@dimen/item_category_second_height"
+        android:layout_below="@id/v_item_category_top_bar"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/item_category_more"
+        android:layout_marginEnd="17dp"
+        android:scaleType="centerInside"/>
+
+    <TextView
+        android:id="@+id/tv_item_category_more"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/item_category_second_height"
+        android:layout_below="@id/v_item_category_top_bar"
+        android:layout_toStartOf="@id/iv_item_category_more"
+        android:text="@string/item_category_more"
+        android:textColor="@color/item_category_more"
+        android:textSize="@dimen/item_category_more_size"
+        android:gravity="center"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_item_category_novel_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_item_category_category_name"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"/>
+
+</RelativeLayout>
