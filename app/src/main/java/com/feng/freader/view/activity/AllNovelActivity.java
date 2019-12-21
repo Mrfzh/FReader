@@ -1,21 +1,29 @@
 package com.feng.freader.view.activity;
 
+import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.feng.freader.R;
+import com.feng.freader.adapter.NovelAdapter;
 import com.feng.freader.adapter.ScreenAdapter;
 import com.feng.freader.base.BaseActivity;
 import com.feng.freader.base.BasePresenter;
 import com.feng.freader.constant.Constant;
+import com.feng.freader.constract.IAllNovelContract;
+import com.feng.freader.entity.data.ANNovelData;
+import com.feng.freader.entity.data.RequestCNData;
+import com.feng.freader.presenter.AllNovelPresenter;
 import com.feng.freader.util.StatusBarUtil;
 
 import java.util.ArrayList;
@@ -23,8 +31,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class AllNovelActivity extends BaseActivity implements View.OnClickListener{
+public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
+        implements View.OnClickListener, IAllNovelContract.View {
 
+    private static final String TAG = "AllNovelActivity";
     public static final String KEY_GENDER = "KEY_GENDER";
     public static final String KEY_MAJOR = "KEY_MAJOR";
 
@@ -32,7 +42,9 @@ public class AllNovelActivity extends BaseActivity implements View.OnClickListen
     private TextView mTitleTv;
     private ImageView mScreenIv;
     private RecyclerView mNovelListRv;
+    private ProgressBar mProgressBar;
 
+    private View mFrontBgV;
     private RelativeLayout mScreenRv;
     private RecyclerView mGenderRv;
     private RecyclerView mMajorRv;
@@ -41,8 +53,8 @@ public class AllNovelActivity extends BaseActivity implements View.OnClickListen
     private TextView mCancelTv;
     private TextView mEnsureTv;
 
-    private HashMap<String, List<String>> mMajorMap = new HashMap<>();  // 根据 major 得到相应的 minor
-    private HashMap<Integer, List<String>> mGenderMap = new HashMap<>(); // 根据 gender 得到相应的 major
+    private HashMap<String, List<String>> mMinorMap = new HashMap<>();  // 根据 major 得到相应的 minor
+    private List<List<String>> mMajorList = new ArrayList<>(); // 根据索引得到相应的 major
     private List<String> mGenderList = new ArrayList<>();   // 根据索引获得相应的 gender
     private List<String> mTypeList = new ArrayList<>();     // 根据索引获得相应的 type
     // 选中的索引或文字
@@ -50,6 +62,10 @@ public class AllNovelActivity extends BaseActivity implements View.OnClickListen
     private String mMajor;
     private String mMinor;
     private int mType;
+    private int mTempGender;
+    private String mTempMajor;
+    private String mTempMinor;
+    private int mTempType;
     // 列表相关
     private ScreenAdapter mGenderAdapter;
     private ScreenAdapter mMajorAdapter;
@@ -63,6 +79,10 @@ public class AllNovelActivity extends BaseActivity implements View.OnClickListen
     private List<Boolean> mMinorSelectedList = new ArrayList<>();
     private List<String> mTypeTextList = new ArrayList<>();
     private List<Boolean> mTypeSelectedList = new ArrayList<>();
+    private NovelAdapter mNovelAdapter;
+    private List<ANNovelData> mDataList;
+
+    private boolean mIsSearching = false;
 
     @Override
     protected void doBeforeSetContentView() {
@@ -75,59 +95,72 @@ public class AllNovelActivity extends BaseActivity implements View.OnClickListen
     }
 
     @Override
-    protected BasePresenter getPresenter() {
-        return null;
+    protected AllNovelPresenter getPresenter() {
+        return new AllNovelPresenter();
     }
+
 
     @Override
     protected void initData() {
         // 初始化 Map 和 List
         initMapAndList();
+        Log.d(TAG, "initData: mMajorList = " + mMajorList);
         // 初始化选中的项
         mGender = getIntent().getIntExtra(KEY_GENDER, 0);
         String major = getIntent().getStringExtra(KEY_MAJOR);
         mMajor = major == null? Constant.CATEGORY_MAJOR_XH : major;
-        mMinor = mMajorMap.containsKey(mMajor)? mMajorMap.get(mMajor).get(0) : "";
+        mMinor = mMinorMap.containsKey(mMajor)? mMinorMap.get(mMajor).get(0) : "";
         mType = 0;
         // 初始化 Adapter
         initAdapter();
     }
 
     private void initMapAndList() {
-        mMajorMap.put(Constant.CATEGORY_MAJOR_XH, Arrays.asList("东方玄幻","异界大陆","异界争霸","远古神话"));
-        mMajorMap.put(Constant.CATEGORY_MAJOR_QH, Arrays.asList("西方奇幻","领主贵族","亡灵异族","魔法校园"));
-        mMajorMap.put(Constant.CATEGORY_MAJOR_WX, Arrays.asList("传统武侠","新派武侠","国术武侠"));
-        mMajorMap.put(Constant.CATEGORY_MAJOR_XX, Arrays.asList("古典仙侠","幻想修仙","现代修仙","洪荒封神"));
-        mMajorMap.put(Constant.CATEGORY_MAJOR_DS, Arrays.asList("都市生活","爱情婚姻","异术超能","恩怨情仇","青春校园","现实百态"));
-        mMajorMap.put(Constant.CATEGORY_MAJOR_ZC, Arrays.asList("娱乐明星","官场沉浮","商场职场"));
-        mMajorMap.put(Constant.CATEGORY_MAJOR_LS, Arrays.asList("穿越历史","架空历史","历史传记"));
-        mMajorMap.put(Constant.CATEGORY_MAJOR_JS, Arrays.asList("军事战争","战争幻想","谍战特工","军旅生涯","抗战烽火"));
-        mMajorMap.put(Constant.CATEGORY_MAJOR_YX, Arrays.asList("游戏生涯","电子竞技","虚拟网游","游戏异界"));
-        mMajorMap.put(Constant.CATEGORY_MAJOR_JJ, Arrays.asList("体育竞技","篮球运动","足球运动","棋牌桌游"));
-        mMajorMap.put(Constant.CATEGORY_MAJOR_KH, Arrays.asList("星际战争","时空穿梭","未来世界","古武机甲","超级科技","进化变异","末世危机"));
-        mMajorMap.put(Constant.CATEGORY_MAJOR_LY, Arrays.asList("推理侦探","恐怖惊悚","悬疑探险","灵异奇谈"));
-        mMajorMap.put(Constant.CATEGORY_MAJOR_TR, Arrays.asList("武侠同人","影视同人","动漫同人","游戏同人","小说同人"));
-        mMajorMap.put(Constant.CATEGORY_MAJOR_GDYQ, Arrays.asList("穿越时空","古代历史","古典架空","宫闱宅斗","经商种田"));
-        mMajorMap.put(Constant.CATEGORY_MAJOR_XDYQ, Arrays.asList("豪门总裁","都市生活","婚恋情感","商战职场","异术超能"));
-        mMajorMap.put(Constant.CATEGORY_MAJOR_CA, Arrays.asList("古代纯爱","现代纯爱"));
-        mMajorMap.put(Constant.CATEGORY_MAJOR_XHQH, Arrays.asList("玄幻异世","奇幻魔法"));
-        mMajorMap.put(Constant.CATEGORY_MAJOR_WXXX, Arrays.asList("武侠","仙侠"));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_XH, strings2List(new String[] {"东方玄幻","异界大陆","异界争霸","远古神话"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_QH, strings2List(new String[] {"西方奇幻","领主贵族","亡灵异族","魔法校园"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_WX, strings2List(new String[] {"传统武侠","新派武侠","国术武侠"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_XX, strings2List(new String[] {"古典仙侠","幻想修仙","现代修仙","洪荒封神"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_DS, strings2List(new String[] {"都市生活","爱情婚姻","异术超能","恩怨情仇","青春校园","现实百态"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_ZC, strings2List(new String[] {"娱乐明星","官场沉浮","商场职场"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_LS, strings2List(new String[] {"穿越历史","架空历史","历史传记"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_JS, strings2List(new String[] {"军事战争","战争幻想","谍战特工","军旅生涯","抗战烽火"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_YX, strings2List(new String[] {"游戏生涯","电子竞技","虚拟网游","游戏异界"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_JJ, strings2List(new String[] {"体育竞技","篮球运动","足球运动","棋牌桌游"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_KH, strings2List(new String[] {"星际战争","时空穿梭","未来世界","古武机甲","超级科技","进化变异","末世危机"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_LY, strings2List(new String[] {"推理侦探","恐怖惊悚","悬疑探险","灵异奇谈"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_TR, strings2List(new String[] {"武侠同人","影视同人","动漫同人","游戏同人","小说同人"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_GDYQ, strings2List(new String[] {"穿越时空","古代历史","古典架空","宫闱宅斗","经商种田"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_XDYQ, strings2List(new String[] {"豪门总裁","都市生活","婚恋情感","商战职场","异术超能"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_CA, strings2List(new String[] {"古代纯爱","现代纯爱"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_XHQH, strings2List(new String[] {"玄幻异世","奇幻魔法"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_WXXX, strings2List(new String[] {"武侠","仙侠"}));
 
-        mGenderMap.put(0, Arrays.asList(Constant.CATEGORY_MAJOR_XH, Constant.CATEGORY_MAJOR_QH,
+        mMajorList.add(strings2List(new String[] {Constant.CATEGORY_MAJOR_XH, Constant.CATEGORY_MAJOR_QH,
                 Constant.CATEGORY_MAJOR_WX, Constant.CATEGORY_MAJOR_XX, Constant.CATEGORY_MAJOR_DS, Constant.CATEGORY_MAJOR_ZC,
                 Constant.CATEGORY_MAJOR_LS, Constant.CATEGORY_MAJOR_JS, Constant.CATEGORY_MAJOR_YX, Constant.CATEGORY_MAJOR_JJ,
-                Constant.CATEGORY_MAJOR_KH, Constant.CATEGORY_MAJOR_LY, Constant.CATEGORY_MAJOR_TR, Constant.CATEGORY_MAJOR_QXS));
-        mGenderMap.put(1, Arrays.asList( Constant.CATEGORY_MAJOR_GDYQ, Constant.CATEGORY_MAJOR_XDYQ,
+                Constant.CATEGORY_MAJOR_KH, Constant.CATEGORY_MAJOR_LY, Constant.CATEGORY_MAJOR_TR, Constant.CATEGORY_MAJOR_QXS}));
+        mMajorList.add(strings2List(new String[] {Constant.CATEGORY_MAJOR_GDYQ, Constant.CATEGORY_MAJOR_XDYQ,
                 Constant.CATEGORY_MAJOR_QCXY, Constant.CATEGORY_MAJOR_CA, Constant.CATEGORY_MAJOR_XHQH,
-                Constant.CATEGORY_MAJOR_WXXX));
-        mGenderMap.put(2, Arrays.asList(Constant.CATEGORY_MAJOR_CBXS, Constant.CATEGORY_MAJOR_ZJMZ,
+                Constant.CATEGORY_MAJOR_WXXX}));
+        mMajorList.add(strings2List(new String[] {Constant.CATEGORY_MAJOR_CBXS, Constant.CATEGORY_MAJOR_ZJMZ,
                 Constant.CATEGORY_MAJOR_CGLZ, Constant.CATEGORY_MAJOR_RWSK, Constant.CATEGORY_MAJOR_JGLC, Constant.CATEGORY_MAJOR_SHSS,
-                Constant.CATEGORY_MAJOR_YEJK, Constant.CATEGORY_MAJOR_QCYQ, Constant.CATEGORY_MAJOR_WWYB, Constant.CATEGORY_MAJOR_ZZJS));
+                Constant.CATEGORY_MAJOR_YEJK, Constant.CATEGORY_MAJOR_QCYQ, Constant.CATEGORY_MAJOR_WWYB, Constant.CATEGORY_MAJOR_ZZJS}));
 
-        mGenderList = Arrays.asList(Constant.CATEGORY_GENDER_MALE, Constant.CATEGORY_GENDER_FEMALE, Constant.CATEGORY_GENDER_PRESS);
+        mGenderList = strings2List(new String[] {Constant.CATEGORY_GENDER_MALE, Constant.CATEGORY_GENDER_FEMALE, Constant.CATEGORY_GENDER_PRESS});
 
-        mTypeList = Arrays.asList(Constant.CATEGORY_TYPE_HOT, Constant.CATEGORY_TYPE_NEW, Constant.CATEGORY_TYPE_REPUTATION,
-                Constant.CATEGORY_TYPE_OVER);
+        mTypeList = strings2List(new String[] {Constant.CATEGORY_TYPE_HOT, Constant.CATEGORY_TYPE_NEW, Constant.CATEGORY_TYPE_REPUTATION,
+                Constant.CATEGORY_TYPE_OVER});
+    }
+
+    private List<String> strings2List(String[] strings) {
+        List<String> list = new ArrayList<>();
+        for (String s : strings) {
+            list.add(s);
+        }
+        if (list.size() == 0) {
+            Log.d(TAG, "strings2List: run");
+        }
+        return list;
     }
 
     private void initAdapter() {
@@ -141,10 +174,64 @@ public class AllNovelActivity extends BaseActivity implements View.OnClickListen
                 mGenderSelectedList.add(false);
             }
         }
-        mGenderAdapter = new ScreenAdapter(this, mGenderTextList, mGenderSelectedList);
+        mGenderAdapter = new ScreenAdapter(this, mGenderTextList, mGenderSelectedList,
+                new ScreenAdapter.ScreenListener() {
+            @Override
+            public void clickItem(int position) {
+                // 点击 gender，更新 major
+                if (position != mGender) {
+                    mTempGender = position;
+                    // 更新 gender
+                    mGenderSelectedList.clear();
+                    for (int i = 0; i < mGenderTextList.size(); i++) {
+                        if (i == position) {
+                            mGenderSelectedList.add(true);
+                        } else {
+                            mGenderSelectedList.add(false);
+                        }
+                    }
+                    mGenderAdapter.notifyDataSetChanged();
+                    // 更新 major
+                    mMajorTextList.clear();
+                    Log.d(TAG, "clickItem: mMajorList = " + mMajorList);
+                    mMajorTextList.addAll(mMajorList.get(position));
+                    mMajorSelectedList.clear();
+                    for (int i = 0; i < mMajorTextList.size(); i++) {
+                        if (i == 0) {
+                            mMajorSelectedList.add(true);
+                        } else {
+                            mMajorSelectedList.add(false);
+                        }
+                    }
+                    mTempMajor = mMajorTextList.get(0);
+                    mMajorAdapter.notifyDataSetChanged();
+                    // 更新 minor
+                    if (!mMinorMap.containsKey(mTempMajor)) {
+                        mTempMinor = "";
+                        mMinorRv.setVisibility(View.GONE);
+                    } else {
+                        mMinorRv.setVisibility(View.VISIBLE);
+                        mMinorTextList.clear();
+                        mMinorTextList.addAll(mMinorMap.get(mTempMajor));
+                        mMinorSelectedList.clear();
+                        for (int i = 0; i < mMinorTextList.size(); i++) {
+                            if (i == 0) {
+                                mMinorSelectedList.add(true);
+                            } else {
+                                mMinorSelectedList.add(false);
+                            }
+                        }
+                        mTempMinor = mMinorTextList.get(0);
+                        mMinorAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        });
 
         // major
-        mMajorTextList = mGenderMap.get(mGender);
+         /* 注意，不能直接引用 mMajorList 的元素，不然之后清除 mMajorTextList 时会把 mMajorList 的元素也删掉
+            后面初始化 mMinorTextList 时同理 */
+        mMajorTextList = new ArrayList<>(mMajorList.get(mGender));
         for (int i = 0; i < mMajorTextList.size(); i++) {
             if (mMajor.equals(mMajorTextList.get(i))) {
                 mMajorSelectedList.add(true);
@@ -152,11 +239,46 @@ public class AllNovelActivity extends BaseActivity implements View.OnClickListen
                 mMajorSelectedList.add(false);
             }
         }
-        mMajorAdapter = new ScreenAdapter(this, mMajorTextList, mMajorSelectedList);
+        mMajorAdapter = new ScreenAdapter(this, mMajorTextList, mMajorSelectedList,
+                new ScreenAdapter.ScreenListener() {
+            @Override
+            public void clickItem(int position) {
+                // 更新 major
+                mMajorSelectedList.clear();
+                for (int i = 0; i < mMajorTextList.size(); i++) {
+                    if (i == position) {
+                        mMajorSelectedList.add(true);
+                    } else {
+                        mMajorSelectedList.add(false);
+                    }
+                }
+                mTempMajor = mMajorTextList.get(position);
+                mMajorAdapter.notifyDataSetChanged();
+                // 更新 minor
+                if (!mMinorMap.containsKey(mTempMajor)) {
+                    mTempMinor = "";
+                    mMinorRv.setVisibility(View.GONE);
+                } else {
+                    mMinorRv.setVisibility(View.VISIBLE);
+                    mMinorTextList.clear();
+                    mMinorTextList.addAll(mMinorMap.get(mTempMajor));
+                    mMinorSelectedList.clear();
+                    for (int i = 0; i < mMinorTextList.size(); i++) {
+                        if (i == 0) {
+                            mMinorSelectedList.add(true);
+                        } else {
+                            mMinorSelectedList.add(false);
+                        }
+                    }
+                    mTempMinor = mMinorTextList.get(0);
+                    mMinorAdapter.notifyDataSetChanged();
+                }
+            }
+        });
 
         // minor
         if (!mMinor.equals("")) {
-            mMinorTextList = mMajorMap.get(mMajor);
+            mMinorTextList = new ArrayList<>(mMinorMap.get(mMajor));
             for (int i = 0; i < mMinorTextList.size(); i++) {
                 if (mMinor.equals(mMinorTextList.get(i))) {
                     mMinorSelectedList.add(true);
@@ -164,7 +286,23 @@ public class AllNovelActivity extends BaseActivity implements View.OnClickListen
                     mMinorSelectedList.add(false);
                 }
             }
-            mMinorAdapter = new ScreenAdapter(this, mMinorTextList, mMinorSelectedList);
+            mMinorAdapter = new ScreenAdapter(this, mMinorTextList, mMinorSelectedList,
+                    new ScreenAdapter.ScreenListener() {
+                @Override
+                public void clickItem(int position) {
+                    // 更新 minor
+                    mMinorSelectedList.clear();
+                    for (int i = 0; i < mMinorTextList.size(); i++) {
+                        if (i == position) {
+                            mMinorSelectedList.add(true);
+                        } else {
+                            mMinorSelectedList.add(false);
+                        }
+                    }
+                    mTempMinor = mMinorTextList.get(position);
+                    mMinorAdapter.notifyDataSetChanged();
+                }
+            });
         }
 
         // type
@@ -177,7 +315,23 @@ public class AllNovelActivity extends BaseActivity implements View.OnClickListen
                 mTypeSelectedList.add(false);
             }
         }
-        mTypeAdapter = new ScreenAdapter(this, mTypeTextList, mTypeSelectedList);
+        mTypeAdapter = new ScreenAdapter(this, mTypeTextList, mTypeSelectedList,
+                new ScreenAdapter.ScreenListener() {
+            @Override
+            public void clickItem(int position) {
+                // 更新 type
+                mTypeSelectedList.clear();
+                for (int i = 0; i < mTypeTextList.size(); i++) {
+                    if (i == position) {
+                        mTypeSelectedList.add(true);
+                    } else {
+                        mTypeSelectedList.add(false);
+                    }
+                }
+                mTempType = position;
+                mTypeAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -190,7 +344,9 @@ public class AllNovelActivity extends BaseActivity implements View.OnClickListen
         mScreenIv.setOnClickListener(this);
         mNovelListRv = findViewById(R.id.rv_all_novel_novel_list);
         mNovelListRv.setLayoutManager(new LinearLayoutManager(this));
+        mProgressBar = findViewById(R.id.pb_all_novel);
 
+        mFrontBgV = findViewById(R.id.v_all_novel_front_bg);
         mScreenRv = findViewById(R.id.rv_all_novel_screen);
 
         mGenderRv = findViewById(R.id.rv_all_novel_gender);
@@ -227,6 +383,16 @@ public class AllNovelActivity extends BaseActivity implements View.OnClickListen
     protected void doAfterInit() {
         StatusBarUtil.setDarkColorStatusBar(this);
         getWindow().setStatusBarColor(getResources().getColor(R.color.all_novel_top_bar_bg));
+
+        RequestCNData requestCNData = new RequestCNData();
+        requestCNData.setGender(mGenderList.get(mGender));
+        requestCNData.setMajor(mMajor);
+        requestCNData.setMinor(mMinor);
+        requestCNData.setType(mTypeList.get(mType));
+        requestCNData.setStart(0);
+        requestCNData.setNum(10);
+        mPresenter.getNovels(requestCNData);
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -242,17 +408,89 @@ public class AllNovelActivity extends BaseActivity implements View.OnClickListen
                 break;
             case R.id.iv_all_novel_screen:
                 if (mScreenRv.getVisibility() == View.GONE) {
+                    // 展开筛选栏
+                    mFrontBgV.setVisibility(View.VISIBLE);
+                    mFrontBgV.setClickable(true);
+                    mFrontBgV.setFocusable(true);
                     mScreenRv.setVisibility(View.VISIBLE);
+                    // 筛选前记录相关变量
+                    mTempGender = mGender;
+                    mTempMajor = mMajor;
+                    mTempMinor = mMinor;
+                    mTempType = mType;
                 } else {
+                    mFrontBgV.setVisibility(View.GONE);
                     mScreenRv.setVisibility(View.GONE);
                 }
                 break;
             case R.id.tv_all_novel_screen_cancel:
+                mFrontBgV.setVisibility(View.GONE);
+                mScreenRv.setVisibility(View.GONE);
                 break;
             case R.id.tv_all_novel_screen_ensure:
+                mFrontBgV.setVisibility(View.GONE);
+                mScreenRv.setVisibility(View.GONE);
+                // 更新相关变量
+                mGender = mTempGender;
+                mMajor = mTempMajor;
+                mMinor = mTempMinor;
+                mType = mTempType;
+                // 查找小说信息
+                mProgressBar.setVisibility(View.VISIBLE);
+                RequestCNData requestCNData = new RequestCNData();
+                requestCNData.setGender(mGenderList.get(mGender));
+                requestCNData.setMajor(mMajor);
+                requestCNData.setMinor(mMinor);
+                requestCNData.setType(mTypeList.get(mType));
+                requestCNData.setStart(0);
+                requestCNData.setNum(10);
+                mIsSearching = true;
+                mPresenter.getNovels(requestCNData);
                 break;
             default:
                 break;
         }
     }
+
+    /**
+     * 获取小说信息成功
+     */
+    @Override
+    public void getNovelsSuccess(List<ANNovelData> dataList) {
+        mProgressBar.setVisibility(View.GONE);
+        mIsSearching = false;
+        // 更新列表数据
+        if (mNovelAdapter == null) {
+            mDataList = dataList;
+            mNovelAdapter = new NovelAdapter(this, mDataList, new NovelAdapter.NovelListener() {
+                @Override
+                public void clickItem(String novelName) {
+                    if (mIsSearching) {
+                        return;
+                    }
+                    Intent intent = new Intent(AllNovelActivity.this, SearchActivity.class);
+                    // 传递小说名，进入搜查页后直接显示该小说的搜查结果
+                    intent.putExtra(SearchActivity.KEY_NOVEL_NAME, novelName);
+                    startActivity(intent);
+                }
+            });
+            mNovelListRv.setAdapter(mNovelAdapter);
+        } else {
+            mDataList.clear();
+            mDataList.addAll(dataList);
+            mNovelAdapter.notifyDataSetChanged();
+        }
+    }
+
+    /**
+     * 获取小说信息失败
+     */
+    @Override
+    public void getNovelsError(String errorMsg) {
+        mProgressBar.setVisibility(View.GONE);
+        mIsSearching = false;
+        showShortToast("加载数据失败");
+        Log.d(TAG, "getNovelsError: " + errorMsg);
+    }
+
 }

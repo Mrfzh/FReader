@@ -64,6 +64,17 @@
 
     <!-- screen -->
 
+    <View
+        android:id="@+id/v_all_novel_front_bg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/v_all_novel_top_bar_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="#77222222"
+        android:visibility="gone"/>
+
     <RelativeLayout
         android:id="@+id/rv_all_novel_screen"
         android:layout_width="0dp"
@@ -71,9 +82,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/v_all_novel_top_bar_bg"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:visibility="gone">
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:paddingBottom="20dp"
+        android:visibility="gone"
+        android:background="@color/all_novel_bg">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_all_novel_gender"
@@ -123,7 +136,7 @@
                 android:text="@string/all_novel_cancel"
                 android:textSize="16sp"
                 android:textColor="@color/all_novel_screen_cancel_text"
-                android:background="@color/all_novel_screen_cancel_bg"
+                android:background="@drawable/shape_all_novel_screen_cancel_bg"
                 android:gravity="center"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"/>
@@ -136,7 +149,7 @@
                 android:text="@string/all_novel_ensure"
                 android:textSize="16sp"
                 android:textColor="@color/all_novel_screen_ensure_text"
-                android:background="@color/all_novel_screen_ensure_bg"
+                android:background="@drawable/shape_all_novel_screen_ensure_bg"
                 android:gravity="center"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"/>
@@ -144,5 +157,17 @@
         </LinearLayout>
 
     </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/pb_all_novel"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:indeterminateTint="@color/progress_bar"
+        android:visibility="gone" />
 
 </android.support.constraint.ConstraintLayout>

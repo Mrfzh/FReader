@@ -68,4 +68,31 @@ public class UrlObtainer {
                 "&minor=&start=0&limit=" +
                 num;
     }
+
+    /**
+     * 获取分类小说（全部书籍页面）
+     *
+     * @param gender 性别
+     * @param major 一级分类
+     * @param minor 二级分类
+     * @param type 类型
+     * @param start 开始的索引（从 0 开始，在分页中，每次请求加上每页的数量）
+     * @param num 该页的数量
+     * @return
+     */
+    public static String getCategoryNovels(String gender, String major, String minor, String type,
+                                           int start, int num) {
+        return "https://api.zhuishushenqi.com/book/by-categories?gender=" +
+                gender +
+                "&type=" +
+                 type +
+                "&major=" +
+                major +
+                "&minor=" +
+                minor +
+                "&start=" +
+                start +
+                "&limit=" +
+                num;
+    }
 }

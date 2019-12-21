@@ -21,11 +21,18 @@ public class ScreenAdapter extends RecyclerView.Adapter<ScreenAdapter.ScreenView
     private Context mContext;
     private List<String> mContentList;
     private List<Boolean> mIsSelectedList;
+    private ScreenListener mListener;
 
-    public ScreenAdapter(Context mContext, List<String> mContentList, List<Boolean> mIsSelectedList) {
+    public interface ScreenListener {
+        void clickItem(int position);
+    }
+
+    public ScreenAdapter(Context mContext, List<String> mContentList,
+                         List<Boolean> mIsSelectedList, ScreenListener mListener) {
         this.mContext = mContext;
         this.mContentList = mContentList;
         this.mIsSelectedList = mIsSelectedList;
+        this.mListener = mListener;
     }
 
     @NonNull
@@ -35,13 +42,19 @@ public class ScreenAdapter extends RecyclerView.Adapter<ScreenAdapter.ScreenView
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ScreenViewHolder screenViewHolder, int i) {
+    public void onBindViewHolder(@NonNull ScreenViewHolder screenViewHolder, final int i) {
         screenViewHolder.text.setText(mContentList.get(i));
         if (mIsSelectedList.get(i)) {
             screenViewHolder.text.setSelected(true);
         } else {
             screenViewHolder.text.setSelected(false);
         }
+        screenViewHolder.text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.clickItem(i);
+            }
+        });
     }
 
     @Override

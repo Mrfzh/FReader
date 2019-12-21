@@ -17,11 +17,7 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".view.activity.AllNovelActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".view.activity.EpubCatalogActivity" />
         <activity android:name=".view.activity.CatalogActivity" />
@@ -32,7 +28,11 @@
         <activity
             android:name=".view.activity.MainActivity"
             android:theme="@style/TransparentStatusBarTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".view.activity.NovelIntroActivity"

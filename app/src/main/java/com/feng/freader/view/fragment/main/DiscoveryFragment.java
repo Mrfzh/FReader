@@ -12,6 +12,7 @@ import com.feng.freader.adapter.NormalViewPagerAdapter;
 import com.feng.freader.base.BaseFragment;
 import com.feng.freader.base.BasePresenter;
 import com.feng.freader.rewrite.TabLayout;
+import com.feng.freader.view.activity.AllNovelActivity;
 import com.feng.freader.view.activity.SearchActivity;
 import com.feng.freader.view.fragment.discovery.FemaleFragment;
 import com.feng.freader.view.fragment.discovery.MaleFragment;
@@ -100,7 +101,7 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
                 jump2Activity(SearchActivity.class);
                 break;
             case R.id.tv_discovery_all_book:
-                showShortToast("click all book");
+                jump2Activity(AllNovelActivity.class);
                 break;
             default:
                 break;

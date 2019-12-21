@@ -150,6 +150,7 @@
     <color name="all_novel_screen_cancel_text">#727272</color>
     <color name="all_novel_screen_ensure_bg">@android:color/holo_blue_light</color>
     <color name="all_novel_screen_ensure_text">#fdfdfd</color>
+    <color name="all_novel_bg">#fdfdfd</color>
 
     <!-- item_screen -->
     <color name="item_screen_text_selected">#fdfdfd</color>

@@ -83,6 +83,7 @@
     <dimen name="all_novel_top_bar_height">50dp</dimen>
     <dimen name="all_novel_screen_bar_height">30dp</dimen>
     <dimen name="all_novel_screen_bar_bottom_height">40dp</dimen>
+    <dimen name="all_novel_screen_button_radius">10dp</dimen>
 
     <!-- item_screen -->
     <dimen name="item_screen_bg_radius">15dp</dimen>

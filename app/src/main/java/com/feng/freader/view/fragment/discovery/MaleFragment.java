@@ -10,10 +10,12 @@ import com.feng.freader.adapter.CatalogAdapter;
 import com.feng.freader.adapter.CategoryAdapter;
 import com.feng.freader.adapter.HotRankAdapter;
 import com.feng.freader.base.BaseTabFragment;
+import com.feng.freader.constant.Constant;
 import com.feng.freader.constract.IMaleContract;
 import com.feng.freader.entity.data.DiscoveryNovelData;
 import com.feng.freader.entity.data.HotRankData;
 import com.feng.freader.presenter.MalePresenter;
+import com.feng.freader.view.activity.AllNovelActivity;
 import com.feng.freader.view.activity.SearchActivity;
 
 import java.util.ArrayList;
@@ -140,14 +142,39 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
             mCategoryAdapter = new CategoryAdapter(getActivity(),
                     mCategoryNameList, mMoreList, mNovelDataList,
                     new CategoryAdapter.CategoryListener() {
-                @Override
-                public void clickNovel(String novelName) {
-                    // 跳转到该小说的搜索结果页
-                    Intent intent = new Intent(getActivity(), SearchActivity.class);
-                    intent.putExtra(SearchActivity.KEY_NOVEL_NAME, novelName);
-                    startActivity(intent);
-                }
-            });
+                        @Override
+                        public void clickNovel(String novelName) {
+                            // 跳转到该小说的搜索结果页
+                            Intent intent = new Intent(getActivity(), SearchActivity.class);
+                            intent.putExtra(SearchActivity.KEY_NOVEL_NAME, novelName);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void clickMore(int position) {
+                            int gender = 0;
+                            String major;
+                            switch (position) {
+                                case 0:
+                                    major = Constant.CATEGORY_MAJOR_XH;
+                                    break;
+                                case 1:
+                                    major = Constant.CATEGORY_MAJOR_DS;
+                                    break;
+                                case 2:
+                                    major = Constant.CATEGORY_MAJOR_WX;
+                                    break;
+                                default:
+                                    major = Constant.CATEGORY_MAJOR_XH;
+                                    break;
+                            }
+                            // 跳转到全部小说页面
+                            Intent intent = new Intent(getActivity(), AllNovelActivity.class);
+                            intent.putExtra(AllNovelActivity.KEY_GENDER, gender);   // 性别
+                            intent.putExtra(AllNovelActivity.KEY_MAJOR, major);     // 一级分类
+                            startActivity(intent);
+                        }
+                    });
             mCategoryNovelRv.setAdapter(mCategoryAdapter);
         }
     }

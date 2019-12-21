@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.feng.freader.R;
@@ -28,6 +29,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     public interface CategoryListener {
         void clickNovel(String novelName);
+        void clickMore(int position);
     }
 
     public CategoryAdapter(Context mContext, List<String> mCategoryNameList,
@@ -47,9 +49,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CategoryViewHolder categoryViewHolder, int i) {
+    public void onBindViewHolder(@NonNull CategoryViewHolder categoryViewHolder, final int i) {
         categoryViewHolder.categoryName.setText(mCategoryNameList.get(i));
-        categoryViewHolder.more.setText(mMoreList.get(i));
+        categoryViewHolder.moreTv.setText(mMoreList.get(i));
         categoryViewHolder.novelList.setLayoutManager(new GridLayoutManager(mContext, 3));
         CategoryNovelAdapter adapter = new CategoryNovelAdapter(mContext,
                 mNovelDataList.get(i).getCoverUrlList(), mNovelDataList.get(i).getNovelNameList());
@@ -60,6 +62,19 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             }
         });
         categoryViewHolder.novelList.setAdapter(adapter);
+
+        categoryViewHolder.moreTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.clickMore(i);
+            }
+        });
+        categoryViewHolder.moreIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.clickMore(i);
+            }
+        });
     }
 
     @Override
@@ -69,13 +84,15 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     class CategoryViewHolder extends RecyclerView.ViewHolder {
         TextView categoryName;
-        TextView more;
+        TextView moreTv;
+        ImageView moreIv;
         RecyclerView novelList;
 
         public CategoryViewHolder(@NonNull View itemView) {
             super(itemView);
             categoryName = itemView.findViewById(R.id.tv_item_category_category_name);
-            more = itemView.findViewById(R.id.tv_item_category_more);
+            moreTv = itemView.findViewById(R.id.tv_item_category_more);
+            moreIv = itemView.findViewById(R.id.iv_item_category_more);
             novelList = itemView.findViewById(R.id.rv_item_category_novel_list);
         }
     }

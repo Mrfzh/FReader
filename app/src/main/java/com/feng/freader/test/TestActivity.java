@@ -127,7 +127,6 @@ public class TestActivity extends BaseActivity {
             }
         });
 
-        initRv();
     }
 
     @Override
@@ -191,41 +190,6 @@ public class TestActivity extends BaseActivity {
     @Override
     protected boolean isRegisterEventBus() {
         return false;
-    }
-
-    private void initRv() {
-        List<String> contentList = Arrays.asList(Constant.CATEGORY_MAJOR_XH, Constant.CATEGORY_MAJOR_QH,
-                Constant.CATEGORY_MAJOR_WX, Constant.CATEGORY_MAJOR_XX, Constant.CATEGORY_MAJOR_DS, Constant.CATEGORY_MAJOR_ZC,
-                Constant.CATEGORY_MAJOR_LS, Constant.CATEGORY_MAJOR_JS, Constant.CATEGORY_MAJOR_YX, Constant.CATEGORY_MAJOR_JJ,
-                Constant.CATEGORY_MAJOR_KH, Constant.CATEGORY_MAJOR_LY, Constant.CATEGORY_MAJOR_TR, Constant.CATEGORY_MAJOR_QXS);
-        List<Boolean> selectedList = new ArrayList<>();
-        for (int i = 0; i < contentList.size(); i++) {
-            if (i == 1) {
-                selectedList.add(true);
-                continue;
-            }
-            selectedList.add(false);
-        }
-        mScreenAdapter = new ScreenAdapter(this, contentList, selectedList);
-        mScreenRv = findViewById(R.id.rv_test_screen);
-        LinearLayoutManager majorManager = new LinearLayoutManager(this);
-        majorManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mScreenRv.setLayoutManager(majorManager);
-        mScreenRv.setAdapter(mScreenAdapter);
-
-        mScreenAdapter1 = new ScreenAdapter(this, contentList, selectedList);
-        mScreenRv1 = findViewById(R.id.rv_test_screen1);
-        LinearLayoutManager manager = new LinearLayoutManager(this);
-        manager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mScreenRv1.setLayoutManager(manager);
-        mScreenRv1.setAdapter(mScreenAdapter1);
-
-        mScreenAdapter2 = new ScreenAdapter(this, contentList, selectedList);
-        mScreenRv2 = findViewById(R.id.rv_test_screen2);
-        LinearLayoutManager manager2 = new LinearLayoutManager(this);
-        manager2.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mScreenRv2.setLayoutManager(manager2);
-        mScreenRv2.setAdapter(mScreenAdapter2);
     }
 
 }
