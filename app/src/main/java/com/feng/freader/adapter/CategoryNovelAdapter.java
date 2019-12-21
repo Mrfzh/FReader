@@ -25,6 +25,16 @@ public class CategoryNovelAdapter extends RecyclerView.Adapter<CategoryNovelAdap
     private List<String> mCoverList;
     private List<String> mNameList;
 
+    private CategoryNovelListener mListener;
+
+    public interface CategoryNovelListener {
+        void clickItem(String novelName);
+    }
+
+    public void setOnCategoryNovelListener(CategoryNovelListener listener) {
+        mListener = listener;
+    }
+
     public CategoryNovelAdapter(Context mContext, List<String> mCoverList, List<String> mNameList) {
         this.mContext = mContext;
         this.mCoverList = mCoverList;
@@ -39,13 +49,19 @@ public class CategoryNovelAdapter extends RecyclerView.Adapter<CategoryNovelAdap
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CategoryNovelViewHolder categoryNovelViewHolder, int i) {
+    public void onBindViewHolder(@NonNull CategoryNovelViewHolder categoryNovelViewHolder, final int i) {
         Glide.with(mContext)
                 .load(mCoverList.get(i))
                 .apply(new RequestOptions()
                     .placeholder(R.drawable.cover_place_holder)
                     .error(R.drawable.cover_error))
                 .into(categoryNovelViewHolder.cover);
+        categoryNovelViewHolder.cover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.clickItem(mNameList.get(i));
+            }
+        });
         categoryNovelViewHolder.name.setText(mNameList.get(i));
     }
 

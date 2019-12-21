@@ -79,16 +79,51 @@ public class Constant {
     public static final String CATEGORY_GENDER_MALE = "male";   // 男生
     public static final String CATEGORY_GENDER_FEMALE = "female";   // 女生
     public static final String CATEGORY_GENDER_PRESS = "press";   // 出版
+    public static final String CATEGORY_GENDER_MALE_TEXT = "男生";
+    public static final String CATEGORY_GENDER_FEMALE_TEXT  = "女生";
+    public static final String CATEGORY_GENDER_PRESS_TEXT  = "出版";
     // type
     public static final String CATEGORY_TYPE_HOT = "hot";   // 热门
     public static final String CATEGORY_TYPE_NEW = "new";   // 新书
     public static final String CATEGORY_TYPE_REPUTATION = "reputation";   // 好评
     public static final String CATEGORY_TYPE_OVER = "over";   // 完结
     public static final String CATEGORY_TYPE_MONTH = "month";   // 包月
+    public static final String CATEGORY_TYPE_HOT_TEXT = "热门";
+    public static final String CATEGORY_TYPE_NEW_TEXT = "新书";
+    public static final String CATEGORY_TYPE_REPUTATION_TEXT = "好评";
+    public static final String CATEGORY_TYPE_OVER_TEXT = "完结";
+    public static final String CATEGORY_TYPE_MONTH_TEXT = "包月";
     // major（男生）
     public static final String CATEGORY_MAJOR_XH = "玄幻";
     public static final String CATEGORY_MAJOR_QH = "奇幻";
     public static final String CATEGORY_MAJOR_WX = "武侠";
     public static final String CATEGORY_MAJOR_XX = "仙侠";
     public static final String CATEGORY_MAJOR_DS = "都市";
+    public static final String CATEGORY_MAJOR_ZC = "职场";
+    public static final String CATEGORY_MAJOR_LS = "历史";
+    public static final String CATEGORY_MAJOR_JS = "军事";
+    public static final String CATEGORY_MAJOR_YX = "游戏";
+    public static final String CATEGORY_MAJOR_JJ = "竞技";
+    public static final String CATEGORY_MAJOR_KH = "科幻";
+    public static final String CATEGORY_MAJOR_LY = "灵异";
+    public static final String CATEGORY_MAJOR_TR = "同人";
+    public static final String CATEGORY_MAJOR_QXS = "轻小说";
+    // major（女生）
+    public static final String CATEGORY_MAJOR_GDYQ = "古代言情";
+    public static final String CATEGORY_MAJOR_XDYQ = "现代言情";
+    public static final String CATEGORY_MAJOR_QCXY = "青春校园";
+    public static final String CATEGORY_MAJOR_CA = "纯爱";
+    public static final String CATEGORY_MAJOR_XHQH = "玄幻奇幻";
+    public static final String CATEGORY_MAJOR_WXXX = "武侠仙侠";
+    // major（出版）
+    public static final String CATEGORY_MAJOR_CBXS = "出版小说";
+    public static final String CATEGORY_MAJOR_ZJMZ = "传记名著";
+    public static final String CATEGORY_MAJOR_CGLZ = "成功励志";
+    public static final String CATEGORY_MAJOR_RWSK = "人文社科";
+    public static final String CATEGORY_MAJOR_JGLC = "经管理财";
+    public static final String CATEGORY_MAJOR_SHSS = "生活时尚";
+    public static final String CATEGORY_MAJOR_YEJK = "育儿健康";
+    public static final String CATEGORY_MAJOR_QCYQ = "青春言情";
+    public static final String CATEGORY_MAJOR_WWYB = "外文原版";
+    public static final String CATEGORY_MAJOR_ZZJS = "政治军事";
 }

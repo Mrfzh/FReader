@@ -16,25 +16,30 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".view.activity.EpubCatalogActivity"></activity>
-        <activity android:name=".view.activity.CatalogActivity"></activity>
-        <activity android:name=".test.TestActivity"></activity>
-        <activity android:name=".view.activity.SearchActivity"></activity>
-        <activity
-            android:name=".view.activity.MainActivity"
-            android:theme="@style/TransparentStatusBarTheme">
+        <activity android:name=".view.activity.AllNovelActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".view.activity.EpubCatalogActivity" />
+        <activity android:name=".view.activity.CatalogActivity" />
+        <activity android:name=".test.TestActivity" >
+
+        </activity>
+        <activity android:name=".view.activity.SearchActivity" />
+        <activity
+            android:name=".view.activity.MainActivity"
+            android:theme="@style/TransparentStatusBarTheme">
+
+        </activity>
         <activity
             android:name=".view.activity.NovelIntroActivity"
-            android:theme="@style/TransparentStatusBarTheme"></activity>
+            android:theme="@style/TransparentStatusBarTheme" />
         <activity
             android:name=".view.activity.ReadActivity"
-            android:theme="@style/TransparentStatusBarTheme"></activity>
+            android:theme="@style/TransparentStatusBarTheme" />
     </application>
 
 </manifest>

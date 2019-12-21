@@ -142,5 +142,18 @@
 
     <!-- item_category_novel -->
     <color name="item_category_novel_name">#1F1F1F</color>
+    
+    <!-- all_novel -->
+    <color name="all_novel_top_bar_bg">@android:color/holo_blue_light</color>
+    <color name="all_novel_title_text">#fdfdfd</color>
+    <color name="all_novel_screen_cancel_bg">#eaeaea</color>
+    <color name="all_novel_screen_cancel_text">#727272</color>
+    <color name="all_novel_screen_ensure_bg">@android:color/holo_blue_light</color>
+    <color name="all_novel_screen_ensure_text">#fdfdfd</color>
+
+    <!-- item_screen -->
+    <color name="item_screen_text_selected">#fdfdfd</color>
+    <color name="item_screen_text_normal">#717171</color>
+    <color name="item_screen_bg_selected">@android:color/holo_blue_light</color>
 
 </resources>

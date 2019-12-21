@@ -1,5 +1,6 @@
 package com.feng.freader.view.fragment.discovery;
 
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,6 +14,7 @@ import com.feng.freader.constract.IMaleContract;
 import com.feng.freader.entity.data.DiscoveryNovelData;
 import com.feng.freader.entity.data.HotRankData;
 import com.feng.freader.presenter.MalePresenter;
+import com.feng.freader.view.activity.SearchActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,7 +138,16 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
     private void initCategoryAdapter() {
         if (mCategoryAdapter == null) {
             mCategoryAdapter = new CategoryAdapter(getActivity(),
-                    mCategoryNameList, mMoreList, mNovelDataList);
+                    mCategoryNameList, mMoreList, mNovelDataList,
+                    new CategoryAdapter.CategoryListener() {
+                @Override
+                public void clickNovel(String novelName) {
+                    // 跳转到该小说的搜索结果页
+                    Intent intent = new Intent(getActivity(), SearchActivity.class);
+                    intent.putExtra(SearchActivity.KEY_NOVEL_NAME, novelName);
+                    startActivity(intent);
+                }
+            });
             mCategoryNovelRv.setAdapter(mCategoryAdapter);
         }
     }

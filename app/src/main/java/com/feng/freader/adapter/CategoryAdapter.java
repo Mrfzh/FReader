@@ -24,13 +24,20 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     private List<String> mCategoryNameList;
     private List<String> mMoreList;
     private List<DiscoveryNovelData> mNovelDataList;
+    private CategoryListener mListener;
+
+    public interface CategoryListener {
+        void clickNovel(String novelName);
+    }
 
     public CategoryAdapter(Context mContext, List<String> mCategoryNameList,
-                           List<String> mMoreList, List<DiscoveryNovelData> mNovelDataList) {
+                           List<String> mMoreList, List<DiscoveryNovelData> mNovelDataList,
+                           CategoryListener mListener) {
         this.mContext = mContext;
         this.mCategoryNameList = mCategoryNameList;
         this.mMoreList = mMoreList;
         this.mNovelDataList = mNovelDataList;
+        this.mListener = mListener;
     }
 
     @NonNull
@@ -46,6 +53,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         categoryViewHolder.novelList.setLayoutManager(new GridLayoutManager(mContext, 3));
         CategoryNovelAdapter adapter = new CategoryNovelAdapter(mContext,
                 mNovelDataList.get(i).getCoverUrlList(), mNovelDataList.get(i).getNovelNameList());
+        adapter.setOnCategoryNovelListener(new CategoryNovelAdapter.CategoryNovelListener() {
+            @Override
+            public void clickItem(String novelName) {
+                mListener.clickNovel(novelName);
+            }
+        });
         categoryViewHolder.novelList.setAdapter(adapter);
     }
 

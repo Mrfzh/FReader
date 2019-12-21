@@ -78,4 +78,12 @@
     <dimen name="item_category_second_height">50dp</dimen>
     <dimen name="item_category_category_name_size">18sp</dimen>
     <dimen name="item_category_more_size">14sp</dimen>
+
+    <!-- all_novel -->
+    <dimen name="all_novel_top_bar_height">50dp</dimen>
+    <dimen name="all_novel_screen_bar_height">30dp</dimen>
+    <dimen name="all_novel_screen_bar_bottom_height">40dp</dimen>
+
+    <!-- item_screen -->
+    <dimen name="item_screen_bg_radius">15dp</dimen>
 </resources>

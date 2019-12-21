@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tv_item_screen_text"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/all_novel_screen_bar_height"
+    android:minHeight="@dimen/all_novel_screen_bar_height"
+    android:paddingStart="5dp"
+    android:paddingEnd="5dp"
+    android:text="@string/item_screen_text"
+    android:textSize="14sp"
+    android:textColor="@color/selector_item_screen_text"
+    android:gravity="center"
+    android:background="@drawable/selector_item_screen_bg"
+    android:focusable="true"
+    android:clickable="true"/>

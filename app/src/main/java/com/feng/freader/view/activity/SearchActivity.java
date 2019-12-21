@@ -37,6 +37,7 @@ import org.greenrobot.eventbus.ThreadMode;
 public class SearchActivity extends BaseActivity implements View.OnClickListener{
 
     private static final String TAG = "SearchActivity";
+    public static final String KEY_NOVEL_NAME = "key_novel_name";
 
     private ImageView mBackIv;
     private EditText mSearchBarEt;
@@ -134,12 +135,17 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         StatusBarUtil.setLightColorStatusBar(this);
         getWindow().setStatusBarColor(getResources().getColor(R.color.search_bg));
 
-        Log.d(TAG, "doAfterInit: run");
-        // EditText 获得焦点并显示软键盘
-        EditTextUtil.focusAndShowSoftKeyboard(this, mSearchBarEt);
-
-        // 显示历史搜索页面
-        showHistoryFg();
+        String novelName = getIntent().getStringExtra(KEY_NOVEL_NAME);
+        if (novelName != null) {
+            // 说明是通过点击列表小说跳转过来的，直接显示该小说的搜查结果
+            mSearchBarEt.setText(novelName);
+            doSearch();
+        } else {
+            // EditText 获得焦点并显示软键盘
+            EditTextUtil.focusAndShowSoftKeyboard(this, mSearchBarEt);
+            // 显示历史搜索页面
+            showHistoryFg();
+        }
     }
 
     @Override
@@ -235,7 +241,9 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                 mSearchBarEt.getText().toString());
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         ft.add(R.id.fv_search_container, mSearchResultFragment);
-        ft.hide(mHistoryFragment);
+        if (mHistoryFragment != null) {
+            ft.hide(mHistoryFragment);
+        }
         ft.show(mSearchResultFragment);
         ft.commit();
         mIsShowSearchResFg = true;
@@ -251,6 +259,10 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         ft.remove(mSearchResultFragment);
         mSearchResultFragment = null;
+        if (mHistoryFragment == null) {
+            mHistoryFragment = new HistoryFragment();
+            ft.add(R.id.fv_search_container, mHistoryFragment);
+        }
         ft.show(mHistoryFragment);
         ft.commit();
         mIsShowSearchResFg = false;

@@ -78,4 +78,12 @@
 
     <!-- item_category_novel -->
     <string name="item_category_novel_name">小说名</string>
+
+    <!-- all_novel -->
+    <string name="all_novel_title">玄幻</string>
+    <string name="all_novel_cancel">取消</string>
+    <string name="all_novel_ensure">确定</string>
+
+    <!-- item_screen -->
+    <string name="item_screen_text">玄幻</string>
 </resources>
