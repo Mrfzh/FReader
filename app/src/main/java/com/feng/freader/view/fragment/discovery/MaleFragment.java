@@ -34,7 +34,9 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
     private RecyclerView mHotRankRv;
     private RecyclerView mCategoryNovelRv;
 
+    private HotRankAdapter mHotRankAdapter;
     private HotRankData mHotRankData;
+
     private CategoryAdapter mCategoryAdapter;
     private List<String> mCategoryNameList = new ArrayList<>();
     private List<String> mMoreList = new ArrayList<>();
@@ -68,6 +70,7 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
 
     @Override
     protected void doInOnCreate() {
+        Log.d(TAG, "doInOnCreate: run");
         mPresenter.getHotRankData();
         mPresenter.getCategoryNovels();
     }
@@ -92,9 +95,16 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
      */
     @Override
     public void getHotRankDataSuccess(HotRankData hotRankData) {
-        Log.d(TAG, "getHotRankDataSuccess: run");
+        if (hotRankData == null) {
+            return;
+        }
         mHotRankData = hotRankData;
         initHotRankAdapter();
+//        if (mHotRankAdapter == null) {
+//            initHotRankAdapter();
+//        } else {
+//
+//        }
     }
 
     /**
@@ -110,8 +120,14 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
      */
     @Override
     public void getCategoryNovelsSuccess(List<DiscoveryNovelData> dataList) {
-        mNovelDataList = dataList;
-        initCategoryAdapter();
+        if (mCategoryAdapter == null) {
+            mNovelDataList = dataList;
+            initCategoryAdapter();
+        } else {
+            mNovelDataList.clear();
+            mNovelDataList.addAll(dataList);
+            mCategoryAdapter.notifyDataSetChanged();
+        }
     }
 
     /**
@@ -123,59 +139,53 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
     }
 
     private void initHotRankAdapter() {
-        if (mHotRankData == null) {
-            return;
-        }
-
         List<HotRankData.NovelInfo> novelInfoList = mHotRankData.getNovelInfoList();
         List<List<String>> hotRankNovelList = new ArrayList<>();
         for (HotRankData.NovelInfo novelInfo : novelInfoList) {
             hotRankNovelList.add(novelInfo.getNameList());
         }
-        HotRankAdapter adapter = new HotRankAdapter(getActivity(),
+        mHotRankAdapter = new HotRankAdapter(getActivity(),
                mHotRankData.getRankNameList(), hotRankNovelList);
-        mHotRankRv.setAdapter(adapter);
+        mHotRankRv.setAdapter(mHotRankAdapter);
     }
 
     private void initCategoryAdapter() {
-        if (mCategoryAdapter == null) {
-            mCategoryAdapter = new CategoryAdapter(getActivity(),
-                    mCategoryNameList, mMoreList, mNovelDataList,
-                    new CategoryAdapter.CategoryListener() {
-                        @Override
-                        public void clickNovel(String novelName) {
-                            // 跳转到该小说的搜索结果页
-                            Intent intent = new Intent(getActivity(), SearchActivity.class);
-                            intent.putExtra(SearchActivity.KEY_NOVEL_NAME, novelName);
-                            startActivity(intent);
-                        }
+        mCategoryAdapter = new CategoryAdapter(getActivity(),
+                mCategoryNameList, mMoreList, mNovelDataList,
+                new CategoryAdapter.CategoryListener() {
+                    @Override
+                    public void clickNovel(String novelName) {
+                        // 跳转到该小说的搜索结果页
+                        Intent intent = new Intent(getActivity(), SearchActivity.class);
+                        intent.putExtra(SearchActivity.KEY_NOVEL_NAME, novelName);
+                        startActivity(intent);
+                    }
 
-                        @Override
-                        public void clickMore(int position) {
-                            int gender = 0;
-                            String major;
-                            switch (position) {
-                                case 0:
-                                    major = Constant.CATEGORY_MAJOR_XH;
-                                    break;
-                                case 1:
-                                    major = Constant.CATEGORY_MAJOR_DS;
-                                    break;
-                                case 2:
-                                    major = Constant.CATEGORY_MAJOR_WX;
-                                    break;
-                                default:
-                                    major = Constant.CATEGORY_MAJOR_XH;
-                                    break;
-                            }
-                            // 跳转到全部小说页面
-                            Intent intent = new Intent(getActivity(), AllNovelActivity.class);
-                            intent.putExtra(AllNovelActivity.KEY_GENDER, gender);   // 性别
-                            intent.putExtra(AllNovelActivity.KEY_MAJOR, major);     // 一级分类
-                            startActivity(intent);
+                    @Override
+                    public void clickMore(int position) {
+                        int gender = 0;
+                        String major;
+                        switch (position) {
+                            case 0:
+                                major = Constant.CATEGORY_MAJOR_XH;
+                                break;
+                            case 1:
+                                major = Constant.CATEGORY_MAJOR_DS;
+                                break;
+                            case 2:
+                                major = Constant.CATEGORY_MAJOR_WX;
+                                break;
+                            default:
+                                major = Constant.CATEGORY_MAJOR_XH;
+                                break;
                         }
-                    });
-            mCategoryNovelRv.setAdapter(mCategoryAdapter);
-        }
+                        // 跳转到全部小说页面
+                        Intent intent = new Intent(getActivity(), AllNovelActivity.class);
+                        intent.putExtra(AllNovelActivity.KEY_GENDER, gender);   // 性别
+                        intent.putExtra(AllNovelActivity.KEY_MAJOR, major);     // 一级分类
+                        startActivity(intent);
+                    }
+                });
+        mCategoryNovelRv.setAdapter(mCategoryAdapter);
     }
 }

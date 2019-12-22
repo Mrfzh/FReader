@@ -70,6 +70,8 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
         // 在 Fragment 中只能使用 getChildFragmentManager() 获取 FragmentManager 来处理子 Fragment
         mViewPager.setAdapter(new NormalViewPagerAdapter(getChildFragmentManager(),
                 mFragmentList, mPageTitleList));
+        // 缓存左右两侧的两个页面（很重要！！！，不设置这个切换到前两个的时候就会重新加载数据）
+        mViewPager.setOffscreenPageLimit(2);
 
         mTabLayout = getActivity().findViewById(R.id.tv_discovery_tab_layout);
         mTabLayout.setupWithViewPager(mViewPager);
