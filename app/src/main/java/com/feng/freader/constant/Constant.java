@@ -33,7 +33,7 @@ public class Constant {
     private static String sNSQHotRankId = "564d81151109835664770ad7";    // 书旗热搜榜
     public static final List<String> FEMALE_HOT_RANK_ID = Arrays.asList(
             sKHotRankId, sNZYHotRankId, sNSQHotRankId);
-    // 男生热门榜单的榜单名字
+    // 女生热门榜单的榜单名字
     public static final List<String> FEMALE_HOT_RANK_NAME = Arrays.asList(
             "17K订阅榜", "掌阅热销榜", "书旗热搜榜");
 

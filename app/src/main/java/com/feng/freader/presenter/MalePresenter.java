@@ -22,16 +22,16 @@ public class MalePresenter extends BasePresenter<IMaleContract.View>
     }
 
     @Override
-    public void getHotRankDataSuccess(HotRankData hotRankData) {
+    public void getHotRankDataSuccess(List<List<String>> novelNameList) {
         if (isAttachView()) {
-            getMvpView().getHotRankDataSuccess(hotRankData);
+            getMvpView().getHotRankDataSuccess(novelNameList);
         }
     }
 
     @Override
-    public void getHotRankDataError(List<String> errorMsgList) {
+    public void getHotRankDataError(String errorMsg) {
         if (isAttachView()) {
-            getMvpView().getHotRankDataError(errorMsgList);
+            getMvpView().getHotRankDataError(errorMsg);
         }
     }
 

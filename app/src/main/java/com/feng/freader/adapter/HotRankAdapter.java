@@ -21,12 +21,20 @@ public class HotRankAdapter extends RecyclerView.Adapter<HotRankAdapter.HotRankV
     private Context mContext;
     private List<String> mHotRankNameList;
     private List<List<String>> mHotRankNovelList;
+    private HotRankListener mListener;
+
+    public interface HotRankListener {
+        void clickFirstNovel(String name);
+        void clickSecondNovel(String name);
+        void clickThirdNovel(String name);
+    }
 
     public HotRankAdapter(Context mContext, List<String> mHotRankNameList,
-                          List<List<String>> mHotRankNovelList) {
+                          List<List<String>> mHotRankNovelList, HotRankListener mListener) {
         this.mContext = mContext;
         this.mHotRankNameList = mHotRankNameList;
         this.mHotRankNovelList = mHotRankNovelList;
+        this.mListener = mListener;
     }
 
     @NonNull
@@ -39,12 +47,30 @@ public class HotRankAdapter extends RecyclerView.Adapter<HotRankAdapter.HotRankV
     public void onBindViewHolder(@NonNull HotRankViewHolder hotRankViewHolder, int i) {
         hotRankViewHolder.hotRankName.setText(mHotRankNameList.get(i));
         List<String> novelList = mHotRankNovelList.get(i);
-        String firstName = novelList.size() > 0 ? novelList.get(0) : "";
-        String secondName = novelList.size() > 1 ? novelList.get(1) : "";
-        String thirdName = novelList.size() > 2 ? novelList.get(2) : "";
+        final String firstName = novelList.size() > 0 ? novelList.get(0) : "";
+        final String secondName = novelList.size() > 1 ? novelList.get(1) : "";
+        final String thirdName = novelList.size() > 2 ? novelList.get(2) : "";
         hotRankViewHolder.firstNovelName.setText(firstName);
+        hotRankViewHolder.firstNovelName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.clickFirstNovel(firstName);
+            }
+        });
         hotRankViewHolder.secondNovelName.setText(secondName);
+        hotRankViewHolder.secondNovelName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.clickSecondNovel(secondName);
+            }
+        });
         hotRankViewHolder.thirdNovelName.setText(thirdName);
+        hotRankViewHolder.thirdNovelName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.clickThirdNovel(thirdName);
+            }
+        });
     }
 
     @Override

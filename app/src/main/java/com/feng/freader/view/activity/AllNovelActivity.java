@@ -99,7 +99,6 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
         return new AllNovelPresenter();
     }
 
-
     @Override
     protected void initData() {
         // 初始化 Map 和 List
@@ -179,51 +178,49 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
             @Override
             public void clickItem(int position) {
                 // 点击 gender，更新 major
-                if (position != mGender) {
-                    mTempGender = position;
-                    // 更新 gender
-                    mGenderSelectedList.clear();
-                    for (int i = 0; i < mGenderTextList.size(); i++) {
-                        if (i == position) {
-                            mGenderSelectedList.add(true);
-                        } else {
-                            mGenderSelectedList.add(false);
-                        }
-                    }
-                    mGenderAdapter.notifyDataSetChanged();
-                    // 更新 major
-                    mMajorTextList.clear();
-                    Log.d(TAG, "clickItem: mMajorList = " + mMajorList);
-                    mMajorTextList.addAll(mMajorList.get(position));
-                    mMajorSelectedList.clear();
-                    for (int i = 0; i < mMajorTextList.size(); i++) {
-                        if (i == 0) {
-                            mMajorSelectedList.add(true);
-                        } else {
-                            mMajorSelectedList.add(false);
-                        }
-                    }
-                    mTempMajor = mMajorTextList.get(0);
-                    mMajorAdapter.notifyDataSetChanged();
-                    // 更新 minor
-                    if (!mMinorMap.containsKey(mTempMajor)) {
-                        mTempMinor = "";
-                        mMinorRv.setVisibility(View.GONE);
+                mTempGender = position;
+                // 更新 gender
+                mGenderSelectedList.clear();
+                for (int i = 0; i < mGenderTextList.size(); i++) {
+                    if (i == position) {
+                        mGenderSelectedList.add(true);
                     } else {
-                        mMinorRv.setVisibility(View.VISIBLE);
-                        mMinorTextList.clear();
-                        mMinorTextList.addAll(mMinorMap.get(mTempMajor));
-                        mMinorSelectedList.clear();
-                        for (int i = 0; i < mMinorTextList.size(); i++) {
-                            if (i == 0) {
-                                mMinorSelectedList.add(true);
-                            } else {
-                                mMinorSelectedList.add(false);
-                            }
-                        }
-                        mTempMinor = mMinorTextList.get(0);
-                        mMinorAdapter.notifyDataSetChanged();
+                        mGenderSelectedList.add(false);
                     }
+                }
+                mGenderAdapter.notifyDataSetChanged();
+                // 更新 major
+                mMajorTextList.clear();
+                Log.d(TAG, "clickItem: mMajorList = " + mMajorList);
+                mMajorTextList.addAll(mMajorList.get(position));
+                mMajorSelectedList.clear();
+                for (int i = 0; i < mMajorTextList.size(); i++) {
+                    if (i == 0) {
+                        mMajorSelectedList.add(true);
+                    } else {
+                        mMajorSelectedList.add(false);
+                    }
+                }
+                mTempMajor = mMajorTextList.get(0);
+                mMajorAdapter.notifyDataSetChanged();
+                // 更新 minor
+                if (!mMinorMap.containsKey(mTempMajor)) {
+                    mTempMinor = "";
+                    mMinorRv.setVisibility(View.GONE);
+                } else {
+                    mMinorRv.setVisibility(View.VISIBLE);
+                    mMinorTextList.clear();
+                    mMinorTextList.addAll(mMinorMap.get(mTempMajor));
+                    mTempMinor = mMinorTextList.get(0);
+                    mMinorSelectedList.clear();
+                    for (int i = 0; i < mMinorTextList.size(); i++) {
+                        if (i == 0) {
+                            mMinorSelectedList.add(true);
+                        } else {
+                            mMinorSelectedList.add(false);
+                        }
+                    }
+                    mMinorAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -288,21 +285,39 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
             }
             mMinorAdapter = new ScreenAdapter(this, mMinorTextList, mMinorSelectedList,
                     new ScreenAdapter.ScreenListener() {
-                @Override
-                public void clickItem(int position) {
-                    // 更新 minor
-                    mMinorSelectedList.clear();
-                    for (int i = 0; i < mMinorTextList.size(); i++) {
-                        if (i == position) {
-                            mMinorSelectedList.add(true);
-                        } else {
-                            mMinorSelectedList.add(false);
+                        @Override
+                        public void clickItem(int position) {
+                            // 更新 minor
+                            mMinorSelectedList.clear();
+                            for (int i = 0; i < mMinorTextList.size(); i++) {
+                                if (i == position) {
+                                    mMinorSelectedList.add(true);
+                                } else {
+                                    mMinorSelectedList.add(false);
+                                }
+                            }
+                            mTempMinor = mMinorTextList.get(position);
+                            mMinorAdapter.notifyDataSetChanged();
                         }
-                    }
-                    mTempMinor = mMinorTextList.get(position);
-                    mMinorAdapter.notifyDataSetChanged();
-                }
-            });
+                    });
+        } else {
+            mMinorAdapter = new ScreenAdapter(this, mMinorTextList, mMinorSelectedList,
+                    new ScreenAdapter.ScreenListener() {
+                        @Override
+                        public void clickItem(int position) {
+                            // 更新 minor
+                            mMinorSelectedList.clear();
+                            for (int i = 0; i < mMinorTextList.size(); i++) {
+                                if (i == position) {
+                                    mMinorSelectedList.add(true);
+                                } else {
+                                    mMinorSelectedList.add(false);
+                                }
+                            }
+                            mTempMinor = mMinorTextList.get(position);
+                            mMinorAdapter.notifyDataSetChanged();
+                        }
+                    });
         }
 
         // type
@@ -366,6 +381,9 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
         minorManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mMinorRv.setLayoutManager(minorManager);
         mMinorRv.setAdapter(mMinorAdapter);
+        if (mMinor.equals("")) {
+            mMinorRv.setVisibility(View.GONE);
+        }
 
         mTypeRv = findViewById(R.id.rv_all_novel_type);
         LinearLayoutManager typeManager = new LinearLayoutManager(this);
@@ -480,6 +498,8 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
             mDataList.addAll(dataList);
             mNovelAdapter.notifyDataSetChanged();
         }
+        // 更新标题
+        mTitleTv.setText(mMajor);
     }
 
     /**

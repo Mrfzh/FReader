@@ -2,8 +2,11 @@ package com.feng.freader.presenter;
 
 import com.feng.freader.base.BasePresenter;
 import com.feng.freader.constract.IFemaleContract;
+import com.feng.freader.entity.data.DiscoveryNovelData;
 import com.feng.freader.entity.data.HotRankData;
 import com.feng.freader.model.FemaleModel;
+
+import java.util.List;
 
 /**
  * @author Feng Zhaohao
@@ -19,9 +22,9 @@ public class FemalePresenter extends BasePresenter<IFemaleContract.View>
     }
 
     @Override
-    public void getHotRankDataSuccess(HotRankData hotRankData) {
+    public void getHotRankDataSuccess(List<List<String>> novelNameList) {
         if (isAttachView()) {
-            getMvpView().getHotRankDataSuccess(hotRankData);
+            getMvpView().getHotRankDataSuccess(novelNameList);
         }
     }
 
@@ -33,7 +36,26 @@ public class FemalePresenter extends BasePresenter<IFemaleContract.View>
     }
 
     @Override
+    public void getCategoryNovelsSuccess(List<DiscoveryNovelData> dataList) {
+        if (isAttachView()) {
+            getMvpView().getCategoryNovelsSuccess(dataList);
+        }
+    }
+
+    @Override
+    public void getCategoryNovelsError(String errorMsg) {
+        if (isAttachView()) {
+            getMvpView().getCategoryNovelsError(errorMsg);
+        }
+    }
+
+    @Override
     public void getHotRankData() {
         mModel.getHotRankData();
+    }
+
+    @Override
+    public void getCategoryNovels() {
+        mModel.getCategoryNovels();
     }
 }

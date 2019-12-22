@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.feng.freader.R;
 import com.feng.freader.adapter.CatalogAdapter;
@@ -33,9 +35,10 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
 
     private RecyclerView mHotRankRv;
     private RecyclerView mCategoryNovelRv;
+    private ProgressBar mProgressBar;
 
     private HotRankAdapter mHotRankAdapter;
-    private HotRankData mHotRankData;
+    private List<List<String>> mHotRankNovelNameList;
 
     private CategoryAdapter mCategoryAdapter;
     private List<String> mCategoryNameList = new ArrayList<>();
@@ -66,13 +69,15 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
 
         mCategoryNovelRv = getActivity().findViewById(R.id.rv_male_category_novel_list);
         mCategoryNovelRv.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        mProgressBar = getActivity().findViewById(R.id.pb_male);
     }
 
     @Override
     protected void doInOnCreate() {
-        Log.d(TAG, "doInOnCreate: run");
         mPresenter.getHotRankData();
         mPresenter.getCategoryNovels();
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -90,28 +95,30 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
         return 0;
     }
 
+
     /**
-     * 获取热门榜单数据成功
+     * 获取热门排行榜数据成功
      */
     @Override
-    public void getHotRankDataSuccess(HotRankData hotRankData) {
-        if (hotRankData == null) {
+    public void getHotRankDataSuccess(List<List<String>> novelNameList) {
+        if (novelNameList.isEmpty()) {
             return;
         }
-        mHotRankData = hotRankData;
-        initHotRankAdapter();
-//        if (mHotRankAdapter == null) {
-//            initHotRankAdapter();
-//        } else {
-//
-//        }
+        if (mHotRankAdapter == null) {
+            mHotRankNovelNameList = novelNameList;
+            initHotRankAdapter();
+        } else {
+            mHotRankNovelNameList.clear();
+            mHotRankNovelNameList.addAll(novelNameList);
+            mHotRankAdapter.notifyDataSetChanged();
+        }
     }
 
     /**
-     * 获取热门榜单数据失败
+     * 获取热门排行榜数据失败
      */
     @Override
-    public void getHotRankDataError(List<String> errorMsgList) {
+    public void getHotRankDataError(String errorMsg) {
 
     }
 
@@ -120,6 +127,11 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
      */
     @Override
     public void getCategoryNovelsSuccess(List<DiscoveryNovelData> dataList) {
+        mProgressBar.setVisibility(View.GONE);
+
+        if (dataList.isEmpty()) {
+            return;
+        }
         if (mCategoryAdapter == null) {
             mNovelDataList = dataList;
             initCategoryAdapter();
@@ -135,18 +147,42 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
      */
     @Override
     public void getCategoryNovelsError(String errorMsg) {
+        mProgressBar.setVisibility(View.GONE);
         Log.d(TAG, "getCategoryNovelsError: " + errorMsg);
     }
 
     private void initHotRankAdapter() {
-        List<HotRankData.NovelInfo> novelInfoList = mHotRankData.getNovelInfoList();
-        List<List<String>> hotRankNovelList = new ArrayList<>();
-        for (HotRankData.NovelInfo novelInfo : novelInfoList) {
-            hotRankNovelList.add(novelInfo.getNameList());
-        }
         mHotRankAdapter = new HotRankAdapter(getActivity(),
-               mHotRankData.getRankNameList(), hotRankNovelList);
+                Constant.MALE_HOT_RANK_NAME, mHotRankNovelNameList, new HotRankAdapter.HotRankListener() {
+            @Override
+            public void clickFirstNovel(String name) {
+                if (!name.equals("")) {
+                    jump2Search(name);
+                }
+            }
+
+            @Override
+            public void clickSecondNovel(String name) {
+                if (!name.equals("")) {
+                    jump2Search(name);
+                }
+            }
+
+            @Override
+            public void clickThirdNovel(String name) {
+                if (!name.equals("")) {
+                    jump2Search(name);
+                }
+            }
+        });
         mHotRankRv.setAdapter(mHotRankAdapter);
+    }
+
+    private void jump2Search(String name) {
+        Intent intent = new Intent(getActivity(), SearchActivity.class);
+        // 传递小说名，进入搜查页后直接显示该小说的搜查结果
+        intent.putExtra(SearchActivity.KEY_NOVEL_NAME, name);
+        startActivity(intent);
     }
 
     private void initCategoryAdapter() {
