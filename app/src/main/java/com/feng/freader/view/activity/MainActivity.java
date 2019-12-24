@@ -21,6 +21,10 @@ import android.widget.ImageView;
 import com.feng.freader.R;
 import com.feng.freader.base.BaseActivity;
 import com.feng.freader.base.BasePresenter;
+import com.feng.freader.constant.EventBusCode;
+import com.feng.freader.entity.eventbus.Event;
+import com.feng.freader.entity.eventbus.MoreIntoEvent;
+import com.feng.freader.util.EventBusUtil;
 import com.feng.freader.util.StatusBarUtil;
 import com.feng.freader.view.fragment.main.BookshelfFragment;
 import com.feng.freader.view.fragment.main.DiscoveryFragment;
@@ -315,6 +319,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                     ft.add(R.id.fv_main_fragment_container, mMoreFragment);
                 }
                 showFragment = mMoreFragment;
+                // 通知 More 页面更新相关信息
+                Event<MoreIntoEvent> moreEvent = new Event<>(EventBusCode.MORE_INTO,
+                        new MoreIntoEvent());
+                EventBusUtil.sendEvent(moreEvent);
                 break;
             default:
                 break;
