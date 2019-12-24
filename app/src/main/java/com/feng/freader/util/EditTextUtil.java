@@ -16,13 +16,18 @@ public class EditTextUtil {
      * EditText 获取焦点并显示软键盘
      */
     public static void focusAndShowSoftKeyboard(Activity activity, EditText editText) {
-        editText.setFocusable(true);
-        editText.setFocusableInTouchMode(true);
-        editText.requestFocus();
-        activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+//        editText.setFocusable(true);
+//        editText.setFocusableInTouchMode(true);
+//        editText.requestFocus();
+//        activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+//         // 可以不要下面这部分
+//        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
 
+        editText.requestFocus();
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+
     }
 
 }

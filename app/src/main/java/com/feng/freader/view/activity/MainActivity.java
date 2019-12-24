@@ -201,6 +201,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 mMoreAnim.start();
                 // 切换 Fragment
                 changeFragment(FG_MORE);
+                // 改变状态栏颜色
+                StatusBarUtil.setLightColorStatusBar(this);
                 break;
             default:
                 break;

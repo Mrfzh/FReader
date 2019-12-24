@@ -3,15 +3,215 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/more_bg">
+
+    <!-- top -->
+
+    <TextView
+        android:id="@+id/tv_more_top"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/more_top_text"
+        android:textColor="@color/more_text"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:layout_marginTop="30dp"/>
+
+    <View
+        android:id="@+id/v_more_top_separator"
+        android:layout_width="0dp"
+        android:layout_height="5dp"
+        android:background="@drawable/shape_catalog_separator"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_more_top"/>
+
+    <!-- function -->
+
+    <!-- check_update -->
+    
+    <View
+        android:id="@+id/v_more_check_update"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/more_function_height"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/v_more_top_separator"
+        android:background="@drawable/selector_more_function_bg"
+        android:clickable="true"
+        android:focusable="true"/>
+
+    <ImageView
+        android:id="@+id/iv_more_check_update"
+        android:layout_width="@dimen/more_function_height"
+        android:layout_height="@dimen/more_function_height"
+        app:layout_constraintStart_toStartOf="@id/v_more_check_update"
+        app:layout_constraintTop_toTopOf="@id/v_more_check_update"
+        app:layout_constraintBottom_toBottomOf="@id/v_more_check_update"
+        android:padding="@dimen/more_image_padding"
+        android:src="@drawable/more_check_update"
+        android:scaleType="fitXY"
+        android:layout_marginStart="10dp"/>
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="More Fragment"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="@dimen/more_function_height"
+        app:layout_constraintStart_toEndOf="@id/iv_more_check_update"
+        app:layout_constraintTop_toTopOf="@id/v_more_check_update"
+        app:layout_constraintBottom_toBottomOf="@id/v_more_check_update"
+        android:text="@string/more_check_update"
+        android:textSize="@dimen/more_text_size"
+        android:textColor="@color/more_text"
+        android:gravity="center"/>
+
+    <ImageView
+        android:id="@+id/iv_more_check_update_next"
+        android:layout_width="25dp"
+        android:layout_height="@dimen/more_function_height"
+        app:layout_constraintEnd_toEndOf="@id/v_more_check_update"
+        app:layout_constraintTop_toTopOf="@id/v_more_check_update"
+        app:layout_constraintBottom_toBottomOf="@id/v_more_check_update"
+        android:paddingTop="@dimen/more_image_small_padding"
+        android:paddingBottom="@dimen/more_image_small_padding"
+        android:src="@drawable/more_next"
+        android:scaleType="fitCenter"
+        android:layout_marginEnd="20dp"/>
+
+    <TextView
+        android:id="@+id/tv_more_version"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/more_function_height"
+        app:layout_constraintEnd_toStartOf="@id/iv_more_check_update_next"
+        app:layout_constraintTop_toTopOf="@id/v_more_check_update"
+        app:layout_constraintBottom_toBottomOf="@id/v_more_check_update"
+        android:text="@string/more_version"
+        android:textSize="@dimen/more_text_small_size"
+        android:textColor="@color/more_text_light"
+        android:gravity="center"/>
+
+    <!-- clear -->
+
+    <View
+        android:id="@+id/v_more_clear"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/more_function_height"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/v_more_check_update"
+        android:background="@drawable/selector_more_function_bg"
+        android:clickable="true"
+        android:focusable="true"/>
+
+    <ImageView
+        android:id="@+id/iv_more_clear"
+        android:layout_width="@dimen/more_function_height"
+        android:layout_height="@dimen/more_function_height"
+        app:layout_constraintStart_toStartOf="@id/v_more_clear"
+        app:layout_constraintTop_toTopOf="@id/v_more_clear"
+        app:layout_constraintBottom_toBottomOf="@id/v_more_clear"
+        android:padding="@dimen/more_image_padding"
+        android:src="@drawable/more_clear"
+        android:scaleType="fitXY"
+        android:layout_marginStart="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/more_function_height"
+        app:layout_constraintStart_toEndOf="@id/iv_more_clear"
+        app:layout_constraintTop_toTopOf="@id/v_more_clear"
+        app:layout_constraintBottom_toBottomOf="@id/v_more_clear"
+        android:text="@string/more_clear"
+        android:textSize="@dimen/more_text_size"
+        android:textColor="@color/more_text"
+        android:gravity="center"/>
+
+    <ImageView
+        android:id="@+id/iv_more_clear_next"
+        android:layout_width="25dp"
+        android:layout_height="@dimen/more_function_height"
+        app:layout_constraintEnd_toEndOf="@id/v_more_clear"
+        app:layout_constraintTop_toTopOf="@id/v_more_clear"
+        app:layout_constraintBottom_toBottomOf="@id/v_more_clear"
+        android:paddingTop="@dimen/more_image_small_padding"
+        android:paddingBottom="@dimen/more_image_small_padding"
+        android:src="@drawable/more_next"
+        android:scaleType="fitCenter"
+        android:layout_marginEnd="20dp"/>
+
+    <TextView
+        android:id="@+id/tv_more_cache_size"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/more_function_height"
+        app:layout_constraintEnd_toStartOf="@id/iv_more_clear_next"
+        app:layout_constraintTop_toTopOf="@id/v_more_clear"
+        app:layout_constraintBottom_toBottomOf="@id/v_more_clear"
+        android:text="@string/more_cache_size"
+        android:textSize="@dimen/more_text_small_size"
+        android:textColor="@color/more_text_light"
+        android:gravity="center"/>
+
+    <!-- check_update -->
+
+    <View
+        android:id="@+id/v_more_about"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/more_function_height"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/v_more_clear"
+        android:background="@drawable/selector_more_function_bg"
+        android:clickable="true"
+        android:focusable="true"/>
+
+    <ImageView
+        android:id="@+id/iv_more_about"
+        android:layout_width="@dimen/more_function_height"
+        android:layout_height="@dimen/more_function_height"
+        app:layout_constraintStart_toStartOf="@id/v_more_about"
+        app:layout_constraintTop_toTopOf="@id/v_more_about"
+        app:layout_constraintBottom_toBottomOf="@id/v_more_about"
+        android:padding="@dimen/more_image_padding"
+        android:src="@drawable/more_about"
+        android:scaleType="fitXY"
+        android:layout_marginStart="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/more_function_height"
+        app:layout_constraintStart_toEndOf="@id/iv_more_about"
+        app:layout_constraintTop_toTopOf="@id/v_more_about"
+        app:layout_constraintBottom_toBottomOf="@id/v_more_about"
+        android:text="@string/more_about"
+        android:textSize="@dimen/more_text_size"
+        android:textColor="@color/more_text"
+        android:gravity="center"/>
+
+    <ImageView
+        android:id="@+id/iv_more_about_next"
+        android:layout_width="25dp"
+        android:layout_height="@dimen/more_function_height"
+        app:layout_constraintEnd_toEndOf="@id/v_more_about"
+        app:layout_constraintTop_toTopOf="@id/v_more_about"
+        app:layout_constraintBottom_toBottomOf="@id/v_more_about"
+        android:paddingTop="@dimen/more_image_small_padding"
+        android:paddingBottom="@dimen/more_image_small_padding"
+        android:src="@drawable/more_next"
+        android:scaleType="fitCenter"
+        android:layout_marginEnd="20dp"/>
+
+    <!-- separator -->
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/v_more_about"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/more_separator"/>
 
 </android.support.constraint.ConstraintLayout>

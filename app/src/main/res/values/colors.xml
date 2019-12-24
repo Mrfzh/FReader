@@ -157,4 +157,10 @@
     <color name="item_screen_text_normal">#717171</color>
     <color name="item_screen_bg_selected">@android:color/holo_blue_light</color>
 
+    <!-- more -->
+    <color name="more_bg">#fdfdfd</color>
+    <color name="more_text">#353538</color>
+    <color name="more_text_light">#C0C0C0</color>
+    <color name="more_separator">#F7F9FA</color>
+    <color name="more_function_pressed">#eaeaea</color>
 </resources>
