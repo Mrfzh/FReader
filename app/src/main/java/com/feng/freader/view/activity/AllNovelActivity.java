@@ -116,30 +116,29 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
 
     private void initMapAndList() {
         mMinorMap.put(Constant.CATEGORY_MAJOR_XH, strings2List(new String[] {"东方玄幻","异界大陆","异界争霸","远古神话"}));
-        mMinorMap.put(Constant.CATEGORY_MAJOR_QH, strings2List(new String[] {"西方奇幻","领主贵族","亡灵异族","魔法校园"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_QH, strings2List(new String[] {"西方奇幻","亡灵异族","魔法校园"}));
         mMinorMap.put(Constant.CATEGORY_MAJOR_WX, strings2List(new String[] {"传统武侠","新派武侠","国术武侠"}));
         mMinorMap.put(Constant.CATEGORY_MAJOR_XX, strings2List(new String[] {"古典仙侠","幻想修仙","现代修仙","洪荒封神"}));
-        mMinorMap.put(Constant.CATEGORY_MAJOR_DS, strings2List(new String[] {"都市生活","爱情婚姻","异术超能","恩怨情仇","青春校园","现实百态"}));
-        mMinorMap.put(Constant.CATEGORY_MAJOR_ZC, strings2List(new String[] {"娱乐明星","官场沉浮","商场职场"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_DS, strings2List(new String[] {"都市生活","异术超能","青春校园"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_ZC, strings2List(new String[] {"娱乐明星","商场职场"}));
         mMinorMap.put(Constant.CATEGORY_MAJOR_LS, strings2List(new String[] {"穿越历史","架空历史","历史传记"}));
-        mMinorMap.put(Constant.CATEGORY_MAJOR_JS, strings2List(new String[] {"军事战争","战争幻想","谍战特工","军旅生涯","抗战烽火"}));
-        mMinorMap.put(Constant.CATEGORY_MAJOR_YX, strings2List(new String[] {"游戏生涯","电子竞技","虚拟网游","游戏异界"}));
-        mMinorMap.put(Constant.CATEGORY_MAJOR_JJ, strings2List(new String[] {"体育竞技","篮球运动","足球运动","棋牌桌游"}));
-        mMinorMap.put(Constant.CATEGORY_MAJOR_KH, strings2List(new String[] {"星际战争","时空穿梭","未来世界","古武机甲","超级科技","进化变异","末世危机"}));
-        mMinorMap.put(Constant.CATEGORY_MAJOR_LY, strings2List(new String[] {"推理侦探","恐怖惊悚","悬疑探险","灵异奇谈"}));
-        mMinorMap.put(Constant.CATEGORY_MAJOR_TR, strings2List(new String[] {"武侠同人","影视同人","动漫同人","游戏同人","小说同人"}));
-        mMinorMap.put(Constant.CATEGORY_MAJOR_GDYQ, strings2List(new String[] {"穿越时空","古代历史","古典架空","宫闱宅斗","经商种田"}));
-        mMinorMap.put(Constant.CATEGORY_MAJOR_XDYQ, strings2List(new String[] {"豪门总裁","都市生活","婚恋情感","商战职场","异术超能"}));
-        mMinorMap.put(Constant.CATEGORY_MAJOR_CA, strings2List(new String[] {"古代纯爱","现代纯爱"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_JS, strings2List(new String[] {"军事战争","战争幻想","谍战特工","抗战烽火"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_YX, strings2List(new String[] {"电子竞技","虚拟网游","游戏异界"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_JJ, strings2List(new String[] {"体育竞技","篮球运动","足球运动"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_KH, strings2List(new String[] {"时空穿梭","未来世界","古武机甲","末世危机"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_LY, strings2List(new String[] {"推理侦探","悬疑探险"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_TR, strings2List(new String[] {"小说同人"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_GDYQ, strings2List(new String[] {"穿越时空","古典架空","宫闱宅斗","经商种田"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_XDYQ, strings2List(new String[] {"豪门总裁","都市生活","婚恋情感","异术超能"}));
         mMinorMap.put(Constant.CATEGORY_MAJOR_XHQH, strings2List(new String[] {"玄幻异世","奇幻魔法"}));
-        mMinorMap.put(Constant.CATEGORY_MAJOR_WXXX, strings2List(new String[] {"武侠","仙侠"}));
+        mMinorMap.put(Constant.CATEGORY_MAJOR_WXXX, strings2List(new String[] {"仙侠"}));
 
         mMajorList.add(strings2List(new String[] {Constant.CATEGORY_MAJOR_XH, Constant.CATEGORY_MAJOR_QH,
                 Constant.CATEGORY_MAJOR_WX, Constant.CATEGORY_MAJOR_XX, Constant.CATEGORY_MAJOR_DS, Constant.CATEGORY_MAJOR_ZC,
                 Constant.CATEGORY_MAJOR_LS, Constant.CATEGORY_MAJOR_JS, Constant.CATEGORY_MAJOR_YX, Constant.CATEGORY_MAJOR_JJ,
                 Constant.CATEGORY_MAJOR_KH, Constant.CATEGORY_MAJOR_LY, Constant.CATEGORY_MAJOR_TR, Constant.CATEGORY_MAJOR_QXS}));
         mMajorList.add(strings2List(new String[] {Constant.CATEGORY_MAJOR_GDYQ, Constant.CATEGORY_MAJOR_XDYQ,
-                Constant.CATEGORY_MAJOR_QCXY, Constant.CATEGORY_MAJOR_CA, Constant.CATEGORY_MAJOR_XHQH,
+                Constant.CATEGORY_MAJOR_QCXY, Constant.CATEGORY_MAJOR_XHQH,
                 Constant.CATEGORY_MAJOR_WXXX}));
         mMajorList.add(strings2List(new String[] {Constant.CATEGORY_MAJOR_CBXS, Constant.CATEGORY_MAJOR_ZJMZ,
                 Constant.CATEGORY_MAJOR_CGLZ, Constant.CATEGORY_MAJOR_RWSK, Constant.CATEGORY_MAJOR_JGLC, Constant.CATEGORY_MAJOR_SHSS,
@@ -499,7 +498,8 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
             mNovelAdapter.notifyDataSetChanged();
         }
         // 更新标题
-        mTitleTv.setText(mMajor);
+        String title = mMinor.equals("")? mMajor : mMinor;
+        mTitleTv.setText(title);
     }
 
     /**

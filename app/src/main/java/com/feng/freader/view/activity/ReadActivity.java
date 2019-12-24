@@ -1,7 +1,9 @@
 package com.feng.freader.view.activity;
 
 import android.content.Intent;
+import android.database.ContentObserver;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.constraint.ConstraintLayout;
 import android.util.Log;
 import android.view.View;
@@ -139,6 +141,18 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     private float mMaxTextSize = 76f;
     private float mMinRowSpace = 0f;
     private float mMaxRowSpace = 48f;
+
+    // 监听系统亮度的变化
+    private ContentObserver mBrightnessObserver = new ContentObserver(new Handler()) {
+        @Override
+        public void onChange(boolean selfChange) {
+            if (mIsSystemBrightness) {
+                // 屏幕亮度更新为新的系统亮度
+                ScreenUtil.setWindowBrightness(ReadActivity.this,
+                        (float) ScreenUtil.getSystemBrightness() / ScreenUtil.getBrightnessMax());
+            }
+        }
+    };
 
     @Override
     protected void doBeforeSetContentView() {
@@ -360,6 +374,12 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         } else {    // 日间模式
             dayMode();
         }
+
+        // 监听系统亮度的变化
+        getContentResolver().registerContentObserver(
+                Settings.System.getUriFor(Settings.System.SCREEN_BRIGHTNESS),
+                true,
+                mBrightnessObserver);
     }
 
     @Override
@@ -392,6 +412,9 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         SpUtil.saveTheme(mTheme);
         SpUtil.saveBrightness(mBrightness);
         SpUtil.saveIsNightMode(mIsNightMode);
+
+        // 解除监听
+        getContentResolver().unregisterContentObserver(mBrightnessObserver);
     }
 
     @Override
