@@ -50,7 +50,7 @@ public class ReadModel implements IReadContract.Model {
     }
 
     @Override
-    public void getChapterUrlList(String url) {
+    public void getChapterList(String url) {
         OkhttpUtil.getRequest(url, new OkhttpCall() {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
@@ -60,11 +60,13 @@ public class ReadModel implements IReadContract.Model {
                     return;
                 }
                 List<String> chapterUrlList = new ArrayList<>();
+                List<String> chapterNameList = new ArrayList<>();
                 List<CatalogBean.ListBean> list = bean.getList();
                 for (CatalogBean.ListBean item : list) {
                     chapterUrlList.add(item.getUrl());
+                    chapterNameList.add(item.getNum());
                 }
-                mPresenter.getChapterUrlListSuccess(chapterUrlList);
+                mPresenter.getChapterUrlListSuccess(chapterUrlList, chapterNameList);
             }
 
             @Override
@@ -233,6 +235,7 @@ public class ReadModel implements IReadContract.Model {
      */
     @Override
     public void getEpubChapterData(String parentPath, String filePath) {
+        Log.d(TAG, "getEpubChapterData: filePath = " + filePath);
         List<EpubData> dataList = new ArrayList<>();
         try {
            dataList = EpubUtils.getEpubData(parentPath, filePath);

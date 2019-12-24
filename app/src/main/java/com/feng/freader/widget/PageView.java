@@ -62,6 +62,8 @@ public class PageView extends View {
         void updateProgress(String progress);     // 通知主活动更新进度
         void next();    // 显示下一章节
         void pre();     // 显示上一章节
+        void nextPage();   // 下一页
+        void prePage();   // 上一页
         void showOrHideSettingBar();  // 弹出或隐藏设置栏
     }
 
@@ -437,6 +439,7 @@ public class PageView extends View {
                 return;
             }
         }
+        mListener.nextPage();
         mPageIndex++;
         invalidate();
     }
@@ -470,6 +473,7 @@ public class PageView extends View {
                 updatePrePosEpub();
             }
         }
+        mListener.prePage();
         invalidate();
     }
 
@@ -767,6 +771,15 @@ public class PageView extends View {
     public void setRowSpace(float rowSpace) {
         mRowSpace = rowSpace;
         // hashMap 缓存作废
+        mFirstPosMap.clear();
+        invalidate();
+    }
+
+    /**
+     * 根据进度跳转到指定位置（适合本地 txt 小说）
+     */
+    public void jumpWithProgress(float progress) {
+        mPosition = (int) (mContent.length() * progress);
         mFirstPosMap.clear();
         invalidate();
     }

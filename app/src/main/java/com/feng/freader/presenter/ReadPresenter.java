@@ -23,9 +23,9 @@ public class ReadPresenter extends BasePresenter<IReadContract.View>
     }
 
     @Override
-    public void getChapterUrlListSuccess(List<String> chapterUrlList) {
+    public void getChapterUrlListSuccess(List<String> chapterUrlList, List<String> chapterNameList) {
         if (isAttachView()) {
-            getMvpView().getChapterUrlListSuccess(chapterUrlList);
+            getMvpView().getChapterUrlListSuccess(chapterUrlList, chapterNameList);
         }
     }
 
@@ -93,8 +93,8 @@ public class ReadPresenter extends BasePresenter<IReadContract.View>
     }
 
     @Override
-    public void getChapterUrlList(String url) {
-        mModel.getChapterUrlList(url);
+    public void getChapterList(String url) {
+        mModel.getChapterList(url);
     }
 
     @Override
