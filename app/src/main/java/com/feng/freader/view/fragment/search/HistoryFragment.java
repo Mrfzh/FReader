@@ -1,13 +1,6 @@
 package com.feng.freader.view.fragment.search;
 
-import android.content.Context;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.feng.freader.R;
@@ -18,7 +11,6 @@ import com.feng.freader.constant.EventBusCode;
 import com.feng.freader.db.DatabaseManager;
 import com.feng.freader.entity.eventbus.Event;
 import com.feng.freader.entity.eventbus.SearchUpdateInputEvent;
-import com.feng.freader.test.FlowAdapter;
 import com.feng.freader.util.EventBusUtil;
 import com.feng.freader.widget.FlowLayout;
 import com.feng.freader.widget.TipDialog;

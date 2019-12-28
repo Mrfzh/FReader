@@ -1,91 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <View
-        android:id="@+id/v_test_top"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@android:color/holo_blue_light"
-        android:visibility="gone"/>
-
-    <Button
-        android:id="@+id/btn_test"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="弹出"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:visibility="gone"/>
-
-    <View
-        android:id="@+id/v_test_bottom"
-        android:layout_width="0dp"
-        android:layout_height="150dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@android:color/holo_blue_light"
-        android:visibility="gone"/>
-
-    <SeekBar
-        android:id="@+id/sb_test"
-        android:layout_width="250dp"
-        android:layout_height="50dp"
-        android:maxHeight="3dp"
-        android:layout_marginTop="100dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_test"
-        android:visibility="gone"/>
-
-    <Switch
-        android:id="@+id/sw_test"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/read_brightness_bar_second_height"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:track="@drawable/selector_switch_track"
-        android:thumb="@drawable/selector_switch_thumb"
-        android:visibility="gone"/>
-
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_test_screen1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/rv_test_screen"
-        android:overScrollMode="never" />
+        android:id="@+id/rv_test_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_test_screen"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:overScrollMode="never" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_test_screen2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rv_test_screen"
-        android:overScrollMode="never" />
-
-
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

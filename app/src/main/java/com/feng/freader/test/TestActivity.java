@@ -1,67 +1,28 @@
 package com.feng.freader.test;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
-
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.SeekBar;
-import android.widget.Switch;
 
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
-import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
-import com.bumptech.glide.request.RequestOptions;
 import com.feng.freader.R;
-import com.feng.freader.adapter.ScreenAdapter;
 import com.feng.freader.base.BaseActivity;
+import com.feng.freader.base.BasePagingLoadAdapter;
 import com.feng.freader.base.BasePresenter;
-import com.feng.freader.constant.Constant;
-import com.feng.freader.entity.bean.CatalogBean;
-import com.feng.freader.http.OkhttpCall;
-import com.feng.freader.http.OkhttpUtil;
-import com.feng.freader.util.BlurUtil;
-import com.feng.freader.view.activity.MainActivity;
-import com.google.gson.Gson;
+import com.feng.freader.widget.LoadMoreScrollListener;
 
-import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TestActivity extends BaseActivity {
 
     private static final String TAG = "TestActivity";
 
-    private Button mTestBtn;
-    private View mTopView;
-    private View mBottomView;
-    private SeekBar mSeekBar;
-    private Switch mSwitch;
+    private RecyclerView mListRv;
+    private List<String> mContentList = new ArrayList<>();
 
-    private RecyclerView mScreenRv;
-    private ScreenAdapter mScreenAdapter;
-    private RecyclerView mScreenRv1;
-    private ScreenAdapter mScreenAdapter1;
-    private RecyclerView mScreenRv2;
-    private ScreenAdapter mScreenAdapter2;
-
-    private boolean mIsHide = true;
+    private TestAdapter mAdapter;
 
     @Override
     protected void doBeforeSetContentView() {
@@ -81,111 +42,53 @@ public class TestActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-
+        for (int i = 0; i < 20; i++) {
+            mContentList.add("content " + i);
+        }
     }
 
     @Override
     protected void initView() {
-        mTopView = findViewById(R.id.v_test_top);
-        mBottomView = findViewById(R.id.v_test_bottom);
-        mSeekBar = findViewById(R.id.sb_test);
-        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        mListRv = findViewById(R.id.rv_test_list);
+        mListRv.setLayoutManager(new LinearLayoutManager(this));
+        mListRv.addOnScrollListener(new LoadMoreScrollListener(new LoadMoreScrollListener.LoadMore() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                // 拖动进度条时回调，得到当前进度
-                Log.d(TAG, "onProgressChanged: progress = " + progress);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
-        mTestBtn = findViewById(R.id.btn_test);
-        mTestBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mSeekBar.setProgress(30);
-            }
-        });
-
-        mSwitch = findViewById(R.id.sw_test);
-        mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    showShortToast("打开开关");
-                } else {
-                    showShortToast("关闭开关");
+            public void loadMore() {
+                Log.d(TAG, "loadMore: run");
+                if (mAdapter != null) {
+                    // 加载更多
+                    mAdapter.loadingMore();
                 }
             }
+        }));
+        mAdapter = new TestAdapter(this, mContentList, new BasePagingLoadAdapter.LoadMoreListener() {
+            @Override
+            public void loadMore() {
+                update();
+            }
         });
+        mListRv.setAdapter(mAdapter);
+    }
 
+    private void update() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 20; i++) {
+                    mContentList.add("content " + i);
+                }
+                // 更新列表
+                mAdapter.updateList();
+                mAdapter.setErrorStatus();
+                mAdapter.setLastedStatus();
+            }
+        }, 1000);
     }
 
     @Override
     protected void doAfterInit() {
     }
 
-    private void anim() {
-        if (mIsHide) {
-            Animation topAnim = AnimationUtils.loadAnimation(
-                    TestActivity.this, R.anim.read_setting_top_enter);
-            Animation bottomAnim = AnimationUtils.loadAnimation(
-                    TestActivity.this, R.anim.read_setting_bottom_enter);
-            mTopView.startAnimation(topAnim);
-            mBottomView.setAnimation(bottomAnim);
-            mTopView.setVisibility(View.VISIBLE);
-            mBottomView.setVisibility(View.VISIBLE);
-            mIsHide = false;
-        } else {
-            Animation topExitAnim = AnimationUtils.loadAnimation(
-                    TestActivity.this, R.anim.read_setting_top_exit);
-            topExitAnim.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    mTopView.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-            Animation bottomExitAnim = AnimationUtils.loadAnimation(
-                    TestActivity.this, R.anim.read_setting_bottom_exit);
-            bottomExitAnim.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    mBottomView.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-            mTopView.startAnimation(topExitAnim);
-            mBottomView.setAnimation(bottomExitAnim);
-            mIsHide = true;
-        }
-    }
 
     @Override
     protected boolean isRegisterEventBus() {

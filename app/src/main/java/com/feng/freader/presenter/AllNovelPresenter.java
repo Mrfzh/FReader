@@ -22,9 +22,9 @@ public class AllNovelPresenter extends BasePresenter<IAllNovelContract.View>
     }
 
     @Override
-    public void getNovelsSuccess(List<ANNovelData> dataList) {
+    public void getNovelsSuccess(List<ANNovelData> dataList, boolean isEnd) {
         if (isAttachView()) {
-            getMvpView().getNovelsSuccess(dataList);
+            getMvpView().getNovelsSuccess(dataList, isEnd);
         }
     }
 

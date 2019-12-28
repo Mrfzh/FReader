@@ -1,5 +1,6 @@
 package com.feng.freader.model;
 
+import com.feng.freader.constant.Constant;
 import com.feng.freader.constract.IAllNovelContract;
 import com.feng.freader.entity.bean.CategoryNovelsBean;
 import com.feng.freader.entity.data.ANNovelData;
@@ -38,6 +39,10 @@ public class AllNovelModel implements IAllNovelContract.Model {
             @Override
             public void onResponse(String json) {   // 得到 json 数据
                 CategoryNovelsBean bean = mGson.fromJson(json, CategoryNovelsBean.class);
+                boolean isToEnd = false;
+                if (bean.getTotal() <= requestCNData.getStart() + Constant.NOVEL_PAGE_NUM - 1) {
+                    isToEnd = true;
+                }
                 List<ANNovelData> dataList = new ArrayList<>();
                 List<CategoryNovelsBean.BooksBean> books = bean.getBooks();
                 for (int i = 0; i < Math.min(books.size(), requestCNData.getNum()); i++) {
@@ -45,7 +50,7 @@ public class AllNovelModel implements IAllNovelContract.Model {
                             books.get(i).getShortIntro(),
                             "http://statics.zhuishushenqi.com" + books.get(i).getCover()));
                 }
-                mPresenter.getNovelsSuccess(dataList);
+                mPresenter.getNovelsSuccess(dataList, isToEnd);
             }
 
             @Override

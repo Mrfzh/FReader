@@ -18,6 +18,7 @@ import com.feng.freader.R;
 import com.feng.freader.adapter.NovelAdapter;
 import com.feng.freader.adapter.ScreenAdapter;
 import com.feng.freader.base.BaseActivity;
+import com.feng.freader.base.BasePagingLoadAdapter;
 import com.feng.freader.base.BasePresenter;
 import com.feng.freader.constant.Constant;
 import com.feng.freader.constract.IAllNovelContract;
@@ -25,6 +26,7 @@ import com.feng.freader.entity.data.ANNovelData;
 import com.feng.freader.entity.data.RequestCNData;
 import com.feng.freader.presenter.AllNovelPresenter;
 import com.feng.freader.util.StatusBarUtil;
+import com.feng.freader.widget.LoadMoreScrollListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,8 +83,13 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
     private List<Boolean> mTypeSelectedList = new ArrayList<>();
     private NovelAdapter mNovelAdapter;
     private List<ANNovelData> mDataList;
-
+    
     private boolean mIsSearching = false;
+    
+    // 分页加载相关
+    private int mCurrStart = 0;         // 开始请求
+    private boolean mIsToEnd = false;   // 是否已经到底底部
+    private boolean mIsLoadingMore = false; // 是否正在加载更多
 
     @Override
     protected void doBeforeSetContentView() {
@@ -154,9 +161,6 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
         List<String> list = new ArrayList<>();
         for (String s : strings) {
             list.add(s);
-        }
-        if (list.size() == 0) {
-            Log.d(TAG, "strings2List: run");
         }
         return list;
     }
@@ -358,6 +362,15 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
         mScreenIv.setOnClickListener(this);
         mNovelListRv = findViewById(R.id.rv_all_novel_novel_list);
         mNovelListRv.setLayoutManager(new LinearLayoutManager(this));
+        mNovelListRv.addOnScrollListener(new LoadMoreScrollListener(new LoadMoreScrollListener.LoadMore() {
+            @Override
+            public void loadMore() {
+                if (mNovelAdapter != null && !mIsToEnd) {
+                    // 加载更多
+                    mNovelAdapter.loadingMore();
+                }
+            }
+        }));
         mProgressBar = findViewById(R.id.pb_all_novel);
 
         mFrontBgV = findViewById(R.id.v_all_novel_front_bg);
@@ -400,16 +413,26 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
     protected void doAfterInit() {
         StatusBarUtil.setDarkColorStatusBar(this);
         getWindow().setStatusBarColor(getResources().getColor(R.color.all_novel_top_bar_bg));
+        // 请求小说信息
+        requestNovels();
+    }
 
+    /**
+     * 请求小说信息
+     */
+    private void requestNovels() {
         RequestCNData requestCNData = new RequestCNData();
         requestCNData.setGender(mGenderList.get(mGender));
         requestCNData.setMajor(mMajor);
         requestCNData.setMinor(mMinor);
         requestCNData.setType(mTypeList.get(mType));
-        requestCNData.setStart(0);
-        requestCNData.setNum(10);
+        requestCNData.setStart(mCurrStart);
+        requestCNData.setNum(Constant.NOVEL_PAGE_NUM);
+        mIsSearching = true;
+        if (!mIsLoadingMore) {
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
         mPresenter.getNovels(requestCNData);
-        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -452,17 +475,9 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
                 mMajor = mTempMajor;
                 mMinor = mTempMinor;
                 mType = mTempType;
+                mCurrStart = 0;
                 // 查找小说信息
-                mProgressBar.setVisibility(View.VISIBLE);
-                RequestCNData requestCNData = new RequestCNData();
-                requestCNData.setGender(mGenderList.get(mGender));
-                requestCNData.setMajor(mMajor);
-                requestCNData.setMinor(mMinor);
-                requestCNData.setType(mTypeList.get(mType));
-                requestCNData.setStart(0);
-                requestCNData.setNum(10);
-                mIsSearching = true;
-                mPresenter.getNovels(requestCNData);
+                requestNovels();
                 break;
             default:
                 break;
@@ -473,30 +488,51 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
      * 获取小说信息成功
      */
     @Override
-    public void getNovelsSuccess(List<ANNovelData> dataList) {
+    public void getNovelsSuccess(List<ANNovelData> dataList, boolean isEnd) {
         mProgressBar.setVisibility(View.GONE);
         mIsSearching = false;
+        mIsToEnd = isEnd;
         // 更新列表数据
-        if (mNovelAdapter == null) {
-            mDataList = dataList;
-            mNovelAdapter = new NovelAdapter(this, mDataList, new NovelAdapter.NovelListener() {
-                @Override
-                public void clickItem(String novelName) {
-                    if (mIsSearching) {
-                        return;
-                    }
-                    Intent intent = new Intent(AllNovelActivity.this, SearchActivity.class);
-                    // 传递小说名，进入搜查页后直接显示该小说的搜查结果
-                    intent.putExtra(SearchActivity.KEY_NOVEL_NAME, novelName);
-                    startActivity(intent);
-                }
-            });
-            mNovelListRv.setAdapter(mNovelAdapter);
-        } else {
-            mDataList.clear();
+        if (mIsLoadingMore) {   // 加载更多
             mDataList.addAll(dataList);
-            mNovelAdapter.notifyDataSetChanged();
+            if (isEnd) {
+                mNovelAdapter.setLastedStatus();
+            }
+            mNovelAdapter.updateList();
+            mIsLoadingMore = false;
+        } else {    // 第一次加载
+            if (mNovelAdapter == null) {
+                mDataList = dataList;
+                mNovelAdapter = new NovelAdapter(this, mDataList,
+                        new BasePagingLoadAdapter.LoadMoreListener() {
+                            @Override
+                            public void loadMore() {
+                                // 加载下一页
+                                mCurrStart += Constant.NOVEL_PAGE_NUM;
+                                mIsLoadingMore = true;
+                                requestNovels();
+                            }
+                        },
+                        new NovelAdapter.NovelListener() {
+                            @Override
+                            public void clickItem(String novelName) {
+                                if (mIsSearching) {
+                                    return;
+                                }
+                                Intent intent = new Intent(AllNovelActivity.this, SearchActivity.class);
+                                // 传递小说名，进入搜查页后直接显示该小说的搜查结果
+                                intent.putExtra(SearchActivity.KEY_NOVEL_NAME, novelName);
+                                startActivity(intent);
+                            }
+                        });
+                mNovelListRv.setAdapter(mNovelAdapter);
+            } else {
+                mDataList.clear();
+                mDataList.addAll(dataList);
+                mNovelAdapter.notifyDataSetChanged();
+            }
         }
+
         // 更新标题
         String title = mMinor.equals("")? mMajor : mMinor;
         mTitleTv.setText(title);
@@ -511,6 +547,10 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
         mIsSearching = false;
         showShortToast("加载数据失败");
         Log.d(TAG, "getNovelsError: " + errorMsg);
+        if (mIsLoadingMore) {
+            mNovelAdapter.setErrorStatus();
+            mIsLoadingMore = false;
+        }
     }
 
 }

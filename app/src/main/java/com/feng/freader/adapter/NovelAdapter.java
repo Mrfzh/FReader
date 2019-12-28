@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.feng.freader.R;
+import com.feng.freader.base.BasePagingLoadAdapter;
+import com.feng.freader.constant.Constant;
 import com.feng.freader.entity.data.ANNovelData;
 
 import java.util.List;
@@ -20,50 +22,48 @@ import java.util.List;
  * @author Feng Zhaohao
  * Created on 2019/12/21
  */
-public class NovelAdapter extends RecyclerView.Adapter<NovelAdapter.NovelViewHolder>{
+public class NovelAdapter extends BasePagingLoadAdapter<ANNovelData> {
 
-    private Context mContext;
-    private List<ANNovelData> mDataList;
     private NovelListener mListener;
+
+    public NovelAdapter(Context mContext, List<ANNovelData> mList,
+                        LoadMoreListener loadMoreListener, NovelListener novelListener) {
+        super(mContext, mList, loadMoreListener);
+        mListener = novelListener;
+    }
 
     public interface NovelListener {
         void clickItem(String novelName);
     }
 
-    public NovelAdapter(Context mContext, List<ANNovelData> mDataList, NovelListener mListener) {
-        this.mContext = mContext;
-        this.mDataList = mDataList;
-        this.mListener = mListener;
+    @Override
+    protected int getPageCount() {
+        return Constant.NOVEL_PAGE_NUM;
     }
 
-    @NonNull
     @Override
-    public NovelViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    protected RecyclerView.ViewHolder setItemViewHolder(ViewGroup parent, int viewType) {
         return new NovelViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_novel, null));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull NovelViewHolder novelViewHolder, final int i) {
-        novelViewHolder.title.setText(mDataList.get(i).getTitle());
-        novelViewHolder.author.setText(mDataList.get(i).getAuthor());
-        novelViewHolder.shortInfo.setText(mDataList.get(i).getShortInfo());
+    protected void onBindItemViewHolder(RecyclerView.ViewHolder holder, final int position) {
+        NovelViewHolder novelViewHolder = (NovelViewHolder) holder;
+        novelViewHolder.title.setText(mList.get(position).getTitle());
+        novelViewHolder.author.setText(mList.get(position).getAuthor());
+        novelViewHolder.shortInfo.setText(mList.get(position).getShortInfo());
         Glide.with(mContext)
-                .load(mDataList.get(i).getCover())
+                .load(mList.get(position).getCover())
                 .apply(new RequestOptions()
-                    .placeholder(R.drawable.cover_place_holder)
-                    .error(R.drawable.cover_error))
+                        .placeholder(R.drawable.cover_place_holder)
+                        .error(R.drawable.cover_error))
                 .into(novelViewHolder.cover);
         novelViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.clickItem(mDataList.get(i).getTitle());
+                mListener.clickItem(mList.get(position).getTitle());
             }
         });
-    }
-
-    @Override
-    public int getItemCount() {
-        return mDataList.size();
     }
 
     class NovelViewHolder extends RecyclerView.ViewHolder {

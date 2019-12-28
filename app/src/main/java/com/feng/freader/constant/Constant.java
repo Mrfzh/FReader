@@ -126,4 +126,7 @@ public class Constant {
     public static final String CATEGORY_MAJOR_QCYQ = "青春言情";
     public static final String CATEGORY_MAJOR_WWYB = "外文原版";
     public static final String CATEGORY_MAJOR_ZZJS = "政治军事";
+
+    /* 全部小说 */
+    public static final int NOVEL_PAGE_NUM = 10;    // 每页的小说数
 }

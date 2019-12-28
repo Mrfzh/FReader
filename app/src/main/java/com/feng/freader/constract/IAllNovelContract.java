@@ -11,11 +11,11 @@ import java.util.List;
  */
 public interface IAllNovelContract {
     interface View {
-        void getNovelsSuccess(List<ANNovelData> dataList);
+        void getNovelsSuccess(List<ANNovelData> dataList, boolean isEnd);
         void getNovelsError(String errorMsg);
     }
     interface Presenter {
-        void getNovelsSuccess(List<ANNovelData> dataList);
+        void getNovelsSuccess(List<ANNovelData> dataList, boolean isEnd);
         void getNovelsError(String errorMsg);
 
         void getNovels(RequestCNData requestCNData);    // 获取小说信息

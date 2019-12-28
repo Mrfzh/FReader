@@ -164,4 +164,7 @@
     <color name="more_text_light">#C0C0C0</color>
     <color name="more_separator">#F7F9FA</color>
     <color name="more_function_pressed">#eaeaea</color>
+
+    <color name="color_item_bottom_text">#555555</color>
+    <color name="color_item_bottom_bg">#cccccc</color>
 </resources>

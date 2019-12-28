@@ -655,7 +655,6 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d(TAG, "run: mChapterIndex = " + mChapterIndex);
                         mPresenter.getDetailedChapterData(UrlObtainer.getDetailedChapter(
                                 mChapterUrlList.get(mChapterIndex)));
                     }
