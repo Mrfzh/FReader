@@ -78,4 +78,51 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/rv_bookshelf_multi_delete_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bookshelf_top_bar_height"
+        android:layout_marginTop="@dimen/bookshelf_top_bar_margin_top"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/bookshelf_multi_delete_bar_bg"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_bookshelf_multi_delete_select_all"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/bookshelf_multi_delete_select_all"
+            android:textColor="@color/bookshelf_multi_delete_bar_text"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_marginStart="25dp" />
+
+        <TextView
+            android:id="@+id/tv_bookshelf_multi_delete_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/bookshelf_multi_delete_delete"
+            android:textColor="@color/bookshelf_multi_delete_bar_text"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="25dp" />
+
+        <TextView
+            android:id="@+id/tv_bookshelf_multi_delete_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/bookshelf_multi_delete_cancel"
+            android:textColor="@color/bookshelf_multi_delete_bar_text"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_toStartOf="@id/tv_bookshelf_multi_delete_delete"
+            android:layout_marginEnd="15dp"/>
+
+    </RelativeLayout>
+
 </android.support.constraint.ConstraintLayout>

@@ -51,7 +51,7 @@
     <dimen name="item_catalog_height">50dp</dimen>
 
     <!-- item_bookshelf_novel -->
-    <dimen name="item_bookshelf_novel_height">140dp</dimen>
+    <dimen name="item_bookshelf_novel_height">180dp</dimen>
 
     <!-- bookshelf -->
     <dimen name="bookshelf_top_bar_height">50dp</dimen>

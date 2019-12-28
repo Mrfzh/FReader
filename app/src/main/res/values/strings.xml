@@ -54,6 +54,9 @@
 
     <!-- bookshelf -->
     <string name="bookshelf_add">本机导入</string>
+    <string name="bookshelf_multi_delete_select_all">全选</string>
+    <string name="bookshelf_multi_delete_cancel">取消</string>
+    <string name="bookshelf_multi_delete_delete">删除</string>
 
     <!-- read -->
     <string name="read_novel_title">章节名</string>

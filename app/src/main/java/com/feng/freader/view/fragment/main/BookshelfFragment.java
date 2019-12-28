@@ -28,6 +28,7 @@ import com.feng.freader.util.FileUtil;
 import com.feng.freader.util.RecyclerViewUtil;
 import com.feng.freader.util.StatusBarUtil;
 import com.feng.freader.view.activity.ReadActivity;
+import com.feng.freader.widget.TipDialog;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -50,8 +51,15 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
     private ImageView mLocalAddIv;
     private RelativeLayout mLoadingRv;
 
+    private RelativeLayout mMultiDeleteRv;
+    private TextView mSelectAllTv;
+    private TextView mCancelTv;
+    private TextView mDeleteTv;
+
     private List<BookshelfNovelDbData> mDataList = new ArrayList<>();
+    private List<Boolean> mCheckedList = new ArrayList<>();
     private BookshelfNovelsAdapter mBookshelfNovelsAdapter;
+    private boolean mIsDeleting = false;
 
     private DatabaseManager mDbManager;
 
@@ -88,6 +96,14 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
         mLocalAddIv.setOnClickListener(this);
 
         mLoadingRv = getActivity().findViewById(R.id.rv_bookshelf_loading);
+
+        mMultiDeleteRv = getActivity().findViewById(R.id.rv_bookshelf_multi_delete_bar);
+        mSelectAllTv = getActivity().findViewById(R.id.tv_bookshelf_multi_delete_select_all);
+        mSelectAllTv.setOnClickListener(this);
+        mCancelTv = getActivity().findViewById(R.id.tv_bookshelf_multi_delete_cancel);
+        mCancelTv.setOnClickListener(this);
+        mDeleteTv = getActivity().findViewById(R.id.tv_bookshelf_multi_delete_delete);
+        mDeleteTv.setOnClickListener(this);
     }
 
     @Override
@@ -117,9 +133,87 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 startActivityForResult(intent, 1);
                 break;
+            case R.id.tv_bookshelf_multi_delete_select_all:
+                // 全选
+                for (int i = 0; i < mCheckedList.size(); i++) {
+                    mCheckedList.set(i, true);
+                }
+                mBookshelfNovelsAdapter.notifyDataSetChanged();
+                break;
+            case R.id.tv_bookshelf_multi_delete_cancel:
+                // 取消多选删除
+                cancelMultiDelete();
+                break;
+            case R.id.tv_bookshelf_multi_delete_delete:
+                // 删除操作
+                if (!deleteCheck()) {
+                    break;
+                }
+                new TipDialog.Builder(getActivity())
+                        .setContent("确定要删除这些小说吗？")
+                        .setCancel("不了")
+                        .setEnsure("确定")
+                        .setOnClickListener(new TipDialog.OnClickListener() {
+                            @Override
+                            public void clickEnsure() {
+                                multiDelete();
+                            }
+
+                            @Override
+                            public void clickCancel() {
+
+                            }
+                        })
+                        .build()
+                        .show();
+                break;
             default:
                 break;
         }
+    }
+
+    /**
+     * 取消多选删除
+     */
+    private void cancelMultiDelete() {
+        for (int i = 0; i < mCheckedList.size(); i++) {
+            mCheckedList.set(i, false);
+        }
+        mBookshelfNovelsAdapter.setIsMultiDelete(false);
+        mBookshelfNovelsAdapter.notifyDataSetChanged();
+        mMultiDeleteRv.setVisibility(View.GONE);
+    }
+
+    /**
+     * 多选删除
+     */
+    private void multiDelete() {
+        mIsDeleting = true;
+        for (int i = mDataList.size()-1; i >= 0; i--) {
+            if (mCheckedList.get(i)) {
+                // 从数据库中删除该小说
+                mDbManager.deleteBookshelfNovel(mDataList.get(i).getNovelUrl());
+                mDataList.remove(i);
+            }
+        }
+        mCheckedList.clear();
+        for (int i = 0; i < mDataList.size(); i++) {
+            mCheckedList.add(false);
+        }
+        mBookshelfNovelsAdapter.setIsMultiDelete(false);
+        mBookshelfNovelsAdapter.notifyDataSetChanged();
+        mMultiDeleteRv.setVisibility(View.GONE);
+        mIsDeleting = false;
+    }
+
+    private boolean deleteCheck() {
+        for (int i = 0; i < mCheckedList.size(); i++) {
+            if (mCheckedList.get(i)) {
+                return true;
+            }
+        }
+        showShortToast("请先选定要删除的小说");
+        return false;
     }
 
     @Override
@@ -173,36 +267,57 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
     public void queryAllBookSuccess(List<BookshelfNovelDbData> dataList) {
         if (mBookshelfNovelsAdapter == null) {
             mDataList = dataList;
+            mCheckedList.clear();
+            for (int i = 0; i < mDataList.size(); i++) {
+                mCheckedList.add(false);
+            }
             initAdapter();
             mBookshelfNovelsRv.setAdapter(mBookshelfNovelsAdapter);
         } else {
             mDataList.clear();
             mDataList.addAll(dataList);
+            mCheckedList.clear();
+            for (int i = 0; i < mDataList.size(); i++) {
+                mCheckedList.add(false);
+            }
             mBookshelfNovelsAdapter.notifyDataSetChanged();
         }
     }
 
     private void initAdapter() {
-        mBookshelfNovelsAdapter = new BookshelfNovelsAdapter(getActivity(), mDataList);
-        mBookshelfNovelsAdapter.setBookshelfNovelListener(new BookshelfNovelsAdapter.BookshelfNovelListener() {
-            @Override
-            public void clickItem(int position) {
-                Intent intent = new Intent(getActivity(), ReadActivity.class);
-                // 小说 url
-                intent.putExtra(ReadActivity.KEY_NOVEL_URL, mDataList.get(position).getNovelUrl());
-                // 小说名
-                intent.putExtra(ReadActivity.KEY_NAME, mDataList.get(position).getName());
-                // 小说封面 url
-                intent.putExtra(ReadActivity.KEY_COVER, mDataList.get(position).getCover());
-                // 小说类型
-                intent.putExtra(ReadActivity.KEY_TYPE, mDataList.get(position).getType());
-                // 开始阅读的位置
-                intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, mDataList.get(position).getChapterIndex());
-                intent.putExtra(ReadActivity.KEY_POSITION, mDataList.get(position).getPosition());
-                intent.putExtra(ReadActivity.KEY_SECOND_POSITION, mDataList.get(position).getSecondPosition());
-                startActivity(intent);
-            }
-        });
+        mBookshelfNovelsAdapter = new BookshelfNovelsAdapter(getActivity(), mDataList, mCheckedList,
+                new BookshelfNovelsAdapter.BookshelfNovelListener() {
+                    @Override
+                    public void clickItem(int position) {
+                        if (mIsDeleting) {
+                            return;
+                        }
+                        Intent intent = new Intent(getActivity(), ReadActivity.class);
+                        // 小说 url
+                        intent.putExtra(ReadActivity.KEY_NOVEL_URL, mDataList.get(position).getNovelUrl());
+                        // 小说名
+                        intent.putExtra(ReadActivity.KEY_NAME, mDataList.get(position).getName());
+                        // 小说封面 url
+                        intent.putExtra(ReadActivity.KEY_COVER, mDataList.get(position).getCover());
+                        // 小说类型
+                        intent.putExtra(ReadActivity.KEY_TYPE, mDataList.get(position).getType());
+                        // 开始阅读的位置
+                        intent.putExtra(ReadActivity.KEY_CHAPTER_INDEX, mDataList.get(position).getChapterIndex());
+                        intent.putExtra(ReadActivity.KEY_POSITION, mDataList.get(position).getPosition());
+                        intent.putExtra(ReadActivity.KEY_SECOND_POSITION, mDataList.get(position).getSecondPosition());
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void longClick(int position) {
+                        if (mIsDeleting) {
+                            return;
+                        }
+                        mBookshelfNovelsAdapter.setIsMultiDelete(true);
+                        mBookshelfNovelsAdapter.notifyDataSetChanged();
+                        mMultiDeleteRv.setVisibility(View.VISIBLE);
+                    }
+                });
     }
 
     /**

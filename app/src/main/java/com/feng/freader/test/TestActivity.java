@@ -4,7 +4,9 @@ import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 
 import com.feng.freader.R;
 import com.feng.freader.base.BaseActivity;
@@ -21,8 +23,8 @@ public class TestActivity extends BaseActivity {
 
     private RecyclerView mListRv;
     private List<String> mContentList = new ArrayList<>();
+    private List<Boolean> mCheckedList = new ArrayList<>();
 
-    private TestAdapter mAdapter;
 
     @Override
     protected void doBeforeSetContentView() {
@@ -42,8 +44,9 @@ public class TestActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 100; i++) {
             mContentList.add("content " + i);
+            mCheckedList.add(false);
         }
     }
 
@@ -51,38 +54,15 @@ public class TestActivity extends BaseActivity {
     protected void initView() {
         mListRv = findViewById(R.id.rv_test_list);
         mListRv.setLayoutManager(new LinearLayoutManager(this));
-        mListRv.addOnScrollListener(new LoadMoreScrollListener(new LoadMoreScrollListener.LoadMore() {
+        mListRv.setAdapter(new TestAdapter(this, mContentList, mCheckedList));
+
+        Button button = findViewById(R.id.btn_test);
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void loadMore() {
-                Log.d(TAG, "loadMore: run");
-                if (mAdapter != null) {
-                    // 加载更多
-                    mAdapter.loadingMore();
-                }
-            }
-        }));
-        mAdapter = new TestAdapter(this, mContentList, new BasePagingLoadAdapter.LoadMoreListener() {
-            @Override
-            public void loadMore() {
-                update();
+            public void onClick(View v) {
+//                Log.d(TAG, "onClick: mCheckedList = " + mCheckedList);
             }
         });
-        mListRv.setAdapter(mAdapter);
-    }
-
-    private void update() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i < 20; i++) {
-                    mContentList.add("content " + i);
-                }
-                // 更新列表
-                mAdapter.updateList();
-                mAdapter.setErrorStatus();
-                mAdapter.setLastedStatus();
-            }
-        }, 1000);
     }
 
     @Override
