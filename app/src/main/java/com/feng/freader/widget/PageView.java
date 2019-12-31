@@ -28,35 +28,42 @@ import java.util.List;
 public class PageView extends View {
 
     private static final String TAG = "PageView";
-    private static final int TYPE_TXT = 0;  // 网络小说也属于 txt
-    private static final int TYPE_EPUB = 1;
+    protected static final int TYPE_TXT = 0;  // 网络小说也属于 txt
+    protected static final int TYPE_EPUB = 1;
+
+    public static final boolean IS_TEST = false;    // 是否进行单独测试
 
     private Paint mPaint;
-    private float mTextSize;      // 字体大小
-    private float mRowSpace;     // 行距
+    protected float mTextSize;      // 字体大小
+    protected float mRowSpace;     // 行距
 
-    private PageViewListener mListener;
+    protected PageViewListener mListener;
     private boolean mIsShowContent = true;  // 是否显示文本内容
-    // 0 为绘制普通文本（网络小说和本地 txt），1 为绘制 epub 文本（本地 epub）
-    private int mType;
+    // TYPE_TXT 为绘制普通文本（网络小说和本地 txt），TYPE_EPUB 为绘制 epub 文本（本地 epub）
+    protected int mType;
+    // 翻页模式，NORMAL 为普通翻页，REAL 为仿真翻页
+    protected TURN_TYPE mTurnType = TURN_TYPE.NORMAL;
+    public enum TURN_TYPE {
+        NORMAL, REAL
+    }
 
     /* 纯文本绘制用 */
     private String mContent = "";    // 文本内容
-    private int mPosition = 0;  // 当前页第一个字的索引
-    private int mNextPosition;  // 下一页第一个字的索引
+    protected int mPosition = 0;  // 当前页第一个字的索引
+    protected int mNextPosition;  // 下一页第一个字的索引
+    protected int mThirdPosition; // 下下一页第一个字的索引
 
     /* epub 绘制用 */
     private List<EpubData> mEpubDataList = new ArrayList<>();   // epub 内容
-    private int mFirstPos;      // 第一位置索引，指向某个 EpubData
-    private int mSecondPos;     // 第二位置索引，指向 EpubData 内部字符串
-    private int mNextFirstPos;
-    private int mNextSecondPos;
-
+    protected int mFirstPos;      // 第一位置索引，指向某个 EpubData
+    protected int mSecondPos;     // 第二位置索引，指向 EpubData 内部字符串
+    protected int mNextFirstPos;
+    protected int mNextSecondPos;
 
     // 当前页的索引（第几页，并不一定从 0 开始，只是作为 hashMap 的 key 而存在）
     private int mPageIndex = 0;
-    private HashMap<Integer, Integer> mFirstPosMap = new HashMap<>();
-    private HashMap<Integer, Integer> mSecondPosMap = new HashMap<>();
+    protected HashMap<Integer, Integer> mFirstPosMap = new HashMap<>();
+    protected HashMap<Integer, Integer> mSecondPosMap = new HashMap<>();
 
     public interface PageViewListener {
         void updateProgress(String progress);     // 通知主活动更新进度
@@ -105,8 +112,10 @@ public class PageView extends View {
         mPageIndex = 0;
         mFirstPosMap.clear();
         mType = TYPE_TXT;
-        // 进行视图重绘
-        invalidate();
+
+        if (IS_TEST) {
+            invalidate();
+        }
     }
 
     /**
@@ -121,21 +130,16 @@ public class PageView extends View {
         mFirstPosMap.clear();
         mSecondPosMap.clear();
         mType = TYPE_EPUB;
-        // 进行视图重绘
-        invalidate();
+
+        if (IS_TEST) {
+            invalidate();
+        }
     }
 
     @Override
-    public void draw(Canvas canvas) {
-        super.draw(canvas);
+    protected void onDraw(Canvas canvas) {
 
-        if (!mIsShowContent) {
-            return;
-        }
-        if (mType == TYPE_TXT && mContent.length() == 0) {
-            return;
-        }
-        if (mType == TYPE_EPUB && mEpubDataList.isEmpty()) {
+        if (!checkBeforeDraw()) {
             return;
         }
 
@@ -146,6 +150,30 @@ public class PageView extends View {
         }
 
         // 计算当前进度
+        calCurrProgress();
+    }
+
+    /**
+     * 绘制前检查
+     */
+    protected boolean checkBeforeDraw() {
+        if (!mIsShowContent) {
+            return false;
+        }
+        if (mType == TYPE_TXT && mContent.length() == 0) {
+            return false;
+        }
+        if (mType == TYPE_EPUB && mEpubDataList.isEmpty()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * 计算当前进度
+     */
+    protected void calCurrProgress() {
         float f = 0;
         if (mType == TYPE_TXT) {
             f = (float) mNextPosition / (float) mContent.length();
@@ -167,13 +195,13 @@ public class PageView extends View {
         }
     }
 
-    private void drawText(Canvas canvas) {
+    protected void drawText(Canvas canvas) {
         mPaint.setTextSize(mTextSize);
         drawText(canvas, mTextSize + getPaddingTop());
         mFirstPosMap.put(mPageIndex, mPosition);
     }
 
-    private void drawText(Canvas canvas, float currY) {
+    protected void drawText(Canvas canvas, float currY) {
         int posRecord = 0;  // 记录当前页的头索引
         String content = ""; // 绘制的内容
         if (mType == TYPE_TXT) {
@@ -183,7 +211,33 @@ public class PageView extends View {
             posRecord = mSecondPos;
             content = mEpubDataList.get(mFirstPos).getData();
         }
+        posRecord = drawTextImpl(canvas, currY, content, posRecord);
 
+        // 更新相关变量
+        if (mType == TYPE_TXT) {
+            mNextPosition = posRecord;
+        } else if (mType == TYPE_EPUB) {
+            if (posRecord == content.length()) {
+                mNextFirstPos = mFirstPos + 1;
+                mNextSecondPos = 0;
+            } else {
+                mNextFirstPos = mFirstPos;
+                mNextSecondPos = posRecord;
+            }
+        }
+    }
+
+    /**
+     * 真正进行文本绘制
+     *
+     * @param canvas 进行绘制的画布
+     * @param currY 当前 Y 坐标
+     * @param content 要绘制的文本内容
+     * @param firstPos 要绘制的第一个字符的位置
+     * @return
+     */
+    private int drawTextImpl(Canvas canvas, float currY, String content, int firstPos) {
+        int posRecord = firstPos;
         float width = getWidth();
         float height = getHeight();
         int paddingBottom = getPaddingBottom();
@@ -202,15 +256,8 @@ public class PageView extends View {
             for (int i = posRecord; i < content.length(); i++) {
                 String currS = content.substring(i, i+1);
                 if (currS.equals("\n")) {    // 换行
-                    Log.d(TAG, "drawText: 换行");
                     num++;
                     break;
-                }
-                if (currS.equals("\t")) {
-                    Log.d(TAG, "drawText: \\t");
-                }
-                if (currS.equals("\r")) {
-                    Log.d(TAG, "drawText: \\r");
                 }
                 float textWidth = getTextWidth(mPaint, currS);
                 if (textWidths + textWidth >= width - paddingStart - paddingEnd) {  // 达到最大字数
@@ -240,21 +287,10 @@ public class PageView extends View {
             currY += mTextSize + mRowSpace;
         }
 
-        // 更新相关变量
-        if (mType == TYPE_TXT) {
-            mNextPosition = posRecord;
-        } else if (mType == TYPE_EPUB) {
-            if (posRecord == content.length()) {
-                mNextFirstPos = mFirstPos + 1;
-                mNextSecondPos = 0;
-            } else {
-                mNextFirstPos = mFirstPos;
-                mNextSecondPos = posRecord;
-            }
-        }
+        return posRecord;
     }
 
-    private void drawEpub(Canvas canvas) {
+    protected void drawEpub(Canvas canvas) {
         float width = getWidth();
         float height = getHeight();
         int paddingTop = getPaddingTop();
@@ -424,35 +460,40 @@ public class PageView extends View {
     /**
      * 绘制下一页
      */
-    private void next() {
+    protected boolean next() {
         if (mType == TYPE_TXT) {
             mPosition = mNextPosition;
             if (mPosition >= mContent.length()) { // 已经到达最后
                 mListener.next();   // 下一章节
-                return;
+                return false;
             }
         } else if (mType == TYPE_EPUB) {
             mFirstPos = mNextFirstPos;
             mSecondPos = mNextSecondPos;
             if (mFirstPos == mEpubDataList.size()) {
                 mListener.next();   // 下一章节
-                return;
+                return false;
             }
         }
         mListener.nextPage();
         mPageIndex++;
-        invalidate();
+
+        if (IS_TEST) {
+            invalidate();
+        }
+
+        return true;
     }
 
     /**
      * 绘制上一页
      */
-    private void pre() {
+    protected boolean pre() {
         mPageIndex--;
         if (mType == TYPE_TXT) {
             if (mPosition == 0) {  // 已经是第一页
                 mListener.pre();    // 上一章节
-                return;
+                return false;
             }
             if (mFirstPosMap.containsKey(mPageIndex)) {
                 mPosition = mFirstPosMap.get(mPageIndex);
@@ -463,7 +504,7 @@ public class PageView extends View {
         } else if (mType == TYPE_EPUB) {
             if (mFirstPos == 0 && mSecondPos == 0) {
                 mListener.pre();    // 上一章节
-                return;
+                return false;
             }
             if (mFirstPosMap.containsKey(mPageIndex)) {
                 mFirstPos = mFirstPosMap.get(mPageIndex);
@@ -474,7 +515,12 @@ public class PageView extends View {
             }
         }
         mListener.prePage();
-        invalidate();
+
+        if (IS_TEST) {
+            invalidate();
+        }
+
+        return true;
     }
 
     /**
@@ -753,26 +799,6 @@ public class PageView extends View {
      */
     public void setTextColor(int color) {
         mPaint.setColor(color);
-    }
-
-    /**
-     * 设置文字大小
-     */
-    public void setTextSize(float textSize) {
-        mTextSize = textSize;
-        // hashMap 缓存作废
-        mFirstPosMap.clear();
-        invalidate();
-    }
-
-    /**
-     * 设置行距
-     */
-    public void setRowSpace(float rowSpace) {
-        mRowSpace = rowSpace;
-        // hashMap 缓存作废
-        mFirstPosMap.clear();
-        invalidate();
     }
 
     /**

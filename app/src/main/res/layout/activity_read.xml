@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.feng.freader.widget.PageView
+    <com.feng.freader.widget.RealPageView
         android:id="@+id/pv_read_page_view"
         android:layout_width="0dp"
         android:layout_height="0dp"

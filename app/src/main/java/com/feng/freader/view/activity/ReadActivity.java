@@ -38,6 +38,7 @@ import com.feng.freader.util.EventBusUtil;
 import com.feng.freader.util.SpUtil;
 import com.feng.freader.util.StatusBarUtil;
 import com.feng.freader.widget.PageView;
+import com.feng.freader.widget.RealPageView;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -66,7 +67,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     public static final String KEY_TYPE = "read_key_type";
     public static final String KEY_SECOND_POSITION = "read_key_second_position";
 
-    private PageView mPageView;
+    private RealPageView mPageView;
     private TextView mNovelTitleTv;
     private TextView mNovelProgressTv;
     private TextView mStateTv;
@@ -992,9 +993,14 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         mNovelTitleTv.setTextColor(getResources().getColor(R.color.read_night_mode_title));
         mNovelProgressTv.setTextColor(getResources().getColor(R.color.read_night_mode_title));
         mStateTv.setTextColor(getResources().getColor(R.color.read_night_mode_text));
-        mPageView.setBackgroundColor(getResources().getColor(R.color.read_night_mode_bg));
+        mPageView.setBgColor(getResources().getColor(R.color.read_night_mode_bg));
         mPageView.setTextColor(getResources().getColor(R.color.read_night_mode_text));
-        mPageView.invalidate();
+        mPageView.post(new Runnable() {
+            @Override
+            public void run() {
+                mPageView.updateBitmap();
+            }
+        });
     }
 
     /**
@@ -1006,7 +1012,12 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         mDayAndNightModeIv.setImageResource(R.drawable.read_night);
         mDayAndNightModeTv.setText(getResources().getString(R.string.read_night_mode));
         // 根据主题进行相关设置
-        updateWithTheme();
+        mPageView.post(new Runnable() {
+            @Override
+            public void run() {
+                updateWithTheme();
+            }
+        });
     }
 
     /**
@@ -1057,9 +1068,13 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         mNovelTitleTv.setTextColor(textColor);
         mNovelProgressTv.setTextColor(textColor);
         mStateTv.setTextColor(textColor);
-        mPageView.setBackgroundColor(bgColor);
         mPageView.setTextColor(textColor);
-        mPageView.invalidate();
+        mPageView.setBgColor(bgColor);
+        mPageView.updateBitmap();
+        if (PageView.IS_TEST) {
+            mPageView.setBackgroundColor(bgColor);
+            mPageView.invalidate();
+        }
     }
 
     /**
