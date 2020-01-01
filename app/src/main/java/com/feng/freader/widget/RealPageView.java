@@ -1,5 +1,9 @@
 package com.feng.freader.widget;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.TypeEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -7,14 +11,19 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Region;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Scroller;
+import android.widget.VideoView;
 
 import com.feng.freader.R;
 import com.feng.freader.entity.data.CatalogData;
@@ -31,16 +40,18 @@ import java.util.List;
 public class RealPageView extends PageView{
     private static final String TAG = "RealPageView";
 
-    public static final String STYLE_TOP_RIGHT = "STYLE_TOP_RIGHT";
-    public static final String STYLE_BOTTOM_RIGHT = "STYLE_BOTTOM_RIGHT";
-    public static final String STYLE_CENTER_RIGHT = "STYLE_CENTER_RIGHT";
-    private String mCurrStyle = "";     // 记录当前 Style
+    private STYLE mCurrStyle = STYLE.NONE;     // 记录当前的点击样式
+    public enum STYLE {
+        LEFT, CENTER, RIGHT, TOP_RIGHT, CENTER_RIGHT, BOTTOM_RIGHT, NONE
+    }
 
     private Paint pathAPaint;   // 绘制 A 区域画笔
     private Paint pathBPaint;   // 绘制 B 区域画笔
     private Paint pathCPaint;   // 绘制 C 区域画笔
     private Paint pathCContentPaint;   // 绘制C区域内容的画笔
     private Paint mBgPaint = new Paint();     // 绘制背景颜色
+    private Paint mBackPaint = new Paint();     // 绘制背面字体
+    private Paint mBackBgPaint = new Paint();   // 绘制背面背景颜色
     private Path pathA;
     private Path pathB;
     private Path pathC;
@@ -49,12 +60,10 @@ public class RealPageView extends PageView{
     float lPathAShadowDis = 0;      // A 区域左阴影矩形短边长度参考值
     float rPathAShadowDis = 0;      // A 区域右阴影矩形短边长度参考值
 
-//    private int defaultWidth = 1000;   //默认宽度
-//    private int defaultHeight = 1800;  //默认高度
     private int viewWidth;
     private int viewHeight;
 
-    private Scroller mScroller;     // 用于取消翻页动画
+    private Scroller mCancelScroller;     // 用于取消翻页动画
 
     // 重用部分
     private float[] mMatrixArray = new float[9];
@@ -77,6 +86,9 @@ public class RealPageView extends PageView{
     private Bitmap mContentBBitmap;  //B区域内容Bitmap
     private Bitmap mContentCBitmap;  //C区域内容Bitmap
 
+    /* 是否需要绘制第二张 Bitmap,
+        当 本地 TXT 小说读到最后，或者网络小说和 EPUB 小说的本章节读到最后时，不用绘制第二张 */
+    private boolean mHasBitmapB = true;
 
     public RealPageView(Context context) {
         super(context);
@@ -111,7 +123,7 @@ public class RealPageView extends PageView{
         pathAPaint.setAntiAlias(true);  //设置抗锯齿
 
         pathCPaint = new Paint();
-        pathCPaint.setColor(Color.YELLOW);
+        pathCPaint.setColor(getResources().getColor(R.color.read_theme_0_back_bg));
         pathCPaint.setAntiAlias(true);  //设置抗锯齿
 
         pathBPaint = new Paint();
@@ -122,7 +134,11 @@ public class RealPageView extends PageView{
         pathCContentPaint.setColor(Color.YELLOW);
         pathCContentPaint.setAntiAlias(true);//设置抗锯齿
 
-        mScroller = new Scroller(context, new LinearInterpolator());
+        mBackPaint.setColor(getResources().getColor(R.color.read_theme_0_back_text));
+        mBackBgPaint.setColor(getResources().getColor(R.color.read_theme_0_back_bg));
+
+
+        mCancelScroller = new Scroller(context, new LinearInterpolator());
 
         mMatrix = new Matrix();
         createGradientDrawable();
@@ -144,29 +160,25 @@ public class RealPageView extends PageView{
      * 初始化各区域阴影 GradientDrawable
      */
     private void createGradientDrawable(){
-        int deepColor = 0x33333333;
-        int lightColor = 0x01333333;
+        int deepColor = 0x40333333;
+        int lightColor = 0x02333333;
         int[] gradientColors = new int[]{lightColor,deepColor};//渐变颜色数组
         drawableLeftTopRight = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, gradientColors);
         drawableLeftTopRight.setGradientType(GradientDrawable.LINEAR_GRADIENT);
         drawableLeftLowerRight = new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, gradientColors);
         drawableLeftLowerRight.setGradientType(GradientDrawable.LINEAR_GRADIENT);
 
-        deepColor = 0x22333333;
-        lightColor = 0x01333333;
         gradientColors =  new int[]{deepColor,lightColor,lightColor};
         drawableRightTopRight = new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, gradientColors);
         drawableRightTopRight.setGradientType(GradientDrawable.LINEAR_GRADIENT);
         drawableRightLowerRight = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, gradientColors);
         drawableRightLowerRight.setGradientType(GradientDrawable.LINEAR_GRADIENT);
 
-        deepColor = 0x44333333;
-        lightColor = 0x01333333;
         gradientColors = new int[]{lightColor,deepColor};//渐变颜色数组
         drawableHorizontalLowerRight = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, gradientColors);;
         drawableHorizontalLowerRight.setGradientType(GradientDrawable.LINEAR_GRADIENT);
 
-        deepColor = 0x55111111;
+        deepColor = 0x99111111;
         lightColor = 0x00111111;
         gradientColors = new int[] {deepColor,lightColor};//渐变颜色数组
         drawableBTopRight =new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,gradientColors);
@@ -174,8 +186,6 @@ public class RealPageView extends PageView{
         drawableBLowerRight =new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT,gradientColors);
         drawableBLowerRight.setGradientType(GradientDrawable.LINEAR_GRADIENT);
 
-        deepColor = 0x55333333;
-        lightColor = 0x00333333;
         gradientColors = new int[]{lightColor,deepColor};//渐变颜色数组
         drawableCTopRight = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, gradientColors);
         drawableCTopRight.setGradientType(GradientDrawable.LINEAR_GRADIENT);
@@ -184,46 +194,49 @@ public class RealPageView extends PageView{
     }
 
     /**
-     * 绘制 A 区域的内容（本页内容）
+     * 绘制正面内容
      */
-    private void drawContentABitmap(Bitmap bitmap, Paint pathPaint){
-        Canvas mCanvas = new Canvas(bitmap);
+    private void drawBitmap(){
+        // 绘制 A 区域
+        Canvas mCanvas = new Canvas(mContentABitmap);
         mCanvas.drawPath(getPathDefault(), mBgPaint);
         if (mType == TYPE_TXT) {
-            drawText(mCanvas);
+            drawText(mCanvas, mPaint);
+            mHasBitmapB = mNextPosition < mContent.length();
         } else if (mType == TYPE_EPUB) {
-            drawEpub(mCanvas);
+            drawEpub(mCanvas, mPaint);
+            mHasBitmapB = mNextFirstPos < mEpubDataList.size();
         }
-    }
 
-    /**
-     * 绘制 B 区域的内容（下一页内容）
-     */
-    private void drawPathBContentBitmap(Bitmap bitmap, Paint pathPaint){
-        Canvas mCanvas = new Canvas(bitmap);
+        if (!mHasBitmapB) {
+            return;
+        }
+
+        // 绘制 B 区域
+        mCanvas = new Canvas(mContentBBitmap);
+        mCanvas.drawPath(getPathDefault(), mBgPaint);
+        if (mType == TYPE_TXT) {
+            drawTextB(mCanvas, mPaint);
+        } else if (mType == TYPE_EPUB) {
+            drawEpubB(mCanvas, mPaint);
+        }
+
+        // 绘制 C 区域
+        mCanvas = new Canvas(mContentCBitmap);
+        mCanvas.drawPath(getPathDefault(), mBackBgPaint);
+        if (mType == TYPE_TXT) {
+            drawText(mCanvas, mBackPaint);
+        } else if (mType == TYPE_EPUB) {
+            drawEpub(mCanvas, mBackPaint);
+        }
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-//        int height = measureSize(defaultHeight, heightMeasureSpec);
-//        int width = measureSize(defaultWidth, widthMeasureSpec);
-//        setMeasuredDimension(width, height);
-
-
         a.x = -1;
         a.y = -1;
-
-//        // 先绘制内容
-//        mContentABitmap = Bitmap.createBitmap(viewWidth, viewHeight, Bitmap.Config.RGB_565);
-//        drawPathAContentBitmap(mContentABitmap,pathAPaint);
-//
-//        mContentBBitmap = Bitmap.createBitmap(viewWidth, viewHeight, Bitmap.Config.RGB_565);
-//        drawPathBContentBitmap(mContentBBitmap,pathBPaint);
-//
-//        mContentCBitmap = Bitmap.createBitmap(viewWidth, viewHeight, Bitmap.Config.RGB_565);
-//        drawPathAContentBitmap(mContentCBitmap,pathCPaint);
     }
 
     @Override
@@ -232,19 +245,6 @@ public class RealPageView extends PageView{
 
         viewWidth = getWidth();
         viewHeight = getHeight();
-    }
-
-    private int measureSize(int defaultSize, int measureSpec) {
-        int result = defaultSize;
-        int specMode = View.MeasureSpec.getMode(measureSpec);
-        int specSize = View.MeasureSpec.getSize(measureSpec);
-
-        if (specMode == View.MeasureSpec.EXACTLY) {
-            result = specSize;
-        } else if (specMode == View.MeasureSpec.AT_MOST) {
-            result = Math.min(result, specSize);
-        }
-        return result;
     }
 
     @Override
@@ -402,22 +402,6 @@ public class RealPageView extends PageView{
     }
 
     /**
-     * 绘制区域B
-     */
-    private Path getPathB(){
-        if (pathB == null) {
-            pathB = new Path();
-        } else {
-            pathB.reset();
-        }
-        pathB.lineTo(0, viewHeight);//移动到左下角
-        pathB.lineTo(viewWidth,viewHeight);//移动到右下角
-        pathB.lineTo(viewWidth,0);//移动到右上角
-        pathB.close();//闭合区域
-        return pathB;
-    }
-
-    /**
      * 绘制默认的界面
      */
     private Path getPathDefault(){
@@ -436,53 +420,210 @@ public class RealPageView extends PageView{
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (mTurnType == TURN_TYPE.NORMAL) {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    break;
-                case MotionEvent.ACTION_UP:
-                    // 根据离开时的位置进行不同操作
-                    float rawX = event.getRawX();
-                    float screenWidth = ScreenUtil.getScreenWidth();
-                    if (rawX <= 0.35f * screenWidth) {
-                        // 上一页
-                        pre();
-                    } else if (rawX >= 0.65f * screenWidth) {
-                        // 下一页
-                        next();
-                    } else {
-                        // 弹出或隐藏菜单
-                        mListener.showOrHideSettingBar();
-                    }
-                    break;
-                default:
-                    break;
+            onNormalTouchEvent(event);
+        } else if (mTurnType == TURN_TYPE.REAL) {
+            if (mHasBitmapB) {
+                onRealTouchEvent(event);
+            } else {
+                onRealTouchEventNoBitmapB(event);
             }
         }
+
+        return true;
+    }
+
+    /**
+     * 处理普通翻页的事件分发
+     */
+    private void onNormalTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if (event.getX() < viewWidth / 3) {
+                    mCurrStyle = STYLE.LEFT;
+                } else if (event.getX() > viewWidth - viewWidth / 3) {
+                    mCurrStyle = STYLE.RIGHT;
+                } else {
+                    mCurrStyle = STYLE.CENTER;
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                switch (mCurrStyle) {
+                    case LEFT:
+                        // 上一页
+                        pre();
+                        break;
+                    case CENTER:
+                        // 弹出或隐藏菜单
+                        mListener.showOrHideSettingBar();
+                        break;
+                    case RIGHT:
+                        // 下一页
+                        next();
+                        break;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * 处理仿真翻页的事件分发
+     */
+    private void onRealTouchEvent(MotionEvent event) {
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
-                if(event.getX() > viewWidth / 3 && event.getY() < viewHeight / 3){  //从上半部分翻页
-                    mCurrStyle = STYLE_TOP_RIGHT;
+                if(event.getX() > viewWidth - viewWidth / 3 && event.getY() < viewHeight / 3){  //从上半部分翻页
+                    mCurrStyle = STYLE.TOP_RIGHT;
                     setTouchPoint(event.getX(),event.getY());
-                } else if(event.getX() > viewWidth / 3 && event.getY() >= viewHeight - viewHeight / 3) {  //从下半部分翻页
-                    mCurrStyle = STYLE_BOTTOM_RIGHT;
+                } else if(event.getX() > viewWidth - viewWidth / 3 && event.getY() >= viewHeight - viewHeight / 3) {  //从下半部分翻页
+                    mCurrStyle = STYLE.BOTTOM_RIGHT;
                     setTouchPoint(event.getX(),event.getY());
-                } else if(event.getX() > viewWidth / 3) {  //从中间翻页
-                    mCurrStyle = STYLE_CENTER_RIGHT;
+                } else if(event.getX() > viewWidth - viewWidth / 3) {  //从中间翻页
+                    mCurrStyle = STYLE.CENTER_RIGHT;
                     setTouchPoint(event.getX(),event.getY());
+                } else if (event.getX() < viewWidth / 3) {
+                    mCurrStyle = STYLE.LEFT;
                 } else {
-                    mCurrStyle = "";
+                    mCurrStyle = STYLE.CENTER;
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
-                setTouchPoint(event.getX(),event.getY());
+                if (mCurrStyle != STYLE.LEFT && mCurrStyle != STYLE.CENTER) {
+                    setTouchPoint(event.getX(),event.getY());
+                }
                 break;
             case MotionEvent.ACTION_UP:
-                startCancelAnim();
+                if (mCurrStyle == STYLE.LEFT) {
+                    // 翻到上一页（动画）
+                    startLastAnim();
+                } else if (mCurrStyle == STYLE.CENTER) {
+                    // 弹出或隐藏菜单
+                    mListener.showOrHideSettingBar();
+                } else {
+                    startTurnAnim();
+                }
                 break;
         }
-        return true;
+    }
+
+    /**
+     * 处理仿真翻页的事件分发（没有下页的情况）
+     */
+    private void onRealTouchEventNoBitmapB(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if (event.getX() < viewWidth / 3) {
+                    mCurrStyle = STYLE.LEFT;
+                } else if (event.getX() > viewWidth - viewWidth / 3) {
+                    mCurrStyle = STYLE.RIGHT;
+                } else {
+                    mCurrStyle = STYLE.CENTER;
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                switch (mCurrStyle) {
+                    case LEFT:
+                        // 翻到上一页（动画）
+                        startLastAnim();
+                        break;
+                    case CENTER:
+                        // 弹出或隐藏菜单
+                        mListener.showOrHideSettingBar();
+                        break;
+                    case RIGHT:
+                        // 加载下一章节（无动画）
+                        mListener.next();
+                        break;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * 翻页动画
+     */
+    private void startTurnAnim(){
+        ValueAnimator va = null;
+        switch (mCurrStyle) {
+            case TOP_RIGHT:
+                va = ValueAnimator.ofObject(getTurnVA(),
+                        new PointF(a.x, a.y), new PointF(- (float) viewWidth/2, 0));
+                break;
+            case CENTER_RIGHT:
+            case BOTTOM_RIGHT:
+                va = ValueAnimator.ofObject(getTurnVA(),
+                        new PointF(a.x, a.y), new PointF(- (float) viewWidth/2, viewHeight));
+                break;
+        }
+        va.setDuration(300);
+        va.setInterpolator(new AccelerateDecelerateInterpolator());
+        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                PointF curr = (PointF) animation.getAnimatedValue();
+                updateTurn(curr.x, curr.y);
+            }
+        });
+        va.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                // 更新下一页
+                if (mType == TYPE_TXT) {
+                    mPosition = mNextPosition;
+                } else if (mType == TYPE_EPUB) {
+                    mFirstPos = mNextFirstPos;
+                    mSecondPos = mNextSecondPos;
+                }
+                // !!! 记得更新 mPageIndex
+                mListener.nextPage();
+                mPageIndex++;
+                a.x = -1;
+                a.y = -1;
+                updateBitmap();
+            }
+        });
+        va.start();
+    }
+
+    /**
+     * 翻页动画（翻到上一页）
+     */
+    private void startLastAnim() {
+        // 得到上一页的位置
+        if (!pre()) {
+            return;
+        }
+        Log.d(TAG, "startLastAnim: run");
+        // 进行动画
+        ValueAnimator va = ValueAnimator.ofFloat((float) viewWidth/5, viewWidth-1);
+        va.setDuration(300);
+        va.setInterpolator(new LinearInterpolator());
+        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float curr = (float) animation.getAnimatedValue();
+                updateLast(curr);
+            }
+        });
+        va.start();
+    }
+
+    private TypeEvaluator getTurnVA() {
+        return new TypeEvaluator<PointF>() {
+            @Override
+            public PointF evaluate(float fraction, PointF startValue, PointF endValue) {
+                float startX = startValue.x;
+                float startY = startValue.y;
+                float endX = endValue.x;
+                float endY = endValue.y;
+                float currX = startX + (endX - startX) * fraction;
+                float currY = (currX <= (endX - endX/4))? endY : startY + (endY - startY) * fraction;
+                return new PointF(currX, currY);
+            }
+        };
     }
 
     @Override
@@ -512,7 +653,7 @@ public class RealPageView extends PageView{
         a.x = x;
         a.y = y;
         switch (mCurrStyle){
-            case STYLE_TOP_RIGHT:
+            case TOP_RIGHT:
                 f.x = viewWidth;
                 f.y = 0;
                 calcPointsXY(a,f);
@@ -521,9 +662,9 @@ public class RealPageView extends PageView{
                     calcPointAByTouchPoint();
                     calcPointsXY(a,f);
                 }
-                postInvalidate();
+                invalidate();
                 break;
-            case STYLE_BOTTOM_RIGHT:
+            case BOTTOM_RIGHT:
                 f.x = viewWidth;
                 f.y = viewHeight;
                 calcPointsXY(a,f);
@@ -532,14 +673,14 @@ public class RealPageView extends PageView{
                     calcPointAByTouchPoint();
                     calcPointsXY(a,f);
                 }
-                postInvalidate();
+                invalidate();
                 break;
-            case STYLE_CENTER_RIGHT:
+            case CENTER_RIGHT:
                 a.y = viewHeight - 1;
                 f.x = viewWidth;
                 f.y = viewHeight;
                 calcPointsXY(a,f);
-                postInvalidate();
+                invalidate();
                 break;
             default:
                 break;
@@ -548,12 +689,52 @@ public class RealPageView extends PageView{
     }
 
     /**
+     * 翻页时更新各点位置
+     */
+    public void updateTurn(float x, float y){
+        a.x = x;
+        a.y = y;
+        switch (mCurrStyle){
+            case TOP_RIGHT:
+                f.x = viewWidth;
+                f.y = 0;
+                calcPointsXY(a,f);
+                break;
+            case BOTTOM_RIGHT:
+                f.x = viewWidth;
+                f.y = viewHeight;
+                calcPointsXY(a,f);
+                break;
+            case CENTER_RIGHT:
+                f.x = viewWidth;
+                f.y = viewHeight;
+                calcPointsXY(a,f);
+                break;
+            default:
+                break;
+        }
+        invalidate();
+    }
+
+    /**
+     * 翻页时更新各点位置
+     */
+    public void updateLast(float x){
+        a.x = x;
+        a.y = viewHeight - 1;
+        f.x = viewWidth;
+        f.y = viewHeight;
+        calcPointsXY(a,f);
+        invalidate();
+    }
+
+    /**
      * 回到默认状态
      */
     public void setDefaultPath(){
         a.x = -1;
         a.y = -1;
-        postInvalidate();
+        invalidate();
     }
 
     /**
@@ -598,11 +779,11 @@ public class RealPageView extends PageView{
 
     @Override
     public void computeScroll() {
-        if (mScroller.computeScrollOffset()) {
-            float x = mScroller.getCurrX();
-            float y = mScroller.getCurrY();
+        if (mCancelScroller.computeScrollOffset()) {
+            float x = mCancelScroller.getCurrX();
+            float y = mCancelScroller.getCurrY();
             setTouchPoint(x, y);
-            if (mScroller.getFinalX() == x && mScroller.getFinalY() == y){
+            if (mCancelScroller.getFinalX() == x && mCancelScroller.getFinalY() == y){
                 setDefaultPath();//重置默认界面
             }
         }
@@ -613,15 +794,15 @@ public class RealPageView extends PageView{
      */
     public void startCancelAnim(){
         int dx,dy;
-        //让a滑动到f点所在位置，留出1像素是为了防止当a和f重叠时出现View闪烁的情况
-        if(mCurrStyle.equals(STYLE_TOP_RIGHT)){
+        // 让a滑动到f点所在位置，留出1像素是为了防止当a和f重叠时出现View闪烁的情况
+        if(mCurrStyle.equals(STYLE.TOP_RIGHT)){
             dx = (int) (viewWidth-1-a.x);
             dy = (int) (1-a.y);
         }else {
             dx = (int) (viewWidth-1-a.x);
             dy = (int) (viewHeight-1-a.y);
         }
-        mScroller.startScroll((int) a.x, (int) a.y, dx, dy, 400);
+        mCancelScroller.startScroll((int) a.x, (int) a.y, dx, dy, 400);
     }
 
     /**
@@ -632,7 +813,7 @@ public class RealPageView extends PageView{
         canvas.clipPath(pathA, Region.Op.INTERSECT);//对绘制内容进行裁剪，取和A区域的交集
         canvas.drawBitmap(mContentABitmap, 0, 0, null);
 
-        if(mCurrStyle.equals(STYLE_CENTER_RIGHT)){
+        if(mCurrStyle.equals(STYLE.CENTER_RIGHT)){
             drawPathAHorizontalShadow(canvas,pathA);
         }else {
             drawPathALeftShadow(canvas,pathA);
@@ -652,7 +833,7 @@ public class RealPageView extends PageView{
         int bottom = (int) (e.y+viewHeight);
 
         GradientDrawable gradientDrawable;
-        if (mCurrStyle.equals(STYLE_TOP_RIGHT)) {
+        if (mCurrStyle.equals(STYLE.TOP_RIGHT)) {
             gradientDrawable = drawableLeftTopRight;
             left = (int) (e.x - lPathAShadowDis /2);
             right = (int) (e.x);
@@ -693,7 +874,7 @@ public class RealPageView extends PageView{
         int bottom;
 
         GradientDrawable gradientDrawable;
-        if (mCurrStyle.equals(STYLE_TOP_RIGHT)) {
+        if (mCurrStyle.equals(STYLE.TOP_RIGHT)) {
             gradientDrawable = drawableRightTopRight;
             top = (int) (h.y- rPathAShadowDis /2);
             bottom = (int) h.y;
@@ -746,9 +927,10 @@ public class RealPageView extends PageView{
      */
     private void drawPathBContent(Canvas canvas, Path pathA){
         canvas.save();
-        canvas.clipPath(pathA);//裁剪出A区域
-        canvas.clipPath(getPathC(), Region.Op.UNION);//裁剪出A和C区域的全集
-        canvas.clipPath(getPathB(), Region.Op.REVERSE_DIFFERENCE);//裁剪出B区域中不同于与AC区域的部分
+        // 裁剪出B区域中不同于与AC区域的部分
+        canvas.clipPath(pathA, Region.Op.DIFFERENCE);
+        canvas.clipPath(getPathC(), Region.Op.DIFFERENCE);
+
         canvas.drawBitmap(mContentBBitmap, 0, 0, null);
 
         drawPathBShadow(canvas);
@@ -770,7 +952,7 @@ public class RealPageView extends PageView{
         int top = (int) c.y;
         int bottom = (int) (viewDiagonalLength + c.y);
         GradientDrawable gradientDrawable;
-        if(mCurrStyle.equals(STYLE_TOP_RIGHT)){//f点在右上角
+        if(mCurrStyle.equals(STYLE.TOP_RIGHT)){//f点在右上角
             //从左向右线性渐变
             gradientDrawable = drawableBTopRight;
             left = (int) (c.x - deepOffset);//c点位于左上角
@@ -793,8 +975,10 @@ public class RealPageView extends PageView{
      */
     private void drawPathCContent(Canvas canvas, Path pathA){
         canvas.save();
-        canvas.clipPath(pathA);
-        canvas.clipPath(getPathC(), Region.Op.REVERSE_DIFFERENCE);  //裁剪出C区域不同于A区域的部分
+
+        // 裁剪出C区域不同于A区域的部分
+        canvas.clipPath(pathA, Region.Op.DIFFERENCE);
+        canvas.clipPath(getPathC());
         canvas.drawPath(getPathC(),pathCPaint); //绘制背景色
 
 
@@ -836,7 +1020,7 @@ public class RealPageView extends PageView{
         int top = (int) c.y;
         int bottom = (int) (viewDiagonalLength + c.y);
         GradientDrawable gradientDrawable;
-        if(mCurrStyle.equals(STYLE_TOP_RIGHT)){//f点在右上角
+        if(mCurrStyle.equals(STYLE.TOP_RIGHT)){//f点在右上角
             //从左向右线性渐变
             gradientDrawable = drawableCTopRight;
             left = (int) (c.x - deepOffset);//c点位于左上角
@@ -882,13 +1066,31 @@ public class RealPageView extends PageView{
     }
 
     /**
+     * 设置背面文字颜色
+     */
+    public void setBackTextColor(int color) {
+        mBackPaint.setColor(color);
+    }
+
+    /**
+     * 设置背面背景颜色
+     */
+    public void setBackBgColor(int color) {
+        mBackBgPaint.setColor(color);
+        pathCPaint.setColor(color);
+    }
+
+    /**
      * 重新绘制 Bitmap
      */
     public void updateBitmap() {
         if (mContentABitmap == null) {
             mContentABitmap = Bitmap.createBitmap(viewWidth, viewHeight, Bitmap.Config.RGB_565);
+            mContentBBitmap = Bitmap.createBitmap(viewWidth, viewHeight, Bitmap.Config.RGB_565);
+            mContentCBitmap = Bitmap.createBitmap(viewWidth, viewHeight, Bitmap.Config.RGB_565);
         }
-        drawContentABitmap(mContentABitmap, null);
+
+        drawBitmap();
         invalidate();
     }
 }

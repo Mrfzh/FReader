@@ -138,6 +138,17 @@
     <color name="read_theme_4_bg">#B69A96</color>
     <color name="read_theme_4_text">#453417</color>
 
+    <color name="read_theme_0_back_bg">#D4C4A3</color>
+    <color name="read_theme_0_back_text">#33453417</color>
+    <color name="read_theme_1_back_bg">#F8F3EF</color>
+    <color name="read_theme_1_back_text">#33453417</color>
+    <color name="read_theme_2_back_bg">#CCE9CD</color>
+    <color name="read_theme_2_back_text">#33453417</color>
+    <color name="read_theme_3_back_bg">#323232</color>
+    <color name="read_theme_3_back_text">#33D3D2CD</color>
+    <color name="read_theme_4_back_bg">#B69A96</color>
+    <color name="read_theme_4_back_text">#33453417</color>
+
     <!-- item_category -->
     <color name="item_category_top_bar">#f6f6f6</color>
     <color name="item_category_category_name">#1C1C1C</color>
