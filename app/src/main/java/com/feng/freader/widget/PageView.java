@@ -41,6 +41,7 @@ public class PageView extends View {
     private boolean mIsShowContent = true;  // 是否显示文本内容
     // TYPE_TXT 为绘制普通文本（网络小说和本地 txt），TYPE_EPUB 为绘制 epub 文本（本地 epub）
     protected int mType;
+
     // 翻页模式，NORMAL 为普通翻页，REAL 为仿真翻页
     protected TURN_TYPE mTurnType = TURN_TYPE.NORMAL;
     public enum TURN_TYPE {
@@ -909,5 +910,12 @@ public class PageView extends View {
         mPosition = (int) (mContent.length() * progress);
         mFirstPosMap.clear();
         invalidate();
+    }
+
+    /**
+     * 设置翻页模式
+     */
+    public void setTurnType(TURN_TYPE mTurnType) {
+        this.mTurnType = mTurnType;
     }
 }

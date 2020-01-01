@@ -350,7 +350,7 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/cv_read_setting_bar"
         android:layout_width="0dp"
-        android:layout_height="140dp"
+        android:layout_height="190dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -442,17 +442,20 @@
             app:layout_constraintStart_toStartOf="@id/iv_read_increase_row_space" />
 
         <!-- second -->
+
         <View
             android:id="@+id/v_read_theme_0"
             android:layout_width="0dp"
             android:layout_height="@dimen/read_setting_bar_second_height"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_read_decrease_font"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/tv_read_turn_real"
             app:layout_constraintEnd_toStartOf="@id/v_read_theme_1"
             android:background="@drawable/selector_read_theme_0"
             android:layout_marginStart="20dp"
-            android:layout_marginEnd="10dp"/>
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"/>
 
         <View
             android:id="@+id/v_read_theme_1"
@@ -460,7 +463,7 @@
             android:layout_height="@dimen/read_setting_bar_second_height"
             app:layout_constraintStart_toEndOf="@id/v_read_theme_0"
             app:layout_constraintTop_toBottomOf="@id/iv_read_decrease_font"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/tv_read_turn_real"
             app:layout_constraintEnd_toStartOf="@id/v_read_theme_2"
             android:background="@drawable/selector_read_theme_1"
             android:layout_margin="10dp"/>
@@ -471,7 +474,7 @@
             android:layout_height="@dimen/read_setting_bar_second_height"
             app:layout_constraintStart_toEndOf="@id/v_read_theme_1"
             app:layout_constraintTop_toBottomOf="@id/iv_read_decrease_font"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/tv_read_turn_real"
             app:layout_constraintEnd_toStartOf="@id/v_read_theme_3"
             android:background="@drawable/selector_read_theme_2"
             android:layout_margin="10dp"/>
@@ -482,7 +485,7 @@
             android:layout_height="@dimen/read_setting_bar_second_height"
             app:layout_constraintStart_toEndOf="@id/v_read_theme_2"
             app:layout_constraintTop_toBottomOf="@id/iv_read_decrease_font"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/tv_read_turn_real"
             app:layout_constraintEnd_toStartOf="@id/v_read_theme_4"
             android:background="@drawable/selector_read_theme_3"
             android:layout_margin="10dp"/>
@@ -493,11 +496,61 @@
             android:layout_height="@dimen/read_setting_bar_second_height"
             app:layout_constraintStart_toEndOf="@id/v_read_theme_3"
             app:layout_constraintTop_toBottomOf="@id/iv_read_decrease_font"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/tv_read_turn_real"
             app:layout_constraintEnd_toEndOf="parent"
             android:background="@drawable/selector_read_theme_4"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="20dp"/>
+
+        <!-- third -->
+
+        <TextView
+            android:id="@+id/tv_read_turn_real"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/read_setting_bar_third_height"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/v_read_theme_0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_read_turn_normal"
+            android:background="@drawable/selector_read_turn_bg"
+            app:layout_constraintHorizontal_weight="1"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="15dp"
+            android:text="@string/read_turn_real"
+            android:textColor="@color/read_setting_bar_text"
+            android:textSize="@dimen/read_turn_text_size"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/tv_read_turn_normal"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/read_setting_bar_third_height"
+            app:layout_constraintStart_toEndOf="@id/tv_read_turn_real"
+            app:layout_constraintTop_toBottomOf="@id/v_read_theme_0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/v_read_turn_temp_1"
+            android:background="@drawable/selector_read_turn_bg"
+            android:layout_marginTop="10dp"
+            app:layout_constraintHorizontal_weight="1"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:text="@string/read_turn_normal"
+            android:textColor="@color/read_setting_bar_text"
+            android:textSize="@dimen/read_turn_text_size"
+            android:gravity="center"/>
+
+        <View
+            android:id="@+id/v_read_turn_temp_1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/read_setting_bar_third_height"
+            app:layout_constraintStart_toEndOf="@id/tv_read_turn_normal"
+            app:layout_constraintTop_toBottomOf="@id/v_read_theme_0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="2"
+            android:layout_marginEnd="30dp"
+            android:layout_marginStart="15dp"/>
+
 
     </android.support.constraint.ConstraintLayout>
 

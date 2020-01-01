@@ -104,6 +104,8 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     private View mTheme2;
     private View mTheme3;
     private View mTheme4;
+    private TextView mTurnNormalTv;
+    private TextView mTurnRealTv;
 
     // 章节 url 列表（通过网络请求获取）
     private List<String> mChapterUrlList = new ArrayList<>();
@@ -147,6 +149,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     private int mTheme;         // 阅读主题
     private float mBrightness;  // 屏幕亮度，为 -1 时表示系统亮度
     private boolean mIsNightMode;           // 是否为夜间模式
+    private int mTurnType;      // 翻页模式：0 为正常，1 为仿真
 
     private float mMinTextSize = 36f;
     private float mMaxTextSize = 76f;
@@ -191,8 +194,6 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         mIsReverse = getIntent().getBooleanExtra(KEY_IS_REVERSE, false);
         mType = getIntent().getIntExtra(KEY_TYPE, 0);
         mSecondPosition = getIntent().getIntExtra(KEY_SECOND_POSITION, 0);
-//        Log.d(TAG, "initData: mNovelUrl = " + mNovelUrl +
-//                ", mName = " + mName + ", mCover = " + mCover + ", mPosition = " + mPosition);
 
         // 从 SP 得到
         mTextSize = SpUtil.getTextSize();
@@ -200,6 +201,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         mTheme = SpUtil.getTheme();
         mBrightness = SpUtil.getBrightness();
         mIsNightMode = SpUtil.getIsNightMode();
+        mTurnType = SpUtil.getTurnType();
 
         // 其他
         mDbManager = DatabaseManager.getInstance();
@@ -409,6 +411,20 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         mTheme3.setOnClickListener(this);
         mTheme4 = findViewById(R.id.v_read_theme_4);
         mTheme4.setOnClickListener(this);
+        mTurnNormalTv = findViewById(R.id.tv_read_turn_normal);
+        mTurnNormalTv.setOnClickListener(this);
+        mTurnRealTv = findViewById(R.id.tv_read_turn_real);
+        mTurnRealTv.setOnClickListener(this);
+        switch (mTurnType) {
+            case 0:
+                mTurnNormalTv.setSelected(true);
+                mPageView.setTurnType(PageView.TURN_TYPE.NORMAL);
+                break;
+            case 1:
+                mTurnRealTv.setSelected(true);
+                mPageView.setTurnType(PageView.TURN_TYPE.REAL);
+                break;
+        }
     }
 
     @Override
@@ -475,6 +491,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         SpUtil.saveTheme(mTheme);
         SpUtil.saveBrightness(mBrightness);
         SpUtil.saveIsNightMode(mIsNightMode);
+        SpUtil.saveTurnType(mTurnType);
 
         // 解除监听
         getContentResolver().unregisterContentObserver(mBrightnessObserver);
@@ -852,6 +869,8 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     preNet();
                 } else if (mType == 2) {
                     preEpub();
+                } else if (mType == 1) {
+                    showShortToast("本地 TXT 小说暂不支持该功能");
                 }
                 break;
             case R.id.tv_read_next_chapter:
@@ -860,6 +879,8 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     nextNet();
                 } else if (mType == 2) {
                     nextEpub();
+                } else if (mType == 1) {
+                    showShortToast("本地 TXT 小说暂不支持该功能");
                 }
                 break;
             case R.id.iv_read_catalog:
@@ -876,7 +897,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                     intent.putExtra(CatalogActivity.KEY_COVER, mCover); // 传递当前小说的封面
                     startActivity(intent);
                 } else if (mType == 1) {
-                    showShortToast("本地 txt 小说暂不支持目录");
+                    showShortToast("本地 TXT 小说暂不支持该功能");
                 } else if (mType == 2) {
                     // 跳转到 epub 目录界面
                     Event<EpubCatalogInitEvent> event = new Event<>(EventBusCode.EPUB_CATALOG_INIT,
@@ -969,6 +990,22 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
                 }
                 mTheme = 4;
                 updateWithTheme();
+                break;
+            case R.id.tv_read_turn_normal:
+                if (mTurnType != 0) {
+                    mTurnType = 0;
+                    mTurnNormalTv.setSelected(true);
+                    mTurnRealTv.setSelected(false);
+                    mPageView.setTurnType(PageView.TURN_TYPE.NORMAL);
+                }
+                break;
+            case R.id.tv_read_turn_real:
+                if (mTurnType != 1) {
+                    mTurnType = 1;
+                    mTurnRealTv.setSelected(true);
+                    mTurnNormalTv.setSelected(false);
+                    mPageView.setTurnType(PageView.TURN_TYPE.REAL);
+                }
                 break;
             default:
                 break;

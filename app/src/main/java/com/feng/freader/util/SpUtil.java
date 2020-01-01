@@ -16,11 +16,13 @@ public class SpUtil {
     private static final String KEY_THEME = "key_theme";            // 阅读主题
     private static final String KEY_BRIGHTNESS = "key_brightness";  // 亮度
     private static final String KEY_IS_NIGHT_MODE= "key_is_night_mode";  // 是否为夜间模式
+    private static final String KEY_TURN_TYPE = "key_turn_type";  // 翻页模式
     private static final float DEFAULT_TEXT_SIZE = 56f;
     private static final float DEFAULT_ROW_SPACE = 24f;
     private static final int DEFAULT_THEME = 0;
     private static final float DEFAULT_BRIGHTNESS = -1f;
     private static final boolean DEFAULT_IS_NIGHT_MODE = false;
+    private static final int DEFAULT_TURN_TYPE = 0;
 
     public static void saveTextSize(float textSize) {
         SharedPreferences.Editor editor = App.getContext()
@@ -85,5 +87,18 @@ public class SpUtil {
         SharedPreferences sp = App.getContext()
                 .getSharedPreferences(NAME, Context.MODE_PRIVATE);
         return sp.getBoolean(KEY_IS_NIGHT_MODE, DEFAULT_IS_NIGHT_MODE);
+    }
+
+    public static void saveTurnType(int turnType) {
+        SharedPreferences.Editor editor = App.getContext()
+                .getSharedPreferences(NAME, Context.MODE_PRIVATE).edit();
+        editor.putInt(KEY_TURN_TYPE, turnType);
+        editor.apply();
+    }
+
+    public static int getTurnType() {
+        SharedPreferences sp = App.getContext()
+                .getSharedPreferences(NAME, Context.MODE_PRIVATE);
+        return sp.getInt(KEY_TURN_TYPE, DEFAULT_TURN_TYPE);
     }
 }

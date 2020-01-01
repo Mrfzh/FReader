@@ -74,6 +74,8 @@
     <string name="read_increase_font">放大字体</string>
     <string name="read_decrease_row_space">减小行距</string>
     <string name="read_increase_row_space">增大行距</string>
+    <string name="read_turn_real">仿真</string>
+    <string name="read_turn_normal">无</string>
 
     <!-- item_category -->
     <string name="item_category_category_name">热血玄幻</string>

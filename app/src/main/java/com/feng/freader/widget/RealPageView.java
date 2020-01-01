@@ -63,8 +63,6 @@ public class RealPageView extends PageView{
     private int viewWidth;
     private int viewHeight;
 
-    private Scroller mCancelScroller;     // 用于取消翻页动画
-
     // 重用部分
     private float[] mMatrixArray = new float[9];
     private Matrix mMatrix;
@@ -89,6 +87,9 @@ public class RealPageView extends PageView{
     /* 是否需要绘制第二张 Bitmap,
         当 本地 TXT 小说读到最后，或者网络小说和 EPUB 小说的本章节读到最后时，不用绘制第二张 */
     private boolean mHasBitmapB = true;
+
+    private boolean mIsLoadNextPage = true;   // 是否翻到下一页
+    private int mLastX = 0;
 
     public RealPageView(Context context) {
         super(context);
@@ -136,9 +137,6 @@ public class RealPageView extends PageView{
 
         mBackPaint.setColor(getResources().getColor(R.color.read_theme_0_back_text));
         mBackBgPaint.setColor(getResources().getColor(R.color.read_theme_0_back_bg));
-
-
-        mCancelScroller = new Scroller(context, new LinearInterpolator());
 
         mMatrix = new Matrix();
         createGradientDrawable();
@@ -473,6 +471,8 @@ public class RealPageView extends PageView{
     private void onRealTouchEvent(MotionEvent event) {
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
+                mLastX = (int) event.getX();
+                mIsLoadNextPage = true;
                 if(event.getX() > viewWidth - viewWidth / 3 && event.getY() < viewHeight / 3){  //从上半部分翻页
                     mCurrStyle = STYLE.TOP_RIGHT;
                     setTouchPoint(event.getX(),event.getY());
@@ -492,6 +492,10 @@ public class RealPageView extends PageView{
                 if (mCurrStyle != STYLE.LEFT && mCurrStyle != STYLE.CENTER) {
                     setTouchPoint(event.getX(),event.getY());
                 }
+                if (Math.abs(event.getX() - mLastX) >= 5) {
+                    mIsLoadNextPage = event.getX() < mLastX;
+                }
+                mLastX = (int) event.getX();
                 break;
             case MotionEvent.ACTION_UP:
                 if (mCurrStyle == STYLE.LEFT) {
@@ -501,7 +505,11 @@ public class RealPageView extends PageView{
                     // 弹出或隐藏菜单
                     mListener.showOrHideSettingBar();
                 } else {
-                    startTurnAnim();
+                    if (mIsLoadNextPage) {
+                        startTurnAnim();
+                    } else {
+                        startCancelAnim();
+                    }
                 }
                 break;
         }
@@ -596,7 +604,6 @@ public class RealPageView extends PageView{
         if (!pre()) {
             return;
         }
-        Log.d(TAG, "startLastAnim: run");
         // 进行动画
         ValueAnimator va = ValueAnimator.ofFloat((float) viewWidth/5, viewWidth-1);
         va.setDuration(300);
@@ -606,6 +613,40 @@ public class RealPageView extends PageView{
             public void onAnimationUpdate(ValueAnimator animation) {
                 float curr = (float) animation.getAnimatedValue();
                 updateLast(curr);
+            }
+        });
+        va.start();
+    }
+
+    /**
+     * 取消翻页
+     */
+    private void startCancelAnim() {
+        ValueAnimator va = null;
+        switch (mCurrStyle) {
+            case TOP_RIGHT:
+                va = ValueAnimator.ofObject(getCancelVA(),
+                        new PointF(a.x, a.y), new PointF(viewWidth, 0));
+                break;
+            case CENTER_RIGHT:
+            case BOTTOM_RIGHT:
+                va = ValueAnimator.ofObject(getCancelVA(),
+                        new PointF(a.x, a.y), new PointF(viewWidth, viewHeight));
+                break;
+        }
+        va.setDuration(300);
+        va.setInterpolator(new LinearInterpolator());
+        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                PointF curr = (PointF) animation.getAnimatedValue();
+                updateTurn(curr.x, curr.y);
+            }
+        });
+        va.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                setDefaultPath();//重置默认界面
             }
         });
         va.start();
@@ -621,6 +662,21 @@ public class RealPageView extends PageView{
                 float endY = endValue.y;
                 float currX = startX + (endX - startX) * fraction;
                 float currY = (currX <= (endX - endX/4))? endY : startY + (endY - startY) * fraction;
+                return new PointF(currX, currY);
+            }
+        };
+    }
+
+    private TypeEvaluator getCancelVA() {
+        return new TypeEvaluator<PointF>() {
+            @Override
+            public PointF evaluate(float fraction, PointF startValue, PointF endValue) {
+                float startX = startValue.x;
+                float startY = startValue.y;
+                float endX = endValue.x;
+                float endY = endValue.y;
+                float currX = startX + (endX - startX) * fraction;
+                float currY = startY + (endY - startY) * fraction;
                 return new PointF(currX, currY);
             }
         };
@@ -775,34 +831,6 @@ public class RealPageView extends PageView{
             this.x = x;
             this.y = y;
         }
-    }
-
-    @Override
-    public void computeScroll() {
-        if (mCancelScroller.computeScrollOffset()) {
-            float x = mCancelScroller.getCurrX();
-            float y = mCancelScroller.getCurrY();
-            setTouchPoint(x, y);
-            if (mCancelScroller.getFinalX() == x && mCancelScroller.getFinalY() == y){
-                setDefaultPath();//重置默认界面
-            }
-        }
-    }
-
-    /**
-     * 取消翻页动画,计算滑动位置与时间
-     */
-    public void startCancelAnim(){
-        int dx,dy;
-        // 让a滑动到f点所在位置，留出1像素是为了防止当a和f重叠时出现View闪烁的情况
-        if(mCurrStyle.equals(STYLE.TOP_RIGHT)){
-            dx = (int) (viewWidth-1-a.x);
-            dy = (int) (1-a.y);
-        }else {
-            dx = (int) (viewWidth-1-a.x);
-            dy = (int) (viewHeight-1-a.y);
-        }
-        mCancelScroller.startScroll((int) a.x, (int) a.y, dx, dy, 400);
     }
 
     /**

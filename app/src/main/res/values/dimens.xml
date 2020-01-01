@@ -71,7 +71,11 @@
     <dimen name="read_switch_track_radius">20dp</dimen>
     <dimen name="read_setting_bar_first_height">70dp</dimen>
     <dimen name="read_setting_bar_second_height">30dp</dimen>
+    <dimen name="read_setting_bar_third_height">30dp</dimen>
     <dimen name="read_theme_radius">15dp</dimen>
+    <dimen name="read_turn_bg_radius">15dp</dimen>
+    <dimen name="read_turn_bg_stroke_width">1dp</dimen>
+    <dimen name="read_turn_text_size">13sp</dimen>
 
     <!-- item_category -->
     <dimen name="item_category_first_height">15dp</dimen>
