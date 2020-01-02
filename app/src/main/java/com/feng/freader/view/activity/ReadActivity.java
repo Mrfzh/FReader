@@ -533,7 +533,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
      */
     @Override
     public void getChapterUrlListError(String errorMsg) {
-        mStateTv.setText(errorMsg);
+        mStateTv.setText("获取失败，请检查网络后重新加载");
     }
 
     /**
@@ -558,7 +558,7 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
     @Override
     public void getDetailedChapterDataError(String errorMsg) {
         mIsLoadingChapter = false;
-        mStateTv.setText(errorMsg);
+        mStateTv.setText("获取失败，请检查网络后重新加载");
     }
 
     /**

@@ -95,14 +95,32 @@
         app:tabIndicatorColor="@android:color/holo_blue_light"
         android:layout_marginStart="@dimen/discovery_search_bar_margin_start"/>
 
+    <!--<android.support.v4.widget.SwipeRefreshLayout-->
+        <!--android:id="@+id/srv_discovery_refresh"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="0dp"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/tv_discovery_tab_layout"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent">-->
+
+        <!--<android.support.v4.view.ViewPager-->
+            <!--android:id="@+id/vp_discovery_view_pager"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:overScrollMode="never"/>-->
+
+    <!--</android.support.v4.widget.SwipeRefreshLayout>-->
+
+
     <android.support.v4.view.ViewPager
         android:id="@+id/vp_discovery_view_pager"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_discovery_tab_layout"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:overScrollMode="never"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_discovery_tab_layout" />
 
 </android.support.constraint.ConstraintLayout>

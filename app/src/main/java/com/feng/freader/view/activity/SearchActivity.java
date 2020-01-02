@@ -22,6 +22,7 @@ import com.feng.freader.db.DatabaseManager;
 import com.feng.freader.entity.eventbus.Event;
 import com.feng.freader.entity.eventbus.SearchUpdateInputEvent;
 import com.feng.freader.util.EditTextUtil;
+import com.feng.freader.util.NetUtil;
 import com.feng.freader.util.SoftInputUtil;
 import com.feng.freader.util.StatusBarUtil;
 import com.feng.freader.view.fragment.search.HistoryFragment;
@@ -192,6 +193,10 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     private void doSearch() {
         // 点击搜索后隐藏软键盘
         SoftInputUtil.hideSoftInput(SearchActivity.this);
+        if (!NetUtil.hasInternet(this)) {
+            showShortToast("当前无网络，请检查网络后重试");
+            return;
+        }
         // 当前搜索词
         final String searchText = mSearchBarEt.getText().toString().trim();
         if (searchText.equals("")) {

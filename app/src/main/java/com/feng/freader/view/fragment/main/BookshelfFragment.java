@@ -25,6 +25,7 @@ import com.feng.freader.entity.epub.OpfData;
 import com.feng.freader.entity.eventbus.Event;
 import com.feng.freader.presenter.BookshelfPresenter;
 import com.feng.freader.util.FileUtil;
+import com.feng.freader.util.NetUtil;
 import com.feng.freader.util.RecyclerViewUtil;
 import com.feng.freader.util.StatusBarUtil;
 import com.feng.freader.view.activity.ReadActivity;
@@ -289,6 +290,10 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
                 new BookshelfNovelsAdapter.BookshelfNovelListener() {
                     @Override
                     public void clickItem(int position) {
+                        if (!NetUtil.hasInternet(getActivity())) {
+                            showShortToast("当前无网络，请检查网络后重试");
+                            return;
+                        }
                         if (mIsDeleting) {
                             return;
                         }

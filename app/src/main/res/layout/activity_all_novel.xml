@@ -52,15 +52,32 @@
 
     <!-- list -->
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_all_novel_novel_list"
+    <!--<android.support.v7.widget.RecyclerView-->
+        <!--android:id="@+id/rv_all_novel_novel_list"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="0dp"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/v_all_novel_top_bar_bg"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--android:overScrollMode="never"/>-->
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srv_all_novel_refresh"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/v_all_novel_top_bar_bg"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:overScrollMode="never"/>
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_all_novel_novel_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <!-- screen -->
 

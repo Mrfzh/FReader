@@ -12,6 +12,7 @@ import com.feng.freader.adapter.NormalViewPagerAdapter;
 import com.feng.freader.base.BaseFragment;
 import com.feng.freader.base.BasePresenter;
 import com.feng.freader.rewrite.TabLayout;
+import com.feng.freader.util.NetUtil;
 import com.feng.freader.view.activity.AllNovelActivity;
 import com.feng.freader.view.activity.SearchActivity;
 import com.feng.freader.view.fragment.discovery.FemaleFragment;
@@ -103,6 +104,10 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
                 jump2Activity(SearchActivity.class);
                 break;
             case R.id.tv_discovery_all_book:
+                if (!NetUtil.hasInternet(getActivity())) {
+                    showShortToast("当前无网络，请检查网络后重试");
+                    return;
+                }
                 jump2Activity(AllNovelActivity.class);
                 break;
             default:

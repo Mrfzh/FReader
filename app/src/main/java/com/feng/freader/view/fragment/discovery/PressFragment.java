@@ -1,6 +1,8 @@
 package com.feng.freader.view.fragment.discovery;
 
 import android.content.Intent;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,6 +19,7 @@ import com.feng.freader.constant.Constant;
 import com.feng.freader.constract.IPressContract;
 import com.feng.freader.entity.data.DiscoveryNovelData;
 import com.feng.freader.presenter.PressPresenter;
+import com.feng.freader.util.NetUtil;
 import com.feng.freader.view.activity.AllNovelActivity;
 import com.feng.freader.view.activity.SearchActivity;
 
@@ -31,9 +34,11 @@ import java.util.List;
  */
 public class PressFragment extends BaseTabFragment<PressPresenter>
         implements IPressContract.View {
+    private static final String TAG = "PressFragment";
 
     private RecyclerView mCategoryNovelRv;
     private ProgressBar mProgressBar;
+    private SwipeRefreshLayout mRefreshSrv;
 
     private CategoryAdapter mCategoryAdapter;
     private List<String> mCategoryNameList = new ArrayList<>();
@@ -63,12 +68,31 @@ public class PressFragment extends BaseTabFragment<PressPresenter>
         mCategoryNovelRv.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         mProgressBar = getActivity().findViewById(R.id.pb_press);
+
+        mRefreshSrv = getActivity().findViewById(R.id.srv_press_refresh);
+        mRefreshSrv.setColorSchemeColors(getResources().getColor(R.color.colorAccent));   //设置颜色
+        mRefreshSrv.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //刷新时的操作
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        requestUpdate();
+                    }
+                }, 500);
+            }
+        });
     }
 
     @Override
     protected void doInOnCreate() {
-        mPresenter.getCategoryNovels();
+        requestUpdate();
         mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void requestUpdate() {
+        mPresenter.getCategoryNovels();
     }
 
     @Override
@@ -91,15 +115,20 @@ public class PressFragment extends BaseTabFragment<PressPresenter>
      */
     @Override
     public void getCategoryNovelsSuccess(List<DiscoveryNovelData> dataList) {
+        Log.d(TAG, "getCategoryNovelsSuccess: run");
         mProgressBar.setVisibility(View.GONE);
+        mRefreshSrv.setRefreshing(false);
 
         if (dataList.isEmpty()) {
+            Log.d(TAG, "getCategoryNovelsSuccess: run 2");
             return;
         }
         if (mCategoryAdapter == null) {
+            Log.d(TAG, "getCategoryNovelsSuccess: run 3");
             mNovelDataList = dataList;
             initCategoryAdapter();
         } else {
+            Log.d(TAG, "getCategoryNovelsSuccess: run 4");
             mNovelDataList.clear();
             mNovelDataList.addAll(dataList);
             mCategoryAdapter.notifyDataSetChanged();
@@ -111,15 +140,25 @@ public class PressFragment extends BaseTabFragment<PressPresenter>
      */
     @Override
     public void getCategoryNovelsError(String errorMsg) {
+        Log.d(TAG, "getCategoryNovelsError: run");
         mProgressBar.setVisibility(View.GONE);
+        mRefreshSrv.setRefreshing(false);
     }
 
     private void initCategoryAdapter() {
+        Log.d(TAG, "initCategoryAdapter: run 1");
         mCategoryAdapter = new CategoryAdapter(getActivity(),
                 mCategoryNameList, mMoreList, mNovelDataList,
                 new CategoryAdapter.CategoryListener() {
                     @Override
                     public void clickNovel(String novelName) {
+                        if (mRefreshSrv.isRefreshing()) {
+                            return;
+                        }
+                        if (!NetUtil.hasInternet(getActivity())) {
+                            showShortToast("当前无网络，请检查网络后重试");
+                            return;
+                        }
                         // 跳转到该小说的搜索结果页
                         Intent intent = new Intent(getActivity(), SearchActivity.class);
                         intent.putExtra(SearchActivity.KEY_NOVEL_NAME, novelName);
@@ -128,6 +167,13 @@ public class PressFragment extends BaseTabFragment<PressPresenter>
 
                     @Override
                     public void clickMore(int position) {
+                        if (mRefreshSrv.isRefreshing()) {
+                            return;
+                        }
+                        if (!NetUtil.hasInternet(getActivity())) {
+                            showShortToast("当前无网络，请检查网络后重试");
+                            return;
+                        }
                         int gender = 2;
                         String major;
                         switch (position) {
@@ -151,6 +197,7 @@ public class PressFragment extends BaseTabFragment<PressPresenter>
                         startActivity(intent);
                     }
                 });
+        Log.d(TAG, "initCategoryAdapter: run 2");
         mCategoryNovelRv.setAdapter(mCategoryAdapter);
     }
 }

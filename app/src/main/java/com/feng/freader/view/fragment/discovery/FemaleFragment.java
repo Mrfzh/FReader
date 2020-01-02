@@ -1,6 +1,8 @@
 package com.feng.freader.view.fragment.discovery;
 
 import android.content.Intent;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,6 +20,7 @@ import com.feng.freader.constract.IFemaleContract;
 import com.feng.freader.entity.data.DiscoveryNovelData;
 import com.feng.freader.entity.data.HotRankData;
 import com.feng.freader.presenter.FemalePresenter;
+import com.feng.freader.util.NetUtil;
 import com.feng.freader.view.activity.AllNovelActivity;
 import com.feng.freader.view.activity.SearchActivity;
 
@@ -36,6 +39,7 @@ public class FemaleFragment extends BaseTabFragment<FemalePresenter>
     private RecyclerView mHotRankRv;
     private RecyclerView mCategoryNovelRv;
     private ProgressBar mProgressBar;
+    private SwipeRefreshLayout mRefreshSrv;
 
     private HotRankAdapter mHotRankAdapter;
     private List<List<String>> mHotRankNovelNameList;
@@ -72,13 +76,32 @@ public class FemaleFragment extends BaseTabFragment<FemalePresenter>
         mCategoryNovelRv.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         mProgressBar = getActivity().findViewById(R.id.pb_female);
+
+        mRefreshSrv = getActivity().findViewById(R.id.srv_female_refresh);
+        mRefreshSrv.setColorSchemeColors(getResources().getColor(R.color.colorAccent));   //设置颜色
+        mRefreshSrv.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //刷新时的操作
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        requestUpdate();
+                    }
+                }, 500);
+            }
+        });
     }
 
     @Override
     protected void doInOnCreate() {
+        requestUpdate();
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void requestUpdate() {
         mPresenter.getHotRankData();
         mPresenter.getCategoryNovels();
-        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -128,6 +151,7 @@ public class FemaleFragment extends BaseTabFragment<FemalePresenter>
     @Override
     public void getCategoryNovelsSuccess(List<DiscoveryNovelData> dataList) {
         mProgressBar.setVisibility(View.GONE);
+        mRefreshSrv.setRefreshing(false);
 
         if (dataList.isEmpty()) {
             return;
@@ -148,6 +172,7 @@ public class FemaleFragment extends BaseTabFragment<FemalePresenter>
     @Override
     public void getCategoryNovelsError(String errorMsg) {
         mProgressBar.setVisibility(View.GONE);
+        mRefreshSrv.setRefreshing(false);
     }
 
     private void initHotRankAdapter() {
@@ -155,6 +180,13 @@ public class FemaleFragment extends BaseTabFragment<FemalePresenter>
                 Constant.FEMALE_HOT_RANK_NAME, mHotRankNovelNameList, new HotRankAdapter.HotRankListener() {
             @Override
             public void clickFirstNovel(String name) {
+                if (mRefreshSrv.isRefreshing()) {
+                    return;
+                }
+                if (!NetUtil.hasInternet(getActivity())) {
+                    showShortToast("当前无网络，请检查网络后重试");
+                    return;
+                }
                 if (!name.equals("")) {
                     jump2Search(name);
                 }
@@ -162,6 +194,13 @@ public class FemaleFragment extends BaseTabFragment<FemalePresenter>
 
             @Override
             public void clickSecondNovel(String name) {
+                if (mRefreshSrv.isRefreshing()) {
+                    return;
+                }
+                if (!NetUtil.hasInternet(getActivity())) {
+                    showShortToast("当前无网络，请检查网络后重试");
+                    return;
+                }
                 if (!name.equals("")) {
                     jump2Search(name);
                 }
@@ -169,6 +208,13 @@ public class FemaleFragment extends BaseTabFragment<FemalePresenter>
 
             @Override
             public void clickThirdNovel(String name) {
+                if (mRefreshSrv.isRefreshing()) {
+                    return;
+                }
+                if (!NetUtil.hasInternet(getActivity())) {
+                    showShortToast("当前无网络，请检查网络后重试");
+                    return;
+                }
                 if (!name.equals("")) {
                     jump2Search(name);
                 }
@@ -190,6 +236,13 @@ public class FemaleFragment extends BaseTabFragment<FemalePresenter>
                 new CategoryAdapter.CategoryListener() {
                     @Override
                     public void clickNovel(String novelName) {
+                        if (mRefreshSrv.isRefreshing()) {
+                            return;
+                        }
+                        if (!NetUtil.hasInternet(getActivity())) {
+                            showShortToast("当前无网络，请检查网络后重试");
+                            return;
+                        }
                         // 跳转到该小说的搜索结果页
                         Intent intent = new Intent(getActivity(), SearchActivity.class);
                         intent.putExtra(SearchActivity.KEY_NOVEL_NAME, novelName);
@@ -198,6 +251,13 @@ public class FemaleFragment extends BaseTabFragment<FemalePresenter>
 
                     @Override
                     public void clickMore(int position) {
+                        if (mRefreshSrv.isRefreshing()) {
+                            return;
+                        }
+                        if (!NetUtil.hasInternet(getActivity())) {
+                            showShortToast("当前无网络，请检查网络后重试");
+                            return;
+                        }
                         int gender = 1;
                         String major;
                         switch (position) {

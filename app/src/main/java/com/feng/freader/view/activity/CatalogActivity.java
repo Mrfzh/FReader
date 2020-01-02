@@ -23,6 +23,7 @@ import com.feng.freader.entity.eventbus.Event;
 import com.feng.freader.entity.eventbus.HoldReadActivityEvent;
 import com.feng.freader.http.UrlObtainer;
 import com.feng.freader.presenter.CatalogPresenter;
+import com.feng.freader.util.NetUtil;
 import com.feng.freader.util.StatusBarUtil;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -143,6 +144,10 @@ public class CatalogActivity extends BaseActivity<CatalogPresenter>
         mCatalogAdapter.setOnCatalogListener(new CatalogAdapter.CatalogListener() {
             @Override
             public void clickItem(int position) {
+                if (!NetUtil.hasInternet(CatalogActivity.this)) {
+                    showShortToast("当前无网络，请检查网络后重试");
+                    return;
+                }
                 // 点击 item，跳转到相应小说阅读页
                 Intent intent = new Intent(CatalogActivity.this, ReadActivity.class);
                 intent.putExtra(ReadActivity.KEY_NOVEL_URL, mUrl);

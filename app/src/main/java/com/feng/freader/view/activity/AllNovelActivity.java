@@ -1,7 +1,9 @@
 package com.feng.freader.view.activity;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.feng.freader.R;
+import com.feng.freader.adapter.EmptyAdapter;
 import com.feng.freader.adapter.NovelAdapter;
 import com.feng.freader.adapter.ScreenAdapter;
 import com.feng.freader.base.BaseActivity;
@@ -45,6 +48,7 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
     private ImageView mScreenIv;
     private RecyclerView mNovelListRv;
     private ProgressBar mProgressBar;
+    private SwipeRefreshLayout mRefreshSrv;
 
     private View mFrontBgV;
     private RelativeLayout mScreenRv;
@@ -371,6 +375,8 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
                 }
             }
         }));
+        mNovelListRv.setAdapter(new EmptyAdapter());
+
         mProgressBar = findViewById(R.id.pb_all_novel);
 
         mFrontBgV = findViewById(R.id.v_all_novel_front_bg);
@@ -407,6 +413,23 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
         mCancelTv.setOnClickListener(this);
         mEnsureTv = findViewById(R.id.tv_all_novel_screen_ensure);
         mEnsureTv.setOnClickListener(this);
+
+        mRefreshSrv = findViewById(R.id.srv_all_novel_refresh);
+        mRefreshSrv.setColorSchemeColors(getResources().getColor(R.color.colorAccent));   //设置颜色
+        mRefreshSrv.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //刷新时的操作
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // 请求小说信息
+                        mCurrStart = 0;
+                        requestNovels(false);
+                    }
+                }, 500);
+            }
+        });
     }
 
     @Override
@@ -414,13 +437,13 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
         StatusBarUtil.setDarkColorStatusBar(this);
         getWindow().setStatusBarColor(getResources().getColor(R.color.all_novel_top_bar_bg));
         // 请求小说信息
-        requestNovels();
+        requestNovels(true);
     }
 
     /**
      * 请求小说信息
      */
-    private void requestNovels() {
+    private void requestNovels(boolean showProgressBar) {
         RequestCNData requestCNData = new RequestCNData();
         requestCNData.setGender(mGenderList.get(mGender));
         requestCNData.setMajor(mMajor);
@@ -429,7 +452,7 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
         requestCNData.setStart(mCurrStart);
         requestCNData.setNum(Constant.NOVEL_PAGE_NUM);
         mIsSearching = true;
-        if (!mIsLoadingMore) {
+        if (showProgressBar && !mIsLoadingMore) {
             mProgressBar.setVisibility(View.VISIBLE);
         }
         mPresenter.getNovels(requestCNData);
@@ -477,7 +500,7 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
                 mType = mTempType;
                 mCurrStart = 0;
                 // 查找小说信息
-                requestNovels();
+                requestNovels(true);
                 break;
             default:
                 break;
@@ -490,7 +513,9 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
     @Override
     public void getNovelsSuccess(List<ANNovelData> dataList, boolean isEnd) {
         mProgressBar.setVisibility(View.GONE);
+        mRefreshSrv.setRefreshing(false);
         mIsSearching = false;
+
         mIsToEnd = isEnd;
         // 更新列表数据
         if (mIsLoadingMore) {   // 加载更多
@@ -510,12 +535,15 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
                                 // 加载下一页
                                 mCurrStart += Constant.NOVEL_PAGE_NUM;
                                 mIsLoadingMore = true;
-                                requestNovels();
+                                requestNovels(true);
                             }
                         },
                         new NovelAdapter.NovelListener() {
                             @Override
                             public void clickItem(String novelName) {
+                                if (mRefreshSrv.isRefreshing()) {
+                                    return;
+                                }
                                 if (mIsSearching) {
                                     return;
                                 }
@@ -544,7 +572,9 @@ public class AllNovelActivity extends BaseActivity<AllNovelPresenter>
     @Override
     public void getNovelsError(String errorMsg) {
         mProgressBar.setVisibility(View.GONE);
+        mRefreshSrv.setRefreshing(false);
         mIsSearching = false;
+
         showShortToast("加载数据失败");
         Log.d(TAG, "getNovelsError: " + errorMsg);
         if (mIsLoadingMore) {
