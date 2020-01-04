@@ -20,15 +20,15 @@
 
 图片经过压缩后可能比较模糊，请见谅
 
-![freader-1.png](https://upload-images.jianshu.io/upload_images/13178635-821ba14445343fe3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![freader-1.png](https://upload-images.jianshu.io/upload_images/13178635-a316e72fedadaa2f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-![freader-2.jpg](https://upload-images.jianshu.io/upload_images/13178635-64b750d6cfda2171.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![freader-2.jpg](https://upload-images.jianshu.io/upload_images/13178635-cca7c1301087ba11.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-![freader-3.png](https://upload-images.jianshu.io/upload_images/13178635-7129bdb6e237256f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![freader-3.png](https://upload-images.jianshu.io/upload_images/13178635-c4cdddb0b1824133.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-![freader-4.png](https://upload-images.jianshu.io/upload_images/13178635-6754d546ade36d35.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![freader-4.png](https://upload-images.jianshu.io/upload_images/13178635-874b63785914e05f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-![freader-5.png](https://upload-images.jianshu.io/upload_images/13178635-785ba4768e1a346a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![freader-5.png](https://upload-images.jianshu.io/upload_images/13178635-cb1acdd280fc4d23.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 # 最后
 
