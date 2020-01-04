@@ -40,4 +40,20 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     // jsoup
     implementation 'org.jsoup:jsoup:1.12.1'
+
+//    implementation 'cn.bmob.android:bmob-sdk:3.6.3'
+//    implementation 'cn.bmob.android:http-legacy:1.0'
+
+//    implementation( 'com.squareup.okhttp3:okhttp:3.10.0') {
+//        exclude group: 'com.squareup.okhttp3' exclude group: 'com.squareup.okio'
+//    }
+//    implementation('cn.bmob.android:bmob-sdk:3.6.3') {
+//        exclude group: 'com.squareup.okhttp3'
+//        exclude group: 'com.squareup.okio'
+//        exclude group: 'com.google.code.gson'
+//    }
+
+    implementation 'cn.bmob.android:bmob-sdk:3.7.3-rc1'
+    implementation "io.reactivex.rxjava2:rxjava:2.2.2"
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
 }

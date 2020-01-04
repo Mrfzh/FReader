@@ -17,14 +17,10 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".view.activity.AllNovelActivity">
-
-        </activity>
+        <activity android:name=".view.activity.AllNovelActivity"></activity>
         <activity android:name=".view.activity.EpubCatalogActivity" />
         <activity android:name=".view.activity.CatalogActivity" />
-        <activity android:name=".test.TestActivity" >
-
-        </activity>
+        <activity android:name=".test.TestActivity"></activity>
         <activity android:name=".view.activity.SearchActivity" />
         <activity
             android:name=".view.activity.MainActivity"
@@ -41,6 +37,11 @@
         <activity
             android:name=".view.activity.ReadActivity"
             android:theme="@style/TransparentStatusBarTheme" />
+
+        <provider
+            android:name="cn.bmob.v3.util.BmobContentProvider"
+            android:authorities="com.feng.freader.BmobContentProvider">
+        </provider>
     </application>
 
 </manifest>

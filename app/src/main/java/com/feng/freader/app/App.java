@@ -2,10 +2,11 @@ package com.feng.freader.app;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.StrictMode;
 
-import com.feng.freader.BuildConfig;
 import com.feng.freader.util.CrashHandler;
+
+import cn.bmob.v3.Bmob;
+import cn.bmob.v3.update.BmobUpdateAgent;
 
 /**
  * @author Feng Zhaohao
@@ -23,6 +24,9 @@ public class App extends Application {
         crashHandler.init();
 
         context = getApplicationContext();
+
+        Bmob.initialize(this, "ce63bdbbd4197409b82920b0835a42eb");
+        BmobUpdateAgent.setUpdateCheckConfig(false);
     }
 
     public static Context getContext() {
