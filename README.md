@@ -20,15 +20,15 @@
 
 图片经过压缩后可能比较模糊，请见谅
 
-![](https://user-gold-cdn.xitu.io/2020/1/4/16f6fa9cdb56ede1?w=721&h=630&f=png&s=121379)
+![freader-1.png](https://upload-images.jianshu.io/upload_images/13178635-a316e72fedadaa2f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-![](https://user-gold-cdn.xitu.io/2020/1/4/16f6fa9ed188ea86?w=721&h=539&f=jpeg&s=54271)
+![freader-2.jpg](https://upload-images.jianshu.io/upload_images/13178635-cca7c1301087ba11.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-![](https://user-gold-cdn.xitu.io/2020/1/4/16f6faa23e172e42?w=721&h=652&f=png&s=55188)
+![freader-3.png](https://upload-images.jianshu.io/upload_images/13178635-c4cdddb0b1824133.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-![](https://user-gold-cdn.xitu.io/2020/1/4/16f6faa43deac941?w=721&h=599&f=png&s=88346)
+![freader-4.png](https://upload-images.jianshu.io/upload_images/13178635-874b63785914e05f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-![](https://user-gold-cdn.xitu.io/2020/1/4/16f6faa6117d27df?w=721&h=593&f=png&s=79746)
+![freader-5.png](https://upload-images.jianshu.io/upload_images/13178635-cb1acdd280fc4d23.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 # 最后
 
