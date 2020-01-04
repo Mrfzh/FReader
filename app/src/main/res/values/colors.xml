@@ -149,6 +149,8 @@
     <color name="read_theme_3_back_text">#33D3D2CD</color>
     <color name="read_theme_4_back_bg">#B69A96</color>
     <color name="read_theme_4_back_text">#33453417</color>
+    <color name="read_night_mode_back_bg">#010101</color>
+    <color name="read_night_mode_back_text">#33676A71</color>
 
     <!-- item_category -->
     <color name="item_category_top_bar">#f6f6f6</color>

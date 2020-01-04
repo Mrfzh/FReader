@@ -1032,6 +1032,8 @@ public class ReadActivity extends BaseActivity<ReadPresenter>
         mStateTv.setTextColor(getResources().getColor(R.color.read_night_mode_text));
         mPageView.setBgColor(getResources().getColor(R.color.read_night_mode_bg));
         mPageView.setTextColor(getResources().getColor(R.color.read_night_mode_text));
+        mPageView.setBackBgColor(getResources().getColor(R.color.read_night_mode_back_bg));
+        mPageView.setBackTextColor(getResources().getColor(R.color.read_night_mode_back_text));
         mPageView.post(new Runnable() {
             @Override
             public void run() {
