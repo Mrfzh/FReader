@@ -20,15 +20,16 @@
 
 图片经过压缩后可能比较模糊，请见谅
 
-![](https://i.ibb.co/bPsbxTh/freader-1.png)
+![](https://img-blog.csdnimg.cn/2020010415064197.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Z6aGhzYQ==,size_16,color_FFFFFF,t_70)
 
-![](https://i.ibb.co/ykLZC4F/freader-2.png)
+![](https://img-blog.csdnimg.cn/2020010415070932.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Z6aGhzYQ==,size_16,color_FFFFFF,t_70)
 
-![](https://i.ibb.co/NFfBwk6/freader-3.png)
+![](https://img-blog.csdnimg.cn/20200104150748747.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Z6aGhzYQ==,size_16,color_FFFFFF,t_70)
 
-![](https://i.ibb.co/7Xp6PN2/freader-4.png)
+![](https://img-blog.csdnimg.cn/2020010415075925.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Z6aGhzYQ==,size_16,color_FFFFFF,t_70)
 
-![](https://i.ibb.co/b5yWNTQ/freader-5.png)
+![](https://img-blog.csdnimg.cn/20200104150818634.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Z6aGhzYQ==,size_16,color_FFFFFF,t_70)
+
 
 # 最后
 
