@@ -20,16 +20,15 @@
 
 图片经过压缩后可能比较模糊，请见谅
 
-![](https://img-blog.csdnimg.cn/2020010415064197.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Z6aGhzYQ==,size_16,color_FFFFFF,t_70)
+![freader-1.png](https://upload-images.jianshu.io/upload_images/13178635-821ba14445343fe3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-![](https://img-blog.csdnimg.cn/2020010415070932.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Z6aGhzYQ==,size_16,color_FFFFFF,t_70)
+![freader-2.jpg](https://upload-images.jianshu.io/upload_images/13178635-64b750d6cfda2171.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-![](https://img-blog.csdnimg.cn/20200104150748747.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Z6aGhzYQ==,size_16,color_FFFFFF,t_70)
+![freader-3.png](https://upload-images.jianshu.io/upload_images/13178635-7129bdb6e237256f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-![](https://img-blog.csdnimg.cn/2020010415075925.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Z6aGhzYQ==,size_16,color_FFFFFF,t_70)
+![freader-4.png](https://upload-images.jianshu.io/upload_images/13178635-6754d546ade36d35.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-![](https://img-blog.csdnimg.cn/20200104150818634.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Z6aGhzYQ==,size_16,color_FFFFFF,t_70)
-
+![freader-5.png](https://upload-images.jianshu.io/upload_images/13178635-785ba4768e1a346a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 # 最后
 
