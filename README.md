@@ -20,15 +20,16 @@
 
 图片经过压缩后可能比较模糊，请见谅
 
-![](https://user-gold-cdn.xitu.io/2020/1/4/16f6fa9cdb56ede1?w=721&h=630&f=png&s=121379)
+![](https://i.ibb.co/yhzb8rY/freader-1.png)
 
-![](https://user-gold-cdn.xitu.io/2020/1/4/16f6fa9ed188ea86?w=721&h=539&f=jpeg&s=54271)
+![](https://i.ibb.co/zsPXN1j/freader-2.jpg)
 
-![](https://user-gold-cdn.xitu.io/2020/1/4/16f6faa23e172e42?w=721&h=652&f=png&s=55188)
+![](https://i.ibb.co/ypWhCm1/freader-3.png)
 
-![](https://user-gold-cdn.xitu.io/2020/1/4/16f6faa43deac941?w=721&h=599&f=png&s=88346)
+![](https://i.ibb.co/J7jYKj7/freader-4.png)
 
-![](https://user-gold-cdn.xitu.io/2020/1/4/16f6faa6117d27df?w=721&h=593&f=png&s=79746)
+![](https://i.ibb.co/QM58TGK/freader-5.png)
+
 
 # 最后
 
