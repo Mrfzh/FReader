@@ -35,6 +35,7 @@ import java.util.List;
 public class PressFragment extends BaseTabFragment<PressPresenter>
         implements IPressContract.View {
     private static final String TAG = "PressFragment";
+//    private static final String TAG = "TestFragment";
 
     private RecyclerView mCategoryNovelRv;
     private ProgressBar mProgressBar;
@@ -44,6 +45,10 @@ public class PressFragment extends BaseTabFragment<PressPresenter>
     private List<String> mCategoryNameList = new ArrayList<>();
     private List<String> mMoreList = new ArrayList<>();
     private List<DiscoveryNovelData> mNovelDataList = new ArrayList<>();
+
+    private boolean mIsVisited = false;
+    private boolean mIsLoadedData = false;
+    private boolean mIsCreatedView = false;
 
     @Override
     protected int getLayoutId() {
@@ -87,8 +92,25 @@ public class PressFragment extends BaseTabFragment<PressPresenter>
 
     @Override
     protected void doInOnCreate() {
-        requestUpdate();
-        mProgressBar.setVisibility(View.VISIBLE);
+        mIsCreatedView = true;
+        if (mIsVisited && !mIsLoadedData) {
+            requestUpdate();
+            mProgressBar.setVisibility(View.VISIBLE);
+            mIsLoadedData = true;
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            mIsVisited = true;
+        }
+        if (mIsVisited && !mIsLoadedData && mIsCreatedView) {
+            requestUpdate();
+            mProgressBar.setVisibility(View.VISIBLE);
+            mIsLoadedData = true;
+        }
     }
 
     private void requestUpdate() {
@@ -115,20 +137,16 @@ public class PressFragment extends BaseTabFragment<PressPresenter>
      */
     @Override
     public void getCategoryNovelsSuccess(List<DiscoveryNovelData> dataList) {
-        Log.d(TAG, "getCategoryNovelsSuccess: run");
         mProgressBar.setVisibility(View.GONE);
         mRefreshSrv.setRefreshing(false);
 
         if (dataList.isEmpty()) {
-            Log.d(TAG, "getCategoryNovelsSuccess: run 2");
             return;
         }
         if (mCategoryAdapter == null) {
-            Log.d(TAG, "getCategoryNovelsSuccess: run 3");
             mNovelDataList = dataList;
             initCategoryAdapter();
         } else {
-            Log.d(TAG, "getCategoryNovelsSuccess: run 4");
             mNovelDataList.clear();
             mNovelDataList.addAll(dataList);
             mCategoryAdapter.notifyDataSetChanged();
@@ -140,13 +158,11 @@ public class PressFragment extends BaseTabFragment<PressPresenter>
      */
     @Override
     public void getCategoryNovelsError(String errorMsg) {
-        Log.d(TAG, "getCategoryNovelsError: run");
         mProgressBar.setVisibility(View.GONE);
         mRefreshSrv.setRefreshing(false);
     }
 
     private void initCategoryAdapter() {
-        Log.d(TAG, "initCategoryAdapter: run 1");
         mCategoryAdapter = new CategoryAdapter(getActivity(),
                 mCategoryNameList, mMoreList, mNovelDataList,
                 new CategoryAdapter.CategoryListener() {
@@ -197,7 +213,6 @@ public class PressFragment extends BaseTabFragment<PressPresenter>
                         startActivity(intent);
                     }
                 });
-        Log.d(TAG, "initCategoryAdapter: run 2");
         mCategoryNovelRv.setAdapter(mCategoryAdapter);
     }
 }

@@ -35,6 +35,7 @@ import java.util.List;
  */
 public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMaleContract.View {
     private static final String TAG = "MaleFragment";
+//    private static final String TAG = "TestFragment";
 
     private RecyclerView mHotRankRv;
     private RecyclerView mCategoryNovelRv;
@@ -48,6 +49,10 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
     private List<String> mCategoryNameList = new ArrayList<>();
     private List<String> mMoreList = new ArrayList<>();
     private List<DiscoveryNovelData> mNovelDataList = new ArrayList<>();
+
+    private boolean mIsVisited = false;
+    private boolean mIsLoadedData = false;
+    private boolean mIsCreatedView = false;
 
     @Override
     protected int getLayoutId() {
@@ -94,8 +99,25 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
 
     @Override
     protected void doInOnCreate() {
-        requestUpdate();
-        mProgressBar.setVisibility(View.VISIBLE);
+        mIsCreatedView = true;
+        if (mIsVisited && !mIsLoadedData) {
+            requestUpdate();
+            mProgressBar.setVisibility(View.VISIBLE);
+            mIsLoadedData = true;
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            mIsVisited = true;
+        }
+        if (mIsVisited && !mIsLoadedData && mIsCreatedView) {
+            requestUpdate();
+            mProgressBar.setVisibility(View.VISIBLE);
+            mIsLoadedData = true;
+        }
     }
 
     private void requestUpdate() {
