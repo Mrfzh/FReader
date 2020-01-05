@@ -20,16 +20,15 @@
 
 图片经过压缩后可能比较模糊，请见谅
 
-![](https://i.ibb.co/yhzb8rY/freader-1.png)
+![freader-1.png](https://upload-images.jianshu.io/upload_images/13178635-a316e72fedadaa2f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-![](https://i.ibb.co/zsPXN1j/freader-2.jpg)
+![freader-2.jpg](https://upload-images.jianshu.io/upload_images/13178635-cca7c1301087ba11.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-![](https://i.ibb.co/ypWhCm1/freader-3.png)
+![freader-3.png](https://upload-images.jianshu.io/upload_images/13178635-c4cdddb0b1824133.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-![](https://i.ibb.co/J7jYKj7/freader-4.png)
+![freader-4.png](https://upload-images.jianshu.io/upload_images/13178635-874b63785914e05f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-![](https://i.ibb.co/QM58TGK/freader-5.png)
-
+![freader-5.png](https://upload-images.jianshu.io/upload_images/13178635-cb1acdd280fc4d23.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 # 最后
 
