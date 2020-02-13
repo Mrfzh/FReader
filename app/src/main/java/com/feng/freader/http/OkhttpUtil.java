@@ -20,7 +20,18 @@ import okhttp3.Response;
 public class OkhttpUtil {
 
     //创建OkHttpClient
-    private static OkHttpClient okHttpClient = new OkHttpClient();
+    private static volatile OkHttpClient okHttpClient;
+
+    private static OkHttpClient getOkHttpClient() {
+        if (okHttpClient == null) {
+            synchronized (OkhttpUtil.class) {
+                if (okHttpClient == null) {
+                    okHttpClient = new OkHttpClient();
+                }
+            }
+        }
+        return okHttpClient;
+    }
 
     public static void getRequest(String url, final OkhttpCall okhttpCall) {
         //创建Request
@@ -28,7 +39,7 @@ public class OkhttpUtil {
                 .url(url)
                 .build();
         //创建Call
-        Call call = okHttpClient.newCall(request);
+        Call call = getOkHttpClient().newCall(request);
         //调用Call的enqueue方法，该方法的回调是在子线程
         call.enqueue(new Callback() {
             @Override
