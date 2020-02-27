@@ -1,5 +1,6 @@
 package com.feng.freader.entity.data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -8,7 +9,10 @@ import java.util.List;
  * @author Feng Zhaohao
  * Created on 2019/12/20
  */
-public class DiscoveryNovelData {
+public class DiscoveryNovelData implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private List<String> novelNameList;
     private List<String> coverUrlList;
 

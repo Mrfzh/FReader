@@ -19,10 +19,12 @@ import com.feng.freader.constant.Constant;
 import com.feng.freader.constract.IPressContract;
 import com.feng.freader.entity.data.DiscoveryNovelData;
 import com.feng.freader.presenter.PressPresenter;
+import com.feng.freader.util.ACache;
 import com.feng.freader.util.NetUtil;
 import com.feng.freader.view.activity.AllNovelActivity;
 import com.feng.freader.view.activity.SearchActivity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +39,8 @@ public class PressFragment extends BaseTabFragment<PressPresenter>
     private static final String TAG = "PressFragment";
 //    private static final String TAG = "TestFragment";
 
+    private static final String KEY_CACHE_CN = "key_cache_press_cn";
+
     private RecyclerView mCategoryNovelRv;
     private ProgressBar mProgressBar;
     private SwipeRefreshLayout mRefreshSrv;
@@ -49,6 +53,8 @@ public class PressFragment extends BaseTabFragment<PressPresenter>
     private boolean mIsVisited = false;
     private boolean mIsLoadedData = false;
     private boolean mIsCreatedView = false;
+
+    private ACache mCache;
 
     @Override
     protected int getLayoutId() {
@@ -65,6 +71,8 @@ public class PressFragment extends BaseTabFragment<PressPresenter>
         mMoreList.add("更多青春言情");
         mMoreList.add("更多传记名著");
         mMoreList.add("更多人文社科");
+
+        mCache = ACache.get(getActivity());
     }
 
     @Override
@@ -151,6 +159,8 @@ public class PressFragment extends BaseTabFragment<PressPresenter>
             mNovelDataList.addAll(dataList);
             mCategoryAdapter.notifyDataSetChanged();
         }
+
+        mCache.put(KEY_CACHE_CN, (Serializable) dataList);
     }
 
     /**
@@ -160,6 +170,21 @@ public class PressFragment extends BaseTabFragment<PressPresenter>
     public void getCategoryNovelsError(String errorMsg) {
         mProgressBar.setVisibility(View.GONE);
         mRefreshSrv.setRefreshing(false);
+
+        List<DiscoveryNovelData> dataList =
+                (List<DiscoveryNovelData>) mCache.getAsObject(KEY_CACHE_CN);
+
+        if (dataList.isEmpty()) {
+            return;
+        }
+        if (mCategoryAdapter == null) {
+            mNovelDataList = dataList;
+            initCategoryAdapter();
+        } else {
+            mNovelDataList.clear();
+            mNovelDataList.addAll(dataList);
+            mCategoryAdapter.notifyDataSetChanged();
+        }
     }
 
     private void initCategoryAdapter() {

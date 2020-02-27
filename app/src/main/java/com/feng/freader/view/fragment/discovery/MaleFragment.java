@@ -19,10 +19,12 @@ import com.feng.freader.constract.IMaleContract;
 import com.feng.freader.entity.data.DiscoveryNovelData;
 import com.feng.freader.entity.data.HotRankData;
 import com.feng.freader.presenter.MalePresenter;
+import com.feng.freader.util.ACache;
 import com.feng.freader.util.NetUtil;
 import com.feng.freader.view.activity.AllNovelActivity;
 import com.feng.freader.view.activity.SearchActivity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +38,9 @@ import java.util.List;
 public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMaleContract.View {
     private static final String TAG = "MaleFragment";
 //    private static final String TAG = "TestFragment";
+
+    private static final String KEY_CACHE_HR = "key_cache_male_hr";
+    private static final String KEY_CACHE_CN = "key_cache_male_cn";
 
     private RecyclerView mHotRankRv;
     private RecyclerView mCategoryNovelRv;
@@ -54,6 +59,8 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
     private boolean mIsLoadedData = false;
     private boolean mIsCreatedView = false;
 
+    private ACache mCache;
+
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_male;
@@ -67,6 +74,8 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
         mMoreList.add("更多玄幻小说");
         mMoreList.add("更多都市小说");
         mMoreList.add("更多武侠小说");
+
+        mCache = ACache.get(getActivity());
     }
 
     @Override
@@ -157,6 +166,8 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
             mHotRankNovelNameList.addAll(novelNameList);
             mHotRankAdapter.notifyDataSetChanged();
         }
+
+        mCache.put(KEY_CACHE_HR, (Serializable) novelNameList);
     }
 
     /**
@@ -164,7 +175,21 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
      */
     @Override
     public void getHotRankDataError(String errorMsg) {
-
+        Log.d(TAG, "getHotRankDataError: run 1");
+        List<List<String>> novelNameList =
+                (List<List<String>>) mCache.getAsObject(KEY_CACHE_HR);
+        if (novelNameList.isEmpty()) {
+            Log.d(TAG, "getHotRankDataError: run 2");
+            return;
+        }
+        if (mHotRankAdapter == null) {
+            mHotRankNovelNameList = novelNameList;
+            initHotRankAdapter();
+        } else {
+            mHotRankNovelNameList.clear();
+            mHotRankNovelNameList.addAll(novelNameList);
+            mHotRankAdapter.notifyDataSetChanged();
+        }
     }
 
     /**
@@ -186,6 +211,8 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
             mNovelDataList.addAll(dataList);
             mCategoryAdapter.notifyDataSetChanged();
         }
+
+        mCache.put(KEY_CACHE_CN, (Serializable) dataList);
     }
 
     /**
@@ -195,6 +222,20 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
     public void getCategoryNovelsError(String errorMsg) {
         mProgressBar.setVisibility(View.GONE);
         mRefreshSrv.setRefreshing(false);
+
+        List<DiscoveryNovelData> dataList =
+                (List<DiscoveryNovelData>) mCache.getAsObject(KEY_CACHE_CN);
+        if (dataList.isEmpty()) {
+            return;
+        }
+        if (mCategoryAdapter == null) {
+            mNovelDataList = dataList;
+            initCategoryAdapter();
+        } else {
+            mNovelDataList.clear();
+            mNovelDataList.addAll(dataList);
+            mCategoryAdapter.notifyDataSetChanged();
+        }
     }
 
     private void initHotRankAdapter() {
