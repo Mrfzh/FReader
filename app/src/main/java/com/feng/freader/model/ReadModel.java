@@ -11,6 +11,7 @@ import com.feng.freader.entity.bean.DetailedChapterBean;
 import com.feng.freader.entity.data.DetailedChapterData;
 import com.feng.freader.entity.epub.EpubData;
 import com.feng.freader.entity.epub.OpfData;
+import com.feng.freader.http.OkhttpBuilder;
 import com.feng.freader.http.OkhttpCall;
 import com.feng.freader.http.OkhttpUtil;
 import com.feng.freader.util.EpubUtils;
@@ -51,57 +52,65 @@ public class ReadModel implements IReadContract.Model {
 
     @Override
     public void getChapterList(String url) {
-        OkhttpUtil.getRequest(url, new OkhttpCall() {
-            @Override
-            public void onResponse(String json) {   // 得到 json 数据
-                CatalogBean bean = mGson.fromJson(json, CatalogBean.class);
-                if (bean.getCode() != 0) {
-                    mPresenter.getChapterUrlListError("未找到相关数据");
-                    return;
-                }
-                List<String> chapterUrlList = new ArrayList<>();
-                List<String> chapterNameList = new ArrayList<>();
-                List<CatalogBean.ListBean> list = bean.getList();
-                for (CatalogBean.ListBean item : list) {
-                    chapterUrlList.add(item.getUrl());
-                    chapterNameList.add(item.getNum());
-                }
-                mPresenter.getChapterUrlListSuccess(chapterUrlList, chapterNameList);
-            }
+        OkhttpBuilder builder = new OkhttpBuilder.Builder()
+                .setUrl(url)
+                .setOkhttpCall(new OkhttpCall() {
+                    @Override
+                    public void onResponse(String json) {   // 得到 json 数据
+                        CatalogBean bean = mGson.fromJson(json, CatalogBean.class);
+                        if (bean.getCode() != 0) {
+                            mPresenter.getChapterUrlListError("未找到相关数据");
+                            return;
+                        }
+                        List<String> chapterUrlList = new ArrayList<>();
+                        List<String> chapterNameList = new ArrayList<>();
+                        List<CatalogBean.ListBean> list = bean.getList();
+                        for (CatalogBean.ListBean item : list) {
+                            chapterUrlList.add(item.getUrl());
+                            chapterNameList.add(item.getNum());
+                        }
+                        mPresenter.getChapterUrlListSuccess(chapterUrlList, chapterNameList);
+                    }
 
-            @Override
-            public void onFailure(String errorMsg) {
-                mPresenter.getChapterUrlListError(errorMsg);
-            }
-        });
+                    @Override
+                    public void onFailure(String errorMsg) {
+                        mPresenter.getChapterUrlListError(errorMsg);
+                    }
+                })
+                .build();
+        OkhttpUtil.getRequest(builder);
     }
 
     @Override
     public void getDetailedChapterData(String url) {
-        OkhttpUtil.getRequest(url, new OkhttpCall() {
-            @Override
-            public void onResponse(String json) {   // 得到 json 数据
-                DetailedChapterBean bean = mGson.fromJson(json, DetailedChapterBean.class);
-                if (bean.getCode() != 0) {
-                    mPresenter.getDetailedChapterDataError("未找到相关数据");
-                    return;
-                }
-                StringBuilder contentBuilder = new StringBuilder();
-                contentBuilder.append("    ");
-                for (String s : bean.getContent()) {
-                    contentBuilder.append(s);
-                    contentBuilder.append("\n");
-                }
-                DetailedChapterData data = new DetailedChapterData(bean.getNum(),
-                        contentBuilder.toString());
-                mPresenter.getDetailedChapterDataSuccess(data);
-            }
+        OkhttpBuilder builder = new OkhttpBuilder.Builder()
+                .setUrl(url)
+                .setOkhttpCall(new OkhttpCall() {
+                    @Override
+                    public void onResponse(String json) {   // 得到 json 数据
+                        DetailedChapterBean bean = mGson.fromJson(json, DetailedChapterBean.class);
+                        if (bean.getCode() != 0) {
+                            mPresenter.getDetailedChapterDataError("未找到相关数据");
+                            return;
+                        }
+                        StringBuilder contentBuilder = new StringBuilder();
+                        contentBuilder.append("    ");
+                        for (String s : bean.getContent()) {
+                            contentBuilder.append(s);
+                            contentBuilder.append("\n");
+                        }
+                        DetailedChapterData data = new DetailedChapterData(bean.getNum(),
+                                contentBuilder.toString());
+                        mPresenter.getDetailedChapterDataSuccess(data);
+                    }
 
-            @Override
-            public void onFailure(String errorMsg) {
-                mPresenter.getDetailedChapterDataError(errorMsg);
-            }
-        });
+                    @Override
+                    public void onFailure(String errorMsg) {
+                        mPresenter.getDetailedChapterDataError(errorMsg);
+                    }
+                })
+                .build();
+        OkhttpUtil.getRequest(builder);
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.feng.freader.constract.IMaleContract;
 import com.feng.freader.entity.bean.CategoryNovelsBean;
 import com.feng.freader.entity.bean.HotRankBean;
 import com.feng.freader.entity.data.DiscoveryNovelData;
+import com.feng.freader.http.OkhttpBuilder;
 import com.feng.freader.http.OkhttpCall;
 import com.feng.freader.http.OkhttpUtil;
 import com.feng.freader.http.UrlObtainer;
@@ -42,42 +43,46 @@ public class MaleModel implements IMaleContract.Model {
             novelNameList.add(new ArrayList<String>());
             String url = UrlObtainer.getRankNovels(Constant.MALE_HOT_RANK_ID.get(i));
             final int finalI = i;
-            OkhttpUtil.getRequest(url, new OkhttpCall() {
-                @Override
-                public void onResponse(String json) {   // 得到 json 数据
-                    HotRankBean bean = mGson.fromJson(json, HotRankBean.class);
-                    if (bean.isOk()) {
-                        List<HotRankBean.RankingBean.BooksBean> books = bean.getRanking().getBooks();
-                        List<String> list = novelNameList.get(finalI);
-                        for (int j = 0; j < Math.min(RANK_NOVEL_NUM, books.size()); j++) {
-                            list.add(books.get(j).getTitle());
-                        }
-                    }
-                    findCount[0]++;
-                    if (findCount[0] == Constant.MALE_HOT_RANK_NUM) {
-                        boolean isSucceed = true;
-                        for (int j = 0; j < novelNameList.size(); j++) {
-                            if (novelNameList.get(j).isEmpty()) {
-                                isSucceed = false;
+            OkhttpBuilder builder = new OkhttpBuilder.Builder()
+                    .setUrl(url)
+                    .setOkhttpCall(new OkhttpCall() {
+                        @Override
+                        public void onResponse(String json) {   // 得到 json 数据
+                            HotRankBean bean = mGson.fromJson(json, HotRankBean.class);
+                            if (bean.isOk()) {
+                                List<HotRankBean.RankingBean.BooksBean> books = bean.getRanking().getBooks();
+                                List<String> list = novelNameList.get(finalI);
+                                for (int j = 0; j < Math.min(RANK_NOVEL_NUM, books.size()); j++) {
+                                    list.add(books.get(j).getTitle());
+                                }
+                            }
+                            findCount[0]++;
+                            if (findCount[0] == Constant.MALE_HOT_RANK_NUM) {
+                                boolean isSucceed = true;
+                                for (int j = 0; j < novelNameList.size(); j++) {
+                                    if (novelNameList.get(j).isEmpty()) {
+                                        isSucceed = false;
+                                    }
+                                }
+                                if (isSucceed) {
+                                    mPresenter.getHotRankDataSuccess(novelNameList);
+                                } else {
+                                    mPresenter.getHotRankDataError("获取数据失败");
+                                }
                             }
                         }
-                        if (isSucceed) {
-                            mPresenter.getHotRankDataSuccess(novelNameList);
-                        } else {
-                            mPresenter.getHotRankDataError("获取数据失败");
-                        }
-                    }
-                }
 
-                @Override
-                public void onFailure(String errorMsg) {
-                    Log.d(TAG, "getHotRankData onFailure: " + errorMsg);
-                    findCount[0]++;
-                    if (findCount[0] == Constant.MALE_HOT_RANK_NUM) {
-                        mPresenter.getHotRankDataError("获取数据失败");
-                    }
-                }
-            });
+                        @Override
+                        public void onFailure(String errorMsg) {
+                            Log.d(TAG, "getHotRankData onFailure: " + errorMsg);
+                            findCount[0]++;
+                            if (findCount[0] == Constant.MALE_HOT_RANK_NUM) {
+                                mPresenter.getHotRankDataError("获取数据失败");
+                            }
+                        }
+                    })
+                    .build();
+            OkhttpUtil.getRequest(builder);
         }
     }
 
@@ -97,48 +102,52 @@ public class MaleModel implements IMaleContract.Model {
                     majorList.get(i), num);
             dataList.add(null);
             final int finalI = i;
-            OkhttpUtil.getRequest(url, new OkhttpCall() {
-                @Override
-                public void onResponse(String json) {   // 得到 json 数据
-                    finishCount[0]++;
-                    CategoryNovelsBean bean = mGson.fromJson(json, CategoryNovelsBean.class);
-                    if (bean.isOk()) {
-                        DiscoveryNovelData discoveryNovelData = new DiscoveryNovelData();
-                        List<CategoryNovelsBean.BooksBean> books = bean.getBooks();
-                        List<String> novelNameList = new ArrayList<>();
-                        List<String> coverUrlList = new ArrayList<>();
-                        for (int j = 0; j < Math.min(books.size(), num); j++) {
-                            novelNameList.add(books.get(j).getTitle());
-                            coverUrlList.add("http://statics.zhuishushenqi.com" + books.get(j).getCover());
-                        }
-                        discoveryNovelData.setNovelNameList(novelNameList);
-                        discoveryNovelData.setCoverUrlList(coverUrlList);
-                        dataList.set(finalI, discoveryNovelData);
-                    }
-                    if (finishCount[0] == n) {
-                        boolean hasFinished = true;
-                        for (int j = 0; j < n; j++) {
-                            if (dataList.get(j) == null) {
-                                hasFinished = false;
-                                mPresenter.getCategoryNovelsError("获取分类小说失败");
-                                break;
+            OkhttpBuilder builder = new OkhttpBuilder.Builder()
+                    .setUrl(url)
+                    .setOkhttpCall(new OkhttpCall() {
+                        @Override
+                        public void onResponse(String json) {   // 得到 json 数据
+                            finishCount[0]++;
+                            CategoryNovelsBean bean = mGson.fromJson(json, CategoryNovelsBean.class);
+                            if (bean.isOk()) {
+                                DiscoveryNovelData discoveryNovelData = new DiscoveryNovelData();
+                                List<CategoryNovelsBean.BooksBean> books = bean.getBooks();
+                                List<String> novelNameList = new ArrayList<>();
+                                List<String> coverUrlList = new ArrayList<>();
+                                for (int j = 0; j < Math.min(books.size(), num); j++) {
+                                    novelNameList.add(books.get(j).getTitle());
+                                    coverUrlList.add("http://statics.zhuishushenqi.com" + books.get(j).getCover());
+                                }
+                                discoveryNovelData.setNovelNameList(novelNameList);
+                                discoveryNovelData.setCoverUrlList(coverUrlList);
+                                dataList.set(finalI, discoveryNovelData);
+                            }
+                            if (finishCount[0] == n) {
+                                boolean hasFinished = true;
+                                for (int j = 0; j < n; j++) {
+                                    if (dataList.get(j) == null) {
+                                        hasFinished = false;
+                                        mPresenter.getCategoryNovelsError("获取分类小说失败");
+                                        break;
+                                    }
+                                }
+                                if (hasFinished) {
+                                    mPresenter.getCategoryNovelsSuccess(dataList);
+                                }
                             }
                         }
-                        if (hasFinished) {
-                            mPresenter.getCategoryNovelsSuccess(dataList);
-                        }
-                    }
-                }
 
-                @Override
-                public void onFailure(String errorMsg) {
-                    finishCount[0]++;
-                    Log.d(TAG, "getCategoryNovels onFailure: " + errorMsg);
-                    if (finishCount[0] == n) {
-                        mPresenter.getCategoryNovelsError("获取分类小说失败");
-                    }
-                }
-            });
+                        @Override
+                        public void onFailure(String errorMsg) {
+                            finishCount[0]++;
+                            Log.d(TAG, "getCategoryNovels onFailure: " + errorMsg);
+                            if (finishCount[0] == n) {
+                                mPresenter.getCategoryNovelsError("获取分类小说失败");
+                            }
+                        }
+                    })
+                    .build();
+            OkhttpUtil.getRequest(builder);
         }
     }
 

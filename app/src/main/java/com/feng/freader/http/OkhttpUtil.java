@@ -33,10 +33,10 @@ public class OkhttpUtil {
         return okHttpClient;
     }
 
-    public static void getRequest(String url, final OkhttpCall okhttpCall) {
+    public static void getRequest(final OkhttpBuilder okhttpBuilder) {
         //创建Request
         Request request = new Request.Builder()
-                .url(url)
+                .url(okhttpBuilder.url)
                 .build();
         //创建Call
         Call call = getOkHttpClient().newCall(request);
@@ -47,7 +47,7 @@ public class OkhttpUtil {
                 doInUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        okhttpCall.onFailure(e.getMessage());
+                        okhttpBuilder.okhttpCall.onFailure(e.getMessage());
                     }
                 });
             }
@@ -59,14 +59,14 @@ public class OkhttpUtil {
                     doInUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            okhttpCall.onResponse(data);
+                            okhttpBuilder.okhttpCall.onResponse(data);
                         }
                     });
                 } catch (final IOException e) {
                     doInUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            okhttpCall.onFailure(e.getMessage());
+                            okhttpBuilder.okhttpCall.onFailure(e.getMessage());
                         }
                     });
                 }

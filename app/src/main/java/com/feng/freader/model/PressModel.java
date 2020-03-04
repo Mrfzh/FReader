@@ -6,6 +6,7 @@ import com.feng.freader.constant.Constant;
 import com.feng.freader.constract.IPressContract;
 import com.feng.freader.entity.bean.CategoryNovelsBean;
 import com.feng.freader.entity.data.DiscoveryNovelData;
+import com.feng.freader.http.OkhttpBuilder;
 import com.feng.freader.http.OkhttpCall;
 import com.feng.freader.http.OkhttpUtil;
 import com.feng.freader.http.UrlObtainer;
@@ -44,47 +45,51 @@ public class PressModel implements IPressContract.Model {
                     majorList.get(i), num);
             dataList.add(null);
             final int finalI = i;
-            OkhttpUtil.getRequest(url, new OkhttpCall() {
-                @Override
-                public void onResponse(String json) {   // 得到 json 数据
-                    finishCount[0]++;
-                    CategoryNovelsBean bean = mGson.fromJson(json, CategoryNovelsBean.class);
-                    if (bean.isOk()) {
-                        DiscoveryNovelData discoveryNovelData = new DiscoveryNovelData();
-                        List<CategoryNovelsBean.BooksBean> books = bean.getBooks();
-                        List<String> novelNameList = new ArrayList<>();
-                        List<String> coverUrlList = new ArrayList<>();
-                        for (int j = 0; j < Math.min(books.size(), num); j++) {
-                            novelNameList.add(books.get(j).getTitle());
-                            coverUrlList.add("http://statics.zhuishushenqi.com" + books.get(j).getCover());
-                        }
-                        discoveryNovelData.setNovelNameList(novelNameList);
-                        discoveryNovelData.setCoverUrlList(coverUrlList);
-                        dataList.set(finalI, discoveryNovelData);
-                    }
-                    if (finishCount[0] == n) {
-                        boolean hasFinished = true;
-                        for (int j = 0; j < n; j++) {
-                            if (dataList.get(j) == null) {
-                                hasFinished = false;
-                                mPresenter.getCategoryNovelsError("获取分类小说失败");
-                                break;
+            OkhttpBuilder builder = new OkhttpBuilder.Builder()
+                    .setUrl(url)
+                    .setOkhttpCall(new OkhttpCall() {
+                        @Override
+                        public void onResponse(String json) {   // 得到 json 数据
+                            finishCount[0]++;
+                            CategoryNovelsBean bean = mGson.fromJson(json, CategoryNovelsBean.class);
+                            if (bean.isOk()) {
+                                DiscoveryNovelData discoveryNovelData = new DiscoveryNovelData();
+                                List<CategoryNovelsBean.BooksBean> books = bean.getBooks();
+                                List<String> novelNameList = new ArrayList<>();
+                                List<String> coverUrlList = new ArrayList<>();
+                                for (int j = 0; j < Math.min(books.size(), num); j++) {
+                                    novelNameList.add(books.get(j).getTitle());
+                                    coverUrlList.add("http://statics.zhuishushenqi.com" + books.get(j).getCover());
+                                }
+                                discoveryNovelData.setNovelNameList(novelNameList);
+                                discoveryNovelData.setCoverUrlList(coverUrlList);
+                                dataList.set(finalI, discoveryNovelData);
+                            }
+                            if (finishCount[0] == n) {
+                                boolean hasFinished = true;
+                                for (int j = 0; j < n; j++) {
+                                    if (dataList.get(j) == null) {
+                                        hasFinished = false;
+                                        mPresenter.getCategoryNovelsError("获取分类小说失败");
+                                        break;
+                                    }
+                                }
+                                if (hasFinished) {
+                                    mPresenter.getCategoryNovelsSuccess(dataList);
+                                }
                             }
                         }
-                        if (hasFinished) {
-                            mPresenter.getCategoryNovelsSuccess(dataList);
-                        }
-                    }
-                }
 
-                @Override
-                public void onFailure(String errorMsg) {
-                    finishCount[0]++;
-                    if (finishCount[0] == n) {
-                        mPresenter.getCategoryNovelsError("获取分类小说失败");
-                    }
-                }
-            });
+                        @Override
+                        public void onFailure(String errorMsg) {
+                            finishCount[0]++;
+                            if (finishCount[0] == n) {
+                                mPresenter.getCategoryNovelsError("获取分类小说失败");
+                            }
+                        }
+                    })
+                    .build();
+            OkhttpUtil.getRequest(builder);
         }
     }
 }
