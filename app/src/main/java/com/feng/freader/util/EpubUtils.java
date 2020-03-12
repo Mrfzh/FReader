@@ -325,7 +325,7 @@ public class EpubUtils {
                 if (element.text().equals("")) {
                     continue;
                 }
-                builder.append(element.text());
+                builder.append("    ").append(element.text().trim());
                 builder.append("\n");
             }
             // <p> 获取一个段落
@@ -333,7 +333,7 @@ public class EpubUtils {
                 if (element.text().equals("")) {
                     continue;
                 }
-                builder.append(element.text());
+                builder.append("    ").append(element.text().trim());
                 builder.append("\n");
             }
             // <img> 获取图片地址
