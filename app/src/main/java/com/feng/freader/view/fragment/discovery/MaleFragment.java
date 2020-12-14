@@ -178,7 +178,7 @@ public class MaleFragment extends BaseTabFragment<MalePresenter> implements IMal
         Log.d(TAG, "getHotRankDataError: run 1");
         List<List<String>> novelNameList =
                 (List<List<String>>) mCache.getAsObject(KEY_CACHE_HR);
-        if (novelNameList.isEmpty()) {
+        if (novelNameList == null || novelNameList.isEmpty()) {
             Log.d(TAG, "getHotRankDataError: run 2");
             return;
         }

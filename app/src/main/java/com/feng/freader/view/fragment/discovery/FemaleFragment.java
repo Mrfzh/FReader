@@ -178,7 +178,7 @@ public class FemaleFragment extends BaseTabFragment<FemalePresenter>
         List<List<String>> novelNameList =
                 (List<List<String>>) mCache.getAsObject(KEY_CACHE_HR);
 
-        if (novelNameList.isEmpty()) {
+        if (novelNameList == null || novelNameList.isEmpty()) {
             return;
         }
         if (mHotRankAdapter == null) {
