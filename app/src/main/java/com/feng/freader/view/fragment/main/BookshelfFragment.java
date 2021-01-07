@@ -3,10 +3,12 @@ package com.feng.freader.view.fragment.main;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -33,6 +35,7 @@ import com.feng.freader.widget.TipDialog;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -221,8 +224,21 @@ public class BookshelfFragment extends BaseFragment<BookshelfPresenter>
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) { // 选择了才继续
             Uri uri = data.getData();
-            String filePath = FileUtil.uri2FilePath(getActivity(), uri);
-            File file = new File(filePath);
+            File file = null;
+            String filePath;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                file = FileUtil.uri2FileQ(getActivity(), uri);
+                filePath = file.getPath();
+            } else {
+                filePath = FileUtil.uri2FilePath(getActivity(), uri);
+                if (filePath != null) {
+                    file = new File(filePath);
+                }
+            }
+            if (file == null || TextUtils.isEmpty(filePath)) {
+                return;
+            }
+
             String fileName = file.getName();
             Log.d(TAG, "onActivityResult: fileLen = " + file.length());
             String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);  // 后缀名

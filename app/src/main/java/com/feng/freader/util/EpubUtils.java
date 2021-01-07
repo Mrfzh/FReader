@@ -188,8 +188,7 @@ public class EpubUtils {
                                 opfData.setTitle(title);
                                 break;
                             case "meta":
-                                if (pullParser.getAttributeValue(null, "name")
-                                        .equals("cover")) {
+                                if (("cover").equals(pullParser.getAttributeValue(null, "name"))) {
                                     coverId = pullParser.getAttributeValue(null, "content");
                                 }
                                 break;

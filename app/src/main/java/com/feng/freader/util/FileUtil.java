@@ -1,12 +1,17 @@
 package com.feng.freader.util;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
+import android.os.FileUtils;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.feng.freader.constant.Constant;
@@ -14,7 +19,9 @@ import com.feng.freader.constant.Constant;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.RandomAccessFile;
 
 /**
@@ -40,6 +47,40 @@ public class FileUtil {
         }
         
         return filePath;
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    public static File uri2FileQ(Context context, Uri uri) {
+        File file = null;
+        try {
+            //android10以上转换
+            if (uri.getScheme().equals(ContentResolver.SCHEME_FILE)) {
+                file = new File(uri.getPath());
+            } else if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+                //把文件复制到沙盒目录
+                ContentResolver contentResolver = context.getContentResolver();
+                Cursor cursor = contentResolver.query(uri, null, null, null, null);
+                if (cursor.moveToFirst()) {
+                    String displayName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                    try {
+                        InputStream is = contentResolver.openInputStream(uri);
+                        File cache = new File(context.getExternalCacheDir().getAbsolutePath(), Math.round((Math.random() + 1) * 1000) + displayName);
+                        FileOutputStream fos = new FileOutputStream(cache);
+                        FileUtils.copy(is, fos);
+                        file = cache;
+                        fos.close();
+                        is.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+
+        return file;
     }
 
     /**
