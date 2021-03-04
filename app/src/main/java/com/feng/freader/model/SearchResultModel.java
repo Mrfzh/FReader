@@ -38,22 +38,26 @@ public class SearchResultModel implements ISearchResultContract.Model {
                 .setResponse(new Response() {
                     @Override
                     public void success(String response) {
-                        NovelsSourceBean novelsSourceBean = mGson.fromJson(response,
-                                NovelsSourceBean.class);
-                        int code = novelsSourceBean.getCode();
-                        if (code == 0) {
-                            // 请求成功
-                            List<NovelSourceData> novelSourceDataList = new ArrayList<>();
-                            List<NovelsSourceBean.ListBean> list = novelsSourceBean.getList();
-                            for (int i = 0; i < list.size(); i++) {
-                                NovelsSourceBean.ListBean curr = list.get(i);
-                                NovelSourceData novelSourceData = new NovelSourceData(curr.getName(),
-                                        curr.getAuthor(), curr.getIntroduce(), curr.getUrl(), curr.getCover());
-                                novelSourceDataList.add(novelSourceData);
+                        try {
+                            NovelsSourceBean novelsSourceBean = mGson.fromJson(response,
+                                    NovelsSourceBean.class);
+                            int code = novelsSourceBean.getCode();
+                            if (code == 0) {
+                                // 请求成功
+                                List<NovelSourceData> novelSourceDataList = new ArrayList<>();
+                                List<NovelsSourceBean.ListBean> list = novelsSourceBean.getList();
+                                for (int i = 0; i < list.size(); i++) {
+                                    NovelsSourceBean.ListBean curr = list.get(i);
+                                    NovelSourceData novelSourceData = new NovelSourceData(curr.getName(),
+                                            curr.getAuthor(), curr.getIntroduce(), curr.getUrl(), curr.getCover());
+                                    novelSourceDataList.add(novelSourceData);
+                                }
+                                mPresenter.getNovelsSourceSuccess(novelSourceDataList);
+                            } else {
+                                // 请求失败，没有找到相关小说
+                                mPresenter.getNovelsSourceError(Constant.NOT_FOUND_NOVELS);
                             }
-                            mPresenter.getNovelsSourceSuccess(novelSourceDataList);
-                        } else {
-                            // 请求失败，没有找到相关小说
+                        } catch (Throwable t) {
                             mPresenter.getNovelsSourceError(Constant.NOT_FOUND_NOVELS);
                         }
                     }
