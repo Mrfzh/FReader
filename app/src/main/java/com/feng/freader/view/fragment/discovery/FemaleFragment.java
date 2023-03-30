@@ -225,7 +225,7 @@ public class FemaleFragment extends BaseTabFragment<FemalePresenter>
         List<DiscoveryNovelData> dataList =
                 (List<DiscoveryNovelData>) mCache.getAsObject(KEY_CACHE_CN);
 
-        if (dataList.isEmpty()) {
+        if (dataList == null || dataList.isEmpty()) {
             return;
         }
         if (mCategoryAdapter == null) {

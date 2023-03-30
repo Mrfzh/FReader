@@ -48,6 +48,10 @@ public class AllNovelModel implements IAllNovelContract.Model {
                         }
                         List<ANNovelData> dataList = new ArrayList<>();
                         List<CategoryNovelsBean.BooksBean> books = bean.getBooks();
+                        if (books == null || books.isEmpty()) {
+                            mPresenter.getNovelsError("没有请求到数据");
+                            return;
+                        }
                         for (int i = 0; i < Math.min(books.size(), requestCNData.getNum()); i++) {
                             dataList.add(new ANNovelData(books.get(i).getTitle(), books.get(i).getAuthor(),
                                     books.get(i).getShortIntro(),

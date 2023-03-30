@@ -48,7 +48,12 @@ public class MaleModel implements IMaleContract.Model {
                     .setOkhttpCall(new OkhttpCall() {
                         @Override
                         public void onResponse(String json) {   // 得到 json 数据
-                            HotRankBean bean = mGson.fromJson(json, HotRankBean.class);
+                            HotRankBean bean = new HotRankBean();
+                            try {
+                                bean = mGson.fromJson(json, HotRankBean.class);
+                            } catch (Throwable t) {
+                                t.printStackTrace();
+                            }
                             if (bean.isOk()) {
                                 List<HotRankBean.RankingBean.BooksBean> books = bean.getRanking().getBooks();
                                 List<String> list = novelNameList.get(finalI);

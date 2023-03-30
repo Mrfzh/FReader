@@ -175,7 +175,7 @@ public class PressFragment extends BaseTabFragment<PressPresenter>
         List<DiscoveryNovelData> dataList =
                 (List<DiscoveryNovelData>) mCache.getAsObject(KEY_CACHE_CN);
 
-        if (dataList.isEmpty()) {
+        if (dataList == null || dataList.isEmpty()) {
             return;
         }
         if (mCategoryAdapter == null) {
